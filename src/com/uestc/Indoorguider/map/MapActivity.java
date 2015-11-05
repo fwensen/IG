@@ -415,7 +415,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
                 		Toast.LENGTH_SHORT).show();                                
                 exitTime = System.currentTimeMillis();   
             } else {
-            	stopService(intent);
+            	//stopService(intent);
                 finish();
                 System.exit(0);
             }
@@ -564,7 +564,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	   }
     	return super.onTouchEvent(event);
    }
-   
+   /*
    private boolean isScaleEnough(float scale, String siteName) {
 	   
 	   if (scale <= 0.4) {
@@ -584,7 +584,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	   } 
 	   return true;
    }
-   
+   */
    /**Æ«Àë¼ÆËã*/
    double culculateNearestDistance(double[] k) 
 			throws KeySizeException, KeyDuplicateException {

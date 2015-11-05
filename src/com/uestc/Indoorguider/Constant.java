@@ -1,5 +1,8 @@
 package com.uestc.Indoorguider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jdom.Content;
 
 import android.content.Context;
@@ -143,7 +146,33 @@ public class Constant {
 		
 	}
 	
-	
+	 
+	 public static Map<String, String> sitesAndChineseMap() {
+		 
+		 Map<String, String> sacMap = new HashMap<String, String>();
+		 sacMap.put("FirstAid", "急救中心");
+		 sacMap.put("GiftStore", "礼物店");
+		 sacMap.put("Taxi", "出租车");
+		 sacMap.put("Bus", "公交站");
+		 sacMap.put("WashRoom", "洗手间");
+		 sacMap.put("Ticket", "票台");
+		 sacMap.put("WaitRoom", "等待室");
+		 sacMap.put("Exit", "出口");
+		 sacMap.put("Parking", "停车场");
+		 sacMap.put("ATM", "ATM");
+		 sacMap.put("KFC", "肯德基");
+		 sacMap.put("Charging", "充电处");
+		 sacMap.put("WesternFood", "西餐厅");
+		 sacMap.put("Stair", "楼梯");
+		 sacMap.put("StationExit", "站台出口");
+		 sacMap.put("StationEntrance", "站台入口");
+		 sacMap.put("Luggage", "行李寄存处");
+		 sacMap.put("Coffee", "咖啡厅");
+		 sacMap.put("Lost", "失物招领处");
+		 sacMap.put("C-Restaurant", "中餐厅");
+		 sacMap.put("Restaurant", "餐厅");		 
+		 return sacMap;
+	 }
 	
     
 	

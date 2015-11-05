@@ -188,7 +188,7 @@ public class HistoryPathShow extends Activity implements
 		backButton.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				Intent clickIntent = new Intent(HistoryPathShow.this, HistoryRecorder.class);
+				Intent clickIntent = new Intent(HistoryPathShow.this, HistoryActivity.class);
 				finish();
 				startActivity(clickIntent);					
 			}
