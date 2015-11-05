@@ -11,8 +11,6 @@ public abstract class IndoorGuiderManagerModel {
     public abstract boolean saveAlreadyLogin(boolean alreadyLogin);
     // 获取登陆信息
     public abstract boolean getAlreadyLogin();
-    public abstract void login(String username, String password);
-    public abstract void logout();
     
 	
 	

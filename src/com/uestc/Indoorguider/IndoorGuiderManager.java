@@ -71,54 +71,9 @@ public class IndoorGuiderManager extends IndoorGuiderManagerModel {
 	}
 	
 	
-    public void logout()
-	{
-		WifiManager wifiManager = (WifiManager) IndoorGuiderApplication.getInstance().getSystemService(Context.WIFI_SERVICE);
-		if(ConnectTool.checkConnect(IndoorGuiderApplication.getInstance(),wifiManager))
-		{
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put("typecode", Constant.LOGOUT_REQUEST);
-				obj.put("username",IndoorGuiderApplication.getInstance().getUserName());
-				Handler handler = SendToServerThread.getHandler();
-				if(handler!= null)
-				{
-					Message msg = handler.obtainMessage();
-					msg.obj = obj;		
-					handler.sendMessage(msg);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	 	
-		} 		
-		
-	}
+    
 	
-	 public void login(String username, String password)
-	   {
-		   WifiManager wifiManager = (WifiManager) IndoorGuiderApplication.getInstance().getSystemService(Context.WIFI_SERVICE);
-		   if(ConnectTool.checkConnect(IndoorGuiderApplication.getInstance(),wifiManager))
-		   {
-			   JSONObject obj = new JSONObject();
-				
-				try {
-					obj.put("typecode",Constant.LOGIN_REQUEST_NAME);
-				    obj.put("username", username);
-					obj.put("password",password);
-					Handler handler = SendToServerThread.getHandler();
-					if(handler!= null)
-					{
-						Message msg = handler.obtainMessage();
-						msg.obj = obj;
-						handler.sendMessage(msg);
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	 	
-		   }
-	   }
+	
 	   
 
 }

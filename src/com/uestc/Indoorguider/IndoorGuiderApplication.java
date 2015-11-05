@@ -26,6 +26,7 @@ public class IndoorGuiderApplication extends Application {
 	// login user name
 	public final String PREF_USERNAME = "username";
 	public static IndoorGuiderManagerModel IGManager = null;
+	public static IndoorGuiderHelper IGHelper = null;
 
 	public  static Map<String, String> sitesNameEnAndChinese = null;
 	public  static ArrayList<SiteInfo> sitesApplication  = null;
@@ -36,6 +37,7 @@ public class IndoorGuiderApplication extends Application {
 		super.onCreate();
 		instance = this;
 		IGManager = new IndoorGuiderManager(this);
+<<<<<<< HEAD
 		
 		 sitesNameEnAndChinese = Constant.sitesAndChineseMap();   
 	       inputStream = this.getResources().openRawResource(R.raw.site);	       
@@ -49,6 +51,9 @@ public class IndoorGuiderApplication extends Application {
 	       } catch (IOException e) {
 			e.printStackTrace();
 	       }    
+=======
+		IGHelper = new IndoorGuiderHelper();
+>>>>>>> refs/remotes/zhouchacha/master
 	}
 
 	public static IndoorGuiderApplication getInstance() {
@@ -103,8 +108,11 @@ public class IndoorGuiderApplication extends Application {
 	 * 退出登录,清空数据
 	 */
 	public void logout() {
-		// 先调用sdk logout，在清理app中自己的数据
-		IGManager.logout();
+		IGHelper.logout();
+	}
+	
+	public void login(String username, String password) {
+		IGHelper.login(username, password);
 	}
 	
 	//从XML中解析出siteinfo
