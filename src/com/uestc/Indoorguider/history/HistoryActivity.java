@@ -1,4 +1,9 @@
 package com.uestc.Indoorguider.history;
+/*
+ * 本文件是历史记录功能的主文件，显示历史条目、删除、刷新历史条目
+ * 
+ * 
+ */
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,7 +55,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class HistoryRecorder extends APPActivity implements OnScrollListener {
+public class HistoryActivity extends APPActivity implements OnScrollListener {
 
 	private static String TAG = "HISTORY";	
 	List<HistoryItem> items;
@@ -94,18 +99,14 @@ public class HistoryRecorder extends APPActivity implements OnScrollListener {
 						JSONArray pathArray = obj.getJSONArray("history_items");
 						Log.v(TAG, "receive ok!");
 						
-						//取出第一条，更新items
-						//HistoryItem itm = getItemFromJson((JSONObject) pathArray.get(0));
-						//String date = itm.getDate();
 						if(!items.isEmpty())
 							//if(isOldDateBeforeNew(date, items.get(0).getDate())) 
 							if (times++ == 1)
 								items.clear();
 					
-						//
 						for (int i = 0; i < pathArray.length(); i++) {
 							JSONObject node = (JSONObject) pathArray.get(i);
-							HistoryItem item = getItemFromJson(node);
+							HistoryItem item = ConvertUtil.getItemFromJson(node);
 							if (item != null) {
 								items.add(item);
 							}
@@ -145,63 +146,80 @@ public class HistoryRecorder extends APPActivity implements OnScrollListener {
 			}
 		
 	}
-    /*
-    private boolean isOldDateBeforeNew(String oldDate, String newDate) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date odDate = null;
-    	Date nwDate = null;
-    	try {
-			odDate = simpleDateFormat.parse(oldDate);
-			nwDate = simpleDateFormat.parse(newDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	if (odDate.before(nwDate))
-    		return true;
-   	
-    	return true;
-    }
-    */
-       
-    //从JSONObject中取得HistoryItem
-    private static HistoryItem getItemFromJson(JSONObject obj) {
-    	
-    	if (obj == null)
-    		return null;
-    	HistoryItem itm = null;
-    	long mapId = 0;
-    	Date dt = null ;
-    	String startTime = null;
-    	String endTime = null;
-    	ArrayList<Site> pathItem = new ArrayList<Site>();
-    	SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd"); 
-    	try {
-    		//mapId = obj.getLong("mapid");
-			dt = ft.parse(obj.getString("date"));
-			startTime = obj.getString("starttime");
-			endTime = obj.getString("endtime");
-			JSONArray path = obj.getJSONArray("path");
-			for (int i = 0; i < path.length(); i++) {
-				JSONObject node = (JSONObject) path.get(i);
-				int x = node.getInt("x");
-				int y = node.getInt("y");
-				int z = node.getInt("z");
-				//test*********
-				String time = node.getString("time");
-				pathItem.add(new Site(x,  y,  z, time));
+   
+    //onCreate()
+    public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_app_history);
+		Log.v(TAG, "into oncreate!");
+		initView();		
+		//点击特定条目
+		mListView.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {				
+				Bundle data = new Bundle();
+				HistoryItem itm = items.get(position);
+				data.putSerializable("historyitem", itm);
+				//创建一个Intent
+				Intent intent = new Intent(HistoryActivity.this
+					, HistoryPathShow.class);
+				intent.putExtras(data);
+				//启动intent对应的Activity
+				startActivity(intent);
 			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	itm = new HistoryItem(0, dt, startTime, endTime, pathItem);    	
-    	return itm;
-    }
+		
+		}); 
+		//长按特定条目
+		mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {				
+				final int delId = currentPosition = position;
+				Builder builder  = new Builder(HistoryActivity.this);
+				builder.setTitle("确定删除本条记录吗?");
+				builder.setPositiveButton("确定", new OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {						
+						dialog.dismiss();
+						//deleteData(delId);
+						progressDialog = ProgressDialog.show(HistoryActivity.this, "请稍等...", "正在删除中...", true);	
+						Thread thread = new Thread()
+			            {
+			                public void run()
+			                {
+			                    try
+			                    {			  
+			                    	if (!sendRequest(Constant.HISTORY_DELGIVEN_REQUEST, items.get(delId), 0, 0)) {
+										mHandler.sendEmptyMessage(MSG_DELONE_FAIL);							
+									}
+			                        sleep(800);
+			                    } catch (InterruptedException e)
+			                    {
+			                        e.printStackTrace();
+			                    }
+			                    progressDialog.dismiss();
+			                }
+			            };
+			            thread.start();
+					
+					}			
+				});
+				builder.setNegativeButton("取消", null);
+				builder.create().show();
+				return true;
+			}
+		});
+			
+	}
+    
+     
   
    //发送请求
-private boolean sendRequest(int msgType, HistoryItem item, int startItem, int endItem) {
+    private boolean sendRequest(int msgType, HistoryItem item, int startItem, int endItem) {
 		
 		JSONObject obj = new JSONObject();		
 		try {
@@ -239,73 +257,7 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 		return false;
 	}
 	
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_app_history);
-		Log.v(TAG, "into oncreate!");
-		initView();		
-		//点击特定条目
-		mListView.setOnItemClickListener(new OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {				
-				Bundle data = new Bundle();
-				HistoryItem itm = items.get(position);
-				data.putSerializable("historyitem", itm);
-				//创建一个Intent
-				Intent intent = new Intent(HistoryRecorder.this
-					, HistoryPathShow.class);
-				intent.putExtras(data);
-				//启动intent对应的Activity
-				startActivity(intent);
-			}
-		
-		}); 
-		//长按特定条目
-		mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {				
-				final int delId = currentPosition = position;
-				Builder builder  = new Builder(HistoryRecorder.this);
-				builder.setTitle("确定删除本条记录吗?");
-				builder.setPositiveButton("确定", new OnClickListener(){
-					@Override
-					public void onClick(DialogInterface dialog, int which) {						
-						dialog.dismiss();
-						//deleteData(delId);
-						progressDialog = ProgressDialog.show(HistoryRecorder.this, "请稍等...", "正在删除中...", true);	
-						Thread thread = new Thread()
-			            {
-			                public void run()
-			                {
-			                    try
-			                    {			  
-			                    	if (!sendRequest(Constant.HISTORY_DELGIVEN_REQUEST, items.get(delId), 0, 0)) {
-										mHandler.sendEmptyMessage(MSG_DELONE_FAIL);							
-									}
-			                        sleep(800);
-			                    } catch (InterruptedException e)
-			                    {
-			                        e.printStackTrace();
-			                    }
-			                    progressDialog.dismiss();
-			                }
-			            };
-			            thread.start();
-					
-					}			
-				});
-				builder.setNegativeButton("取消", null);
-				builder.create().show();
-				return true;
-			}
-		});
-			
-	}
+	
 	
 	//初始化
 	private void initView() {
@@ -344,8 +296,8 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 			//historyCursor.moveToFirst();
 			pointsCursor = dbHelper.getAllPathPoints();
 			//pointsCursor.moveToFirst();
-			items.addAll(historyAndPointsToList(historyCursorToList(historyCursor), 
-					pointsCursorToMap(pointsCursor)));
+			items.addAll(ConvertUtil.historyAndPointsToList(ConvertUtil.historyCursorToList(historyCursor), 
+					ConvertUtil.pointsCursorToMap(pointsCursor)));
 			Log.v(TAG, "init data over");
 		}
 		} finally {
@@ -382,13 +334,7 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 		int num = 0;
 		dbHelper.open();
 		dbHelper.delAllHistory();
-		/*
-		if (!items.isEmpty() ) 
-			dbHelper.delAllHistory();
-		else {
-			dbHelper.close();
-			return false;
-		} */
+		
 		for (HistoryItem itm:items) {
 			if(num == 6)
 				break;
@@ -435,89 +381,7 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 	}
 	
 	
-	//将HISTORY_TABLE的数据转化为ArrayList
-	private ArrayList<Map<String, String>> historyCursorToList(Cursor cursor) {
-		
-		Log.v(TAG, "into historyCursorToList");
-		ArrayList<Map<String, String>> result = 
-				new ArrayList<Map<String, String>>();
-		while (cursor.moveToNext()) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("historyId", cursor.getInt(0) +"");
-			map.put("mapId", cursor.getInt(1)+"");
-			map.put("date", cursor.getString(2));
-			map.put("starttime", cursor.getString(3));
-			map.put("endtime", cursor.getString(4));
-			result.add(map);
-		}	
-		Log.v(TAG, "historyCursorToList over");
-		return result;
-	}
 	
-	//将PATHPOINTS_TABLE的数据转化为Map
-	private Map<Integer, ArrayList<Site>> pointsCursorToMap(Cursor cursor) {
-				
-		Log.v(TAG, "into pointsCursorToList");
-		int preId = -1;
-		int currentId = -2;
-		Map<Integer, ArrayList<Site>> result = new HashMap<Integer, ArrayList<Site>>();
-		ArrayList<Site> tmpSite = new ArrayList<Site>();
-		
-		if (cursor.moveToNext()) {	
-			//Log.v(TAG, "00");
-			preId = cursor.getInt(0);
-			tmpSite.add(new Site(cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),  cursor.getString(4)));
-		}
-		//Log.v(TAG, "01");
-		while (cursor.moveToNext()) {
-			currentId = cursor.getInt(0);
-			if (currentId != preId) {				
-				result.put(preId, tmpSite);
-				tmpSite = null;
-				tmpSite = new ArrayList<Site>();
-				tmpSite.add(new Site(cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),  cursor.getString(4)));
-				preId = currentId;
-			} else {				
-				tmpSite.add(new Site(cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),  cursor.getString(4)));							
-			}			
-		}
-		//Log.v(TAG, "02");
-		result.put(preId, tmpSite);
-		Log.v(TAG, "pointsCursorToList over");
-		return result;
-	}
-	
-	//将historyCursorToList（Cursor）函数和pointsCursorToList（Cursor）函数返回的值转化为
-	private ArrayList<HistoryItem> historyAndPointsToList(ArrayList<Map<String,String>> history, 
-			Map<Integer, ArrayList<Site>> points) {
-		
-		Log.v(TAG, "into historyAndPointsToList");
-		ArrayList<HistoryItem> result = new ArrayList<HistoryItem>();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date now = null;
-		
-		for (Map<String, String> hy:history) {			
-			int historyId = Integer.parseInt(hy.get("historyId"));
-			int mapId = Integer.parseInt(hy.get("mapId"));
-			String date  = hy.get("date");
-			String startTime = hy.get("starttime");
-			String endTime = hy.get("endtime");			
-			try {
-				now = simpleDateFormat.parse(date);
-			} catch (ParseException e) {				
-				e.printStackTrace();
-			};
-			ArrayList<Site> sites = new ArrayList<Site>();
-			sites = points.get(historyId);
-			Log.v(TAG, "historyid = " + historyId);
-			if(sites == null)
-				Log.v(TAG, "sites are null, and historyid = " + historyId);
-			HistoryItem itm  = new HistoryItem(mapId, now, startTime, endTime, sites);	
-			result.add(itm);
-			sites = null;
-		}		
-		return result;
-	}
 	//test************************
 	private void loadMoreData(){ //加载更多数据		
 		count = mAdapter.getCount(); 
@@ -559,43 +423,43 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 				case MSG_LOADMORE_SUCCESS:
 					if (loadDateNums == -1) {
 						//mListView.removeFooterView(moreView); //移除底部视图
-						Toast.makeText(HistoryRecorder.this, "服务器错误！", Toast.LENGTH_LONG).show();
+						Toast.makeText(HistoryActivity.this, "服务器错误！", Toast.LENGTH_LONG).show();
 						break;
 					}
 					if (loadDateNums == 0) {
-						Toast.makeText(HistoryRecorder.this, "木有更多数据！", Toast.LENGTH_LONG).show();
+						Toast.makeText(HistoryActivity.this, "木有更多数据！", Toast.LENGTH_LONG).show();
 				         mListView.removeFooterView(moreView); //移除底部视图
 				         break;
 					}
 					mAdapter.notifyDataSetChanged();
 				    moreView.setVisibility(View.GONE);
-				    Toast.makeText(HistoryRecorder.this, "加载成功！", 3000).show();
+				    Toast.makeText(HistoryActivity.this, "加载成功！", 3000).show();
 				    //updateDB();
 					break;
 				case MSG_LOADMORE_FAIL:
-					Toast.makeText(HistoryRecorder.this, "获取失败，网络或服务器错误！", 4000).show();
+					Toast.makeText(HistoryActivity.this, "获取失败，网络或服务器错误！", 4000).show();
 					break;
 				case MSG_DELALL_SUCCESS:
 					//items.removeAll(items);
 					delAllData();	
-					Toast.makeText(HistoryRecorder.this, "删除成功！", 3000).show();
+					Toast.makeText(HistoryActivity.this, "删除成功！", 3000).show();
 					break;
 				case MSG_DELALL_FAIL:
 					//**************test
 					delAllData();	
-					Toast.makeText(HistoryRecorder.this, "删除失败！", 3000).show();
+					Toast.makeText(HistoryActivity.this, "删除失败！", 3000).show();
 					break;
 				case MSG_DELONE_SUCCESS:
 					//mListView.addFooterView(moreView); //添加底部view
 					deleteData(currentPosition);
-					Toast.makeText(HistoryRecorder.this, "删除成功！", 3000).show();
+					Toast.makeText(HistoryActivity.this, "删除成功！", 3000).show();
 					mListView.setAdapter(mAdapter);
 					mAdapter.notifyDataSetChanged();
 					break;
 				case MSG_DELONE_FAIL:
 					//test
 					deleteData(currentPosition);
-					Toast.makeText(HistoryRecorder.this, "删除失败！", 3000).show();
+					Toast.makeText(HistoryActivity.this, "删除失败！", 3000).show();
 					break;
 	      
 				default:
@@ -648,7 +512,7 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 		
 		switch(mi.getItemId()) {		
 		case R.id.menu_delallhistory:	
-			progressDialog = ProgressDialog.show(HistoryRecorder.this, "请稍等...", "正在删除中...", true);				
+			progressDialog = ProgressDialog.show(HistoryActivity.this, "请稍等...", "正在删除中...", true);				
 			Thread thread = new Thread() {
                 public void run() {
                     try {
@@ -681,7 +545,7 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 					public boolean onMenuItemClick(MenuItem item) {
 						switch(item.getItemId()) {
 						case POPUPMENU_DEL:
-							progressDialog = ProgressDialog.show(HistoryRecorder.this, "请稍等...", "正在删除中...", true);									
+							progressDialog = ProgressDialog.show(HistoryActivity.this, "请稍等...", "正在删除中...", true);									
 							Thread thread = new Thread() {
 				                public void run() {
 				                    try  {
@@ -706,131 +570,5 @@ private boolean sendRequest(int msgType, HistoryItem item, int startItem, int en
 		popup.show();
 		
 		}
-	/*	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		updateDB();
-		if(dbHelper != null)
-			dbHelper.close();
-	}
 	
-	@Override
-	public void onStop() {
-		super.onStop();
-		updateDB();
-		if(dbHelper != null)
-			dbHelper.close();
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		updateDB();
-		
-	}
-	*/
-	public class HistoryAdapter extends BaseAdapter {
-		private LayoutInflater mInflater;
-		//private List<HistoryItem> items;
-		private String TAG = "HISTORY";
-		Context ctx;
-	    public HistoryAdapter(Context context, List<HistoryItem> itms) {  	
-	    	ctx = context;
-	    	//items = itms;
-	        this.mInflater = LayoutInflater.from(context);        
-	    }
-	    
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return items.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return items.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub		
-			HistoryItem item = items.get(position);
-			ViewHolder viewHolder = null;
-			//Log.v(TAG, "into getView");
-			RelativeLayout layout = null;
-			if(convertView == null) {			
-				convertView = mInflater.inflate(R.layout.history_item, null);
-				//Log.v(TAG, " getView !!");
-		    	viewHolder = new ViewHolder();
-		    	viewHolder.llHistoryItem = (RelativeLayout) convertView.findViewById(R.id.history_item_date);
-		    	viewHolder.tvDate = (TextView) convertView.findViewById(R.id.history_clock_tv);
-		    	viewHolder.tvStartToEndTime = (TextView) convertView.findViewById(R.id.history_start_to_endtime_tv);
-				convertView.setTag(viewHolder);
-				viewHolder.llHistoryItem.setTag(position);
-				//layout.setTag(viewHolder);
-				//Log.v(TAG, "getView findViewById over!");
-			} else {			
-				viewHolder = (ViewHolder) convertView.getTag();
-			}
-			
-			String dateTime = item.getDate();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			Date now = null;
-			try {
-				now = simpleDateFormat.parse(dateTime);
-			} catch (ParseException e1) {
-				
-				e1.printStackTrace();
-			};
-			
-			if (position > 0) {			
-				String preday = items.get(position-1).getDate();			
-				Date pre = null;
-				try {			
-					pre = simpleDateFormat.parse(preday);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if(!pre.before(now) && !pre.after(now)) {			
-					viewHolder.llHistoryItem.setVisibility(View.GONE);
-				} else {			
-					viewHolder.llHistoryItem.setVisibility(View.VISIBLE);
-					dateTime+=" "+getWeekOfDate(now);
-					viewHolder.tvDate.setText(dateTime);
-				}
-			} else {
-				
-				viewHolder.llHistoryItem.setVisibility(View.VISIBLE);
-				dateTime+=" "+getWeekOfDate(now);
-				viewHolder.tvDate.setText(dateTime);
-			}		
-			viewHolder.tvStartToEndTime.setText(item.getStartTime()+" - "+item.getEndTime());
-			return convertView;
-		}
-		
-		class ViewHolder{			
-			public RelativeLayout llHistoryItem;
-		    public TextView  tvDate;
-		    public TextView tvStartToEndTime;
-		    //public TextView tvEndTime;
-		}
-		
-		public  String getWeekOfDate(Date date) { 
-			  String[] weekDaysName = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" }; 
-			  Calendar calendar = Calendar.getInstance(); 
-			  calendar.setTime(date); 
-			  int intWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; 
-			  return weekDaysName[intWeek]; 
-			} 
-			
-	} 
 }

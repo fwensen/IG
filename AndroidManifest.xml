@@ -49,7 +49,7 @@
 	              android:launchMode="singleTask" />
 	    <activity android:name=".login.RegisterActivity"/>
 	    <activity android:name="com.uestc.Indoorguider.more.APPHelpActivity"/>
-	    <activity android:name="com.uestc.Indoorguider.history.HistoryRecorder"
+	    <activity android:name="com.uestc.Indoorguider.history.HistoryActivity"
 	    		 android:theme="@style/AppTheme"
 	    		 android:launchMode="singleTask"/>
 	     

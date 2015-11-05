@@ -1,44 +1,30 @@
 package com.uestc.Indoorguider.more;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
-import com.uestc.Indoorguider.R;
-import com.uestc.Indoorguider.R.id;
-import com.uestc.Indoorguider.R.layout;
-import com.uestc.Indoorguider.history.HistoryRecorder;
-import com.uestc.Indoorguider.login.LoginActivity;
-import com.uestc.Indoorguider.map.MapActivity;
-import com.uestc.Indoorguider.util.ClientAgent;
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
-import android.transition.Visibility;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.uestc.Indoorguider.R;
+import com.uestc.Indoorguider.history.HistoryActivity;
+import com.uestc.Indoorguider.login.LoginActivity;
+import com.uestc.Indoorguider.map.MapActivity;
+import com.uestc.Indoorguider.util.ClientAgent;
 
 public class MoreActivity extends Activity implements OnClickListener{
 	
@@ -151,7 +137,7 @@ public class MoreActivity extends Activity implements OnClickListener{
 		switch(v.getId())
 		{
 			case R.id.history_lay:
-				i = new Intent(this, HistoryRecorder.class);
+				i = new Intent(this, HistoryActivity.class);
 				//this.finish();
 				startActivity(i);
 				break;

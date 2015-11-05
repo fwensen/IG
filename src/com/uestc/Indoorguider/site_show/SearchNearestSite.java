@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import com.uestc.Indoorguider.IndoorGuiderApplication;
+
 import android.util.Log;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
@@ -14,7 +17,7 @@ import edu.wlu.cs.levy.CG.KeyMissingException;
 import edu.wlu.cs.levy.CG.KeySizeException;
 public class SearchNearestSite {
 
-	InitApplication mApplication;
+	IndoorGuiderApplication mApplication;
 	private final int sitesNum = 6;
 	private final float nearestDistance = 600;  //¼ä¾à
 	double[][] sites;
