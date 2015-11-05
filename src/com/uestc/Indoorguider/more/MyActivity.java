@@ -94,7 +94,7 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 			case R.id.my_username:
 				break;
 			case R.id.logout_lay:
-				IndoorGuiderManager.getInstance().logout();
+				IndoorGuiderApplication.getInstance().logout();
 				break;
 			case R.id.my_sex:
 				break;

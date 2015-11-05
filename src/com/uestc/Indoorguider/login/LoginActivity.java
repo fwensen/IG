@@ -4,6 +4,8 @@ import org.json.JSONObject;
 
 import com.uestc.Indoorguider.APPActivity;
 import com.uestc.Indoorguider.Constant;
+import com.uestc.Indoorguider.IndoorGuiderApplication;
+import com.uestc.Indoorguider.IndoorGuiderHelper;
 import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.more.MoreActivity;
@@ -58,17 +60,17 @@ public class LoginActivity extends APPActivity
 			    	//ÊÇ·ñ×Ô¶¯µÇÂ¼
 				     if(autoLogin.isChecked())
 				       {
-						  IndoorGuiderManager.getInstance().setUsername(username);
-						  IndoorGuiderManager.getInstance().setPassword(userpw);
+				    	 IndoorGuiderApplication.getInstance().setUserName(username);
+				    	 IndoorGuiderApplication.getInstance().setPassword(userpw);
 								
 								
 				    	}
 				     else{
-				    	 IndoorGuiderManager.getInstance().setUsername(username);
-						 IndoorGuiderManager.getInstance().setPassword(userpw);
+				    	 IndoorGuiderApplication.getInstance().setUserName(username);
+				    	 IndoorGuiderApplication.getInstance().setPassword(userpw);
 							
 				     }
-					 IndoorGuiderManager.getInstance().saveAlreadyLogin(true);
+				     IndoorGuiderApplication.getInstance().saveAlreadyLogin(true);
 			    	 Intent intent=new Intent(LoginActivity.this,MoreActivity.class);
 			    	 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);  
 					 startActivity(intent);
@@ -163,7 +165,7 @@ public class LoginActivity extends APPActivity
 						  }
 						   
 						 //µÇÂ½
-						 IndoorGuiderManager.getInstance().login(username,userpw);
+						   IndoorGuiderApplication.getInstance().login(username,userpw);
 						 
 				    }	
 		       }        	

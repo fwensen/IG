@@ -17,13 +17,14 @@ public class IndoorGuiderApplication extends Application {
 	// login user name
 	public final String PREF_USERNAME = "username";
 	public static IndoorGuiderManagerModel IGManager = null;
+	public static IndoorGuiderHelper IGHelper = null;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		instance = this;
 		IGManager = new IndoorGuiderManager(this);
-		
+		IGHelper = new IndoorGuiderHelper();
 	}
 
 	public static IndoorGuiderApplication getInstance() {
@@ -78,8 +79,11 @@ public class IndoorGuiderApplication extends Application {
 	 * 退出登录,清空数据
 	 */
 	public void logout() {
-		// 先调用sdk logout，在清理app中自己的数据
-		IGManager.logout();
+		IGHelper.logout();
+	}
+	
+	public void login(String username, String password) {
+		IGHelper.login(username, password);
 	}
 	
 }

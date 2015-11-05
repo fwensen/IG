@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 
 
+import com.uestc.Indoorguider.IndoorGuiderApplication;
+import com.uestc.Indoorguider.IndoorGuiderHelper;
 import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.wifi.ScanWifiThread;
 
@@ -35,11 +37,11 @@ public class ConnectTool {
 	      Thread threadRssi = new ScanWifiThread(wifiManager);
 	      threadRssi.start();
 	  //µÇÂ½¼ì²â
-	      if(IndoorGuiderManager.getInstance().getAlreadyLogin())
+	      if(IndoorGuiderApplication.getInstance().getAlreadyLogin())
 	      {
 	    	//ÇëÇóµÇÂ½
-			IndoorGuiderManager.getInstance().login(IndoorGuiderManager.getInstance().getUsername(),
-					IndoorGuiderManager.getInstance().getPassword());
+	    	  IndoorGuiderApplication.getInstance().login(IndoorGuiderApplication.getInstance().getUserName(),
+	    			  IndoorGuiderApplication.getInstance().getPassword());
 	      }
 	}
 	
