@@ -5,7 +5,6 @@ import com.uestc.Indoorguider.R.id;
 import com.uestc.Indoorguider.R.layout;
 import com.uestc.Indoorguider.R.string;
 import com.uestc.Indoorguider.map.MapActivity;
-import com.uestc.Indoorguider.network.NetworkStateBroadcastReceiver;
 
 
 import android.annotation.TargetApi;
@@ -32,7 +31,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class SiteActivity extends Activity implements OnClickListener{
-	private NetworkStateBroadcastReceiver receiver =null ;
+
 	ListView  siteList ;
 	LinearLayout layout1,ticketOffice,ticketOffice1,layout_site_row1,layout_site_row2,layout_site_row3;
 	private ImageView buttImage;

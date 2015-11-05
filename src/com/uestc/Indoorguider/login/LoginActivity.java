@@ -153,12 +153,12 @@ public class LoginActivity extends APPActivity
 						//判断登录密码和权限
 						 if(username.equals(""))
 						  {
-							 Toast.makeText(LoginActivity.this, "请输入用户名!!!", Toast.LENGTH_SHORT).show(); 
+							 Toast.makeText(LoginActivity.this, "请输入用户名!", Toast.LENGTH_SHORT).show(); 
 						      return;
 						  }
 						   if(userpw.equals(""))
 						  {
-							  Toast.makeText(LoginActivity.this, "请输入密码!!!", Toast.LENGTH_SHORT).show(); 
+							  Toast.makeText(LoginActivity.this, "请输入密码!", Toast.LENGTH_SHORT).show(); 
 						      return;
 						  }
 						   

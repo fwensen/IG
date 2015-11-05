@@ -23,10 +23,7 @@ public class IndoorGuiderApplication extends Application {
 		super.onCreate();
 		instance = this;
 		IGManager = new IndoorGuiderManager(this);
-		//¿ªÆô·þÎñ
-	    Intent intent = new Intent();
-	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
-	    startService(intent);
+		
 	}
 
 	public static IndoorGuiderApplication getInstance() {

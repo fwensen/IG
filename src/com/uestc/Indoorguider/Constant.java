@@ -20,7 +20,7 @@ public class Constant {
 	
 	//默认情况下的ip和point
 	public static final String ip="121.49.97.136";
-	public static final int port  = 40000;
+	public static final int port  = 40001;
 	//Main
 	public static final int INDOOR = 2;
 	public static final int OUTDOOR = 1;

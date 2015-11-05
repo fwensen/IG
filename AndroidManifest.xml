@@ -24,7 +24,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar"
-     	android:name="com.uestc.Indoorguider.site_show.InitApplication">
+     	android:name="com.uestc.Indoorguider.IndoorGuiderApplication">
         >
 	    <activity android:name="com.uestc.Indoorguider.map.MapActivity"
 	              android:theme="@android:style/Theme.NoTitleBar"

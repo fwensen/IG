@@ -11,7 +11,6 @@ import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.R.id;
 import com.uestc.Indoorguider.R.layout;
 import com.uestc.Indoorguider.more.MoreActivity;
-import com.uestc.Indoorguider.network.NetworkStateBroadcastReceiver;
 import com.uestc.Indoorguider.orientation.OrientationTool;
 import com.uestc.Indoorguider.site_show.SearchNearestSite;
 import com.uestc.Indoorguider.site_show.SiteActivity;
@@ -85,7 +84,6 @@ public class MapActivity extends APPActivity implements OnClickListener{
     float[] srcLocation = new float[3] ;
 	private float[] destLocation = new float[3]; //记录目标设施位置，用于导引请求。
 	public static Boolean isForeground = true;//是否位于最前面foreground process
-	private NetworkStateBroadcastReceiver networkReceiver =null ;
 	
 	private boolean isGuided;
 	WifiManager wifiManager;
@@ -151,6 +149,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         initSensors();// 初始化传感器和位置服务
+        //开启服务
+	    Intent intent = new Intent();
+	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
+	    startService(intent);
         getWindowSize();
         isGuided = false;
         webView = (MyWebView) findViewById(R.id.webview);

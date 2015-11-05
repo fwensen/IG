@@ -5,39 +5,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
 import com.uestc.Indoorguider.R;
-import com.uestc.Indoorguider.R.array;
-import com.uestc.Indoorguider.R.drawable;
-import com.uestc.Indoorguider.R.id;
-import com.uestc.Indoorguider.R.layout;
 import com.uestc.Indoorguider.map.MapActivity;
-import com.uestc.Indoorguider.network.NetworkStateBroadcastReceiver;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout.LayoutParams;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
+
 
 public class SiteItemActivity extends Activity implements OnItemClickListener{
-	private NetworkStateBroadcastReceiver receiver =null ;
+
 	ListView  siteList ;
 	LinearLayout layout1,ticketOffice,ticketOffice1,layout_site_row1;
-	private ImageView buttImage;
-	private TextView buttText ;
+
 	LinearLayout[] linearLayout;
 	Boolean flag_ticket = false;
 	ListView listView;
