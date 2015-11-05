@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical">
+  
+   <include layout = "@layout/title_bar"/>
+  
+  <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" 
+    android:orientation="vertical">
+    <WebView 
+  		android:id="@+id/history_webview"		
+  		android:layout_width="fill_parent" 
+  		android:layout_height="fill_parent" 
+		/>
+	<SeekBar 
+		android:id="@+id/history_seekbar"
+		android:layout_height="60dp" 
+		android:layout_width="fill_parent" 
+		android:layout_above="@id/history_webview" 
+		android:layout_alignBottom="@id/history_webview" 
+		android:max="100"
+        android:progress="0" 
+		android:layout_margin="1dip" 
+		>
+	</SeekBar> 
+		    
+	<TextView  
+   		android:id="@+id/history_seekbar_description"
+    	android:layout_above="@id/history_seekbar"
+    	android:layout_alignBottom="@id/history_seekbar" 
+    	android:layout_width="fill_parent"
+    	android:layout_height="30dp"
+    	android:layout_alignParentBottom="true" 
+    	android:text="拖动进度条"
+    	android:textSize="17sp"
+    	android:gravity="center_horizontal"
+    />
+    </RelativeLayout >
+</LinearLayout >

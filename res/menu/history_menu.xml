@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical">	
+		<item
+			android:id="@+id/menu_delallhistory"
+			android:title="@string/history_delall"			
+			/>
+		<item
+			android:id="@+id/menu_canceldel"
+			android:title="@string/history_canceldel"			
+			/>	        
+    
+</menu>

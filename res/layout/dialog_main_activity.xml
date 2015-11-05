@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#ffffff">
+    
+    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+	    <Button
+	        android:id="@+id/b1"
+	        android:layout_width="0px"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="枢纽外"/>
+	    <Button
+	        android:id="@+id/b2"
+	        android:layout_width="0px"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="枢纽内" />
+    </LinearLayout>
+    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+	     <AutoCompleteTextView
+	        android:id="@+id/autoText"
+	        android:layout_width= "0px"
+	        android:layout_height ="wrap_content"
+	        android:layout_weight = "4"
+	        android:hint="搜索目的地"/>
+	    <Button
+	        android:id="@+id/b3"
+	        android:layout_width="0px"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1.5"
+	        android:text="确定"/>
+	    
+    </LinearLayout>
+   
+    <ListView
+        android:id= "@+id/m_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+    
+    
+
+</LinearLayout>

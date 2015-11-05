@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical">
+	<RelativeLayout
+    android:id = "@+id/title_bar"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:background="#FFDAC8"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+    
+	
+    <TextView
+        android:id = "@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="#ff000000"
+        android:text = "使用帮助"
+        android:textSize="20.0sp" />
+   </RelativeLayout>
+	<ScrollView 
+		    android:layout_width="fill_parent" 
+		    android:layout_height="fill_parent"
+		    android:scrollbars="vertical"
+		    android:background = "#FFFFF0">
+
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical" >
+
+		    <TextView
+
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dp"
+		        android:text=" "
+		        android:textColor="#ff000000"
+		        android:textSize="18dp" />
+		    
+		<TextView
+
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		       android:layout_marginBottom="10dp"
+		        android:background="#FFFFF0"
+		        android:text="1. 任务闹钟"
+		        android:textColor="#ff000000"
+		         android:textSize="20sp"
+		        android:layout_gravity="center"
+		        />
+		    
+		    <TextView
+	
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:background="#FFFFF0"
+		        android:text="      测试后，点击v-计划页面右上角的编辑选项，即可操作选择框，填入相应的时间，任务闹钟就会提醒注意事项。"
+		        android:textColor="#ff000000"
+		        android:textSize="17sp" />
+		    <TextView
+
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		       android:layout_marginTop="10dp"
+		        android:background="#FFFFF0"
+		        android:text="2. 游戏"
+		        android:textColor="#ff000000"
+		         android:textSize="20sp"
+		        android:layout_gravity="center"
+		        />
+		     <TextView
+		  
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dp"
+		        android:text="      本游戏为一款趣味脸部锻炼游戏，在游戏中您相当于完成了一组脸部瑜伽动作，达到运动脸部肌肉，去除法令纹、塑造唇部线条的效果。"
+		        android:textColor="#ff000000"
+		        android:textSize="18dp" />
+
+		    <ImageView
+		   
+		        android:layout_width="97dp"
+		        android:layout_height="120dp"
+		        android:layout_marginBottom="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_weight="0.12"
+		        android:layout_gravity="center"
+		       
+		        android:textSize="16sp" />
+
+		    <TextView
+		   
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:background="#FFFFF0"
+		        android:text="练习模式： 您可将手机平放或拿于手中，点击进入游戏后，将嘴对准手机尾部的麦克风，脸部鼓起一股气，朝麦克风缓缓吐出。如果您的吐气过程持续足够长，且力度足够大，那么游戏中主人公右侧会出现草莓，当草莓累计到5颗时，一次任务完成，主人公会跳两次绳。
+       请注意，草莓累加到5颗需要您在一次吹气过程中完成才有效。"
+		        android:textColor="#ff000000"
+		        android:textSize="17sp" />
+		    <TextView
+		    
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:background="#FFFFF0"
+		        android:text="PK模式：基本玩法同练习模式，不同的是在进入游戏后，需要等待服务器为您匹配对手，当您的圈子里的好友请求与你PK时，游戏开始，当有人率先完成10次任务时，游戏结束。服务器会为您公布游戏结果。"
+		        android:textColor="#ff000000"
+		        android:textSize="17sp" />
+		</LinearLayout>
+
+	</ScrollView>
+</LinearLayout>

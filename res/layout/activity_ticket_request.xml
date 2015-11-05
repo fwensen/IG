@@ -1,0 +1,139 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation  ="vertical"
+    android:background="#FFCDCDCD" >
+    <RelativeLayout 
+	    android:gravity="center_vertical" 
+	    android:orientation="horizontal" 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="50dp"
+	    android:layout_marginBottom="5.0dip" 
+	    android:background="#ffffffff">
+	    
+	       <ImageView 
+	        android:layout_width="20dp" 
+	        android:layout_height="match_parent" 
+	        android:layout_marginLeft="10.0dip" 
+	        android:src="@drawable/back_icon_pressed"
+	        />
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerHorizontal="true"
+	            android:layout_centerVertical="true"
+	            android:text="出行推荐"
+	            android:textColor="#ff000000"
+	            android:textSize="18.0sp" />
+   </RelativeLayout>    
+
+    <View
+         android:layout_width="wrap_content"
+         android:layout_height="1dp"
+         android:background="#FF909090" />
+        
+    <RelativeLayout 
+	    android:id="@+id/basiclinear"
+	    android:layout_width="match_parent"
+	    android:layout_height="0px"
+	    android:layout_weight="1"
+	    android:orientation="vertical"
+	    android:layout_marginLeft = "20dip"
+	    android:layout_marginRight = "20dip" >
+	    <LinearLayout
+	        android:layout_width= "match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation = "horizontal"
+	        android:id="@+id/i1">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text = "目的城市:"
+	            
+	            android:textSize="22dp"
+	            android:textColor="#000000"/>
+	        <EditText
+	             android:id="@+id/aimcity"
+	             android:layout_width="0px"
+	             android:layout_height="wrap_content"
+	             android:layout_weight="1"
+	             android:hint="本市可不填"
+	             android:textSize="22dp"/>
+	    </LinearLayout>
+    
+        <LinearLayout
+	        android:id="@+id/i12"
+	        android:layout_width= "match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation = "horizontal"
+	        android:layout_below  ="@id/i1">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text = "目的街区:"
+	            android:textColor="#000000"
+	            android:textSize="22dp"/>
+	        <EditText
+	             android:id="@+id/date"
+	             android:layout_width="0px"
+	             android:layout_height="wrap_content"
+	             android:layout_weight="1"
+	             android:textSize="22dp"
+	             />
+	    </LinearLayout>
+	    
+        
+         <LinearLayout
+	        android:id="@+id/i2"
+	        android:layout_width= "match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation = "horizontal"
+	        android:layout_below  ="@id/i12">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text = "出发时间:"
+	            android:textColor="#000000"
+	            android:textSize="22dp"/>
+	        <EditText
+	             android:id="@+id/date"
+	             android:layout_width="0px"
+	             android:layout_height="wrap_content"
+	             android:layout_weight="1"
+	             android:textSize="22dp"
+	             />
+	    </LinearLayout>
+        
+        
+	    <LinearLayout
+	        android:id="@+id/i3"
+	        android:layout_width= "match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation = "horizontal"
+	        android:layout_below  ="@id/i2">
+	    </LinearLayout>
+
+	    <Button
+	        android:id="@+id/m_sure"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/i3"
+	        android:layout_marginTop="34dp"
+	        android:text="确定"
+	        android:textSize="22dp" />
+
+    </RelativeLayout>
+
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="2dip"
+        android:background="#FF909090" />
+    
+    
+
+   
+</LinearLayout>

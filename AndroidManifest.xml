@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.uestc.Indoorguider"
+    android:versionCode="1"
+    android:versionName="1.0" >
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>  
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+	<uses-feature android:name="android.hardware.camera" />
+	<uses-feature android:name="android.hardware.camera.autofocus" />
+	<uses-permission android:name="android.permission.VIBRATE"/>
+  	<uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission> 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.NoTitleBar"
+     	android:name="com.uestc.Indoorguider.site_show.InitApplication">
+        >
+	    <activity android:name="com.uestc.Indoorguider.map.MapActivity"
+	              android:theme="@android:style/Theme.NoTitleBar"
+	              android:configChanges="orientation|keyboardHidden|screenSize"
+	              android:launchMode="singleTask" >
+	        <intent-filter>
+	            <action android:name="android.intent.action.MAIN"> </action>
+	            <category android:name="android.intent.category.LAUNCHER"></category>
+	        </intent-filter>
+	    </activity>
+	    <activity android:name="com.uestc.Indoorguider.site_show.SiteActivity"></activity>  
+        <activity android:name="com.uestc.Indoorguider.site_show.SiteItemActivity"></activity>    
+	    <activity android:name="com.uestc.Indoorguider.zxing_view.CaptureActivity"
+	              android:screenOrientation="portrait"></activity> 
+	    <activity android:name="com.uestc.Indoorguider.more.MyActivity"></activity> 
+	    <activity android:name=".ticket.TicketRequestActivity"></activity> 
+	    <activity android:name=".ticket.TicketInfActivity"></activity>
+	    <activity android:name=".ticket.CityActivity"></activity>  
+	    <activity android:name="com.uestc.Indoorguider.more.MoreActivity"
+	              android:launchMode="singleTask" />
+	    <activity android:name=".login.LoginActivity" 
+	              android:launchMode="singleTask" />
+	    <activity android:name=".login.RegisterActivity"/>
+	    <activity android:name="com.uestc.Indoorguider.more.APPHelpActivity"/>
+	    <activity android:name="com.uestc.Indoorguider.history.HistoryRecorder"
+	    		 android:theme="@style/AppTheme"
+	    		 android:launchMode="singleTask"/>
+	     
+	     <activity 
+	     	android:theme="@style/AppTheme"
+	     	android:name="com.uestc.Indoorguider.history.HistoryPathShow"/>
+	    
+	    <service android:name=".util.UtilService">
+	        <intent-filter>
+	            <action android:name = "com.uestc.Indoorguider.util.UtilService"/>
+	        </intent-filter>
+	    </service>
+    </application>
+
+</manifest>

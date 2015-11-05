@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFFFF"
+    >
+    <include layout = "@layout/title_bar"/>
+   <View  
+      android:layout_width="match_parent"
+      android:layout_height="3dp"
+      android:background="@color/line"
+      />
+    <RelativeLayout 
+                android:id="@+id/have_login_layout"
+			    android:paddingTop="10.0px"
+			    android:paddingBottom="10.0px" 
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content" 
+			    android:layout_marginLeft="15.0px"
+			    android:layout_marginRight="15.0px"
+			    android:visibility="visible">
+	        <ImageView 
+	            android:id="@+id/have_log_img" 
+	            android:background="@drawable/userimg"
+				android:layout_width="70dp" 
+				android:layout_height="70dp" 
+				/>
+			<TextView 
+			    android:id="@+id/login_username"
+				android:paddingLeft="45.0sp"
+				android:saveEnabled="true" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_marginLeft="5.0dip"
+				android:layout_marginTop="20.0dip" 
+				android:layout_marginRight="5.0dip"
+				android:layout_marginBottom="5.0px"
+				android:maxLength="10" 
+				android:layout_toRightOf="@+id/TextView01"
+				android:inputType="number" />
+			<TextView 
+			    android:id="@id/TextView01"
+			    android:textColor="#ff3f3f3f"
+				android:gravity="center_vertical" 
+				android:paddingLeft="7.0sp" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				android:layout_marginRight="15.0sp"
+				android:text="昵称" 
+				android:textSize="16.0sp" 
+				android:layout_toRightOf="@id/have_log_img"
+				android:layout_alignTop="@id/login_username"
+				android:layout_alignBottom="@id/login_username" />
+			
+			<TextView android:id="@+id/login_score"
+			    android:paddingLeft="45.0sp"
+				android:saveEnabled="true" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				android:layout_marginRight="1.0dip"
+				android:layout_marginTop="10dp"
+				android:maxLength="16"
+			    android:layout_below="@id/login_username"
+				android:layout_alignLeft="@id/login_username"
+				android:layout_alignRight="@id/login_username"
+				 />
+			<TextView 
+			    android:textSize="16sp" 
+			    android:textColor="#ff3f3f3f"
+				android:gravity="center_vertical" 
+				android:id="@+id/TextView02"
+				android:paddingLeft="7.0sp" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				android:text="积分"
+				android:layout_alignTop="@+id/login_score"
+				android:layout_alignRight="@+id/TextView01"
+				android:layout_alignBottom="@+id/login_score" />
+			
+	</RelativeLayout>
+    <LinearLayout
+        android:id="@+id/no_login_layout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="70dp" 
+	    android:orientation="horizontal"
+	     android:gravity="center_vertical"
+	   
+	    android:layout_marginLeft="20.0px"
+	    android:layout_marginRight="20.0px"
+	    >
+
+        <ImageView
+            android:id="@+id/no_log_img"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:background="@drawable/userimg" />
+
+	     <TextView
+	         android:id="@+id/no_log_text"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_gravity="center"
+	         android:paddingLeft="45.0sp"
+	         android:saveEnabled="true"
+	         android:textSize="16sp"
+	         android:text="点击登录" />
+
+	</LinearLayout>
+	
+    <View  
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/line"
+        />
+
+     <ScrollView
+	    android:layout_width="match_parent" 
+	    android:layout_height="0dp" 
+	    android:layout_weight="1.0"
+	   >
+	     
+         <!--hold all view in the scrollview-->
+	    <LinearLayout 
+	       
+	      	android:orientation="vertical" 
+	      	android:layout_width="fill_parent" 
+	      	android:layout_height="wrap_content" 
+	      	android:isScrollContainer="true">
+	      	
+	      	<View  
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line"
+       
+        />
+      	<!--user information bar -->
+	    <LinearLayout 
+	            android:id="@+id/history_lay" 
+			    android:gravity="center_vertical" 
+			    android:orientation="horizontal" 
+			    android:layout_width="fill_parent" 
+			    android:layout_height="50.0dip"
+			 
+			    android:background="#ffffffff">		    
+		        <ImageView 
+		            android:id="@+id/history_img" 
+			        android:layout_width="30dp" 
+			        android:layout_height="30dp" 
+			        android:layout_marginLeft="15dip" 
+			        android:src="@drawable/history240" />		        
+		        <TextView 
+			        android:textSize="18.0sp" 
+			        android:textColor="#ff545454" 
+			        android:layout_width="0dp" 
+			        android:layout_height="wrap_content" 
+			        android:layout_marginLeft="10.0dip" 
+			        android:text="历史" 
+			        android:layout_weight="1.0" />		        
+		        <ImageView 
+			        android:layout_width="12.0dip" 
+			        android:layout_height="12.0dip" 
+			        android:layout_marginRight="10.0dip" 
+			        android:src="@drawable/into_icon" />		        
+		    </LinearLayout>
+		    <View  
+		        android:layout_width="match_parent"
+		        android:layout_height="1dp"
+		        android:background="@color/line"
+		        />
+	    
+		    <!--notifition bar  -->
+		    <LinearLayout 
+		        android:id="@+id/notice_lay" 
+			    android:gravity="center_vertical" 
+			    android:orientation="horizontal" 
+			    android:layout_width="fill_parent" 
+			    android:layout_height="50.0dip"
+			  
+			    android:background="#ffffffff">		    
+		        <ImageView 
+		            android:id="@+id/notice_img" 
+			        android:layout_width="30dp" 
+			        android:layout_height="30dp" 
+			        android:layout_marginLeft="15dip" 
+			        android:src="@drawable/note240" />		        
+		        <TextView 
+			        android:textSize="18.0sp" 
+			        android:textColor="#ff545454" 
+			        android:layout_width="0dp" 
+			        android:layout_height="wrap_content" 
+			        android:layout_marginLeft="10.0dip" 
+			        android:text="站内公告" 
+			        android:layout_weight="1.0" />		        
+		        <ImageView 
+			        android:layout_width="12.0dip" 
+			        android:layout_height="12.0dip" 
+			        android:layout_marginRight="10.0dip" 
+			        android:src="@drawable/into_icon" />		        
+		    </LinearLayout>
+		     <View  
+		        android:layout_width="match_parent"
+		        android:layout_height="1dp"
+		        android:background="@color/line"
+		        />
+		   <!-- help bar -->
+		    <LinearLayout 
+			    android:gravity="center_vertical" 
+			    android:orientation="horizontal" 
+			    android:id="@+id/help_lay" 
+			    android:layout_width="fill_parent" 
+			    android:layout_height="50.0dip"
+			    android:background="#ffffffff">
+		    
+		        <ImageView 
+		            android:id="@+id/help_img" 
+			        android:layout_width="30dp" 
+			        android:layout_height="30dp" 
+			        android:layout_marginLeft="15dip" 
+			        android:src="@drawable/help240" />		 
+		        
+		        <TextView 
+		        android:textSize="18.0sp" 
+		        android:textColor="#ff545454" 
+		        android:layout_width="0dp" 
+		        android:layout_height="wrap_content" 
+		        android:layout_marginLeft="10.0dip" 
+		        android:text="帮助" 
+		        android:layout_weight="1.0" />
+		        
+		        <ImageView 
+		        android:layout_width="12.0dip" 
+		        android:layout_height="12.0dip" 
+		        android:layout_marginRight="10.0dip" 
+		        android:src="@drawable/into_icon" />
+		        
+		    </LinearLayout>
+		     <View  
+		        android:layout_width="match_parent"
+		        android:layout_height="1dp"
+		        android:background="@color/line"
+		        />
+	    </LinearLayout>
+   </ScrollView>
+    
+      
+     
+    
+    
+
+</LinearLayout>
