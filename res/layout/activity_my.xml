@@ -44,6 +44,7 @@
                     android:layout_width="fill_parent" 
                     android:layout_height="wrap_content" 
                     android:background="#FFFFFFFF"
+                    android:inputType="none"
                     />     
 	     		</LinearLayout>
 	     	
@@ -61,8 +62,8 @@
 			        android:layout_height="wrap_content" 
 			        android:layout_marginLeft="15dip" 
 			        android:text="性别"
-			         android:textSize="18.0sp" 
-			         android:textColor="@color/text"
+			        android:textSize="18.0sp" 
+			        android:textColor="@color/text"
 			         />		        
 		        <EditText 
 		            android:id="@+id/my_sex"

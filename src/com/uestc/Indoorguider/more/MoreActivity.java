@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.uestc.Indoorguider.IndoorGuiderApplication;
 import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.history.HistoryActivity;
 import com.uestc.Indoorguider.login.LoginActivity;
@@ -125,7 +126,7 @@ public class MoreActivity extends Activity implements OnClickListener{
 		}
 		
 		//for test**************************
-		if(!mPrefrences.getBoolean("HaveLogin", false))
+		if(!IndoorGuiderApplication.getInstance().getAlreadyLogin())
 		{
 			Toast.makeText(this, "ÇëÏÈµÇÂ¼£¡", Toast.LENGTH_SHORT).show();
 			//Ìø×ªµ½µÇÂ¼Ò³Ãæ

@@ -42,7 +42,7 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 				  {
 				    //ÍË³ö³É¹¦
 				    case Constant.LOGOUT_SUCCESS:
-				    	editor.putBoolean("HaveLogin",false);
+				    	IndoorGuiderApplication.getInstance().saveAlreadyLogin(false);
 				    	Intent i = new Intent(this,MoreActivity.class);
 				    	startActivity(i);
 				    	this.finish();

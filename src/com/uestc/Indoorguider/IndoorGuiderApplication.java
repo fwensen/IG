@@ -37,10 +37,8 @@ public class IndoorGuiderApplication extends Application {
 		super.onCreate();
 		instance = this;
 		IGManager = new IndoorGuiderManager(this);
-<<<<<<< HEAD
-		
-		 sitesNameEnAndChinese = Constant.sitesAndChineseMap();   
-	       inputStream = this.getResources().openRawResource(R.raw.site);	       
+		sitesNameEnAndChinese = Constant.sitesAndChineseMap();   
+	    inputStream = this.getResources().openRawResource(R.raw.site);	       
 	       try {
 			sitesApplication = getSites(inputStream);
 			//for test***************
@@ -51,9 +49,7 @@ public class IndoorGuiderApplication extends Application {
 	       } catch (IOException e) {
 			e.printStackTrace();
 	       }    
-=======
-		IGHelper = new IndoorGuiderHelper();
->>>>>>> refs/remotes/zhouchacha/master
+
 	}
 
 	public static IndoorGuiderApplication getInstance() {
