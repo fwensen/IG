@@ -407,7 +407,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
         	}
             
          }
-        // when click the back key twice *****************
+        // when click the back key twice 
         if(keyCode == KeyEvent.KEYCODE_BACK && 
         		event.getAction() == KeyEvent.ACTION_DOWN){   
             if((System.currentTimeMillis()-exitTime) > 2000){  
