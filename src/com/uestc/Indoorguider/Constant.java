@@ -23,7 +23,7 @@ public class Constant {
 	
 	//默认情况下的ip和point
 	public static final String ip="121.49.97.136";
-	public static final int port  = 40001;
+	public static final int  port  = 40001;
 	//Main
 	public static final int INDOOR = 2;
 	public static final int OUTDOOR = 1;
@@ -37,8 +37,7 @@ public class Constant {
 	//注册
 	public static final int REGISTER_REQUEST_TEL       	= 0;
 	public static final int REGISTER_REQUEST_NAME      	= 1;
-// public static final int REGISTER_REQUEST_VALIDATE  	= 10;
-	
+//  public static final int REGISTER_REQUEST_VALIDATE  	= 10;
 //	public static final int REGISTER_RESPONSE         	= 11;
 //	public static final int REGISTER_RESPONSE_VALIDATE 	= 110;
 	public static final int REGISTER_SUCCESS           	= 500;

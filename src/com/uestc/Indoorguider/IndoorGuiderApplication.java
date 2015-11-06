@@ -37,6 +37,7 @@ public class IndoorGuiderApplication extends Application {
 		super.onCreate();
 		instance = this;
 		IGManager = new IndoorGuiderManager(this);
+		IGHelper = new IndoorGuiderHelper();
 		sitesNameEnAndChinese = Constant.sitesAndChineseMap();   
 	    inputStream = this.getResources().openRawResource(R.raw.site);	       
 	       try {

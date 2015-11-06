@@ -10,29 +10,36 @@ import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.R.id;
 import com.uestc.Indoorguider.R.layout;
+import com.uestc.Indoorguider.login.LoginActivity;
 import com.uestc.Indoorguider.util.ConnectTool;
 import com.uestc.Indoorguider.util.SendToServerThread;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnCancelListener;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MyActivity extends APPActivity implements OnTouchListener {
 	SharedPreferences mPrefrences;
 	SharedPreferences.Editor editor ;
 	private ImageView back_icon;
+	 ProgressDialog pd;
 	@Override
 	protected void handleResult(JSONObject obj) {
 		// TODO Auto-generated method stub
@@ -43,6 +50,7 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 				    //退出成功
 				    case Constant.LOGOUT_SUCCESS:
 				    	IndoorGuiderApplication.getInstance().saveAlreadyLogin(false);
+				    	pd.dismiss();
 				    	Intent i = new Intent(this,MoreActivity.class);
 				    	startActivity(i);
 				    	this.finish();
@@ -57,6 +65,7 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 	public void onCreate(Bundle savedInstanceState)
 	{ 
 		super.onCreate(savedInstanceState);
+		IndoorGuiderManager IGManager = IndoorGuiderManager.getInstance();
 		setContentView(R.layout.activity_my);
 		TextView title = (TextView) findViewById(R.id.title_text);
 		title.setText("个人信息");
@@ -78,8 +87,9 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 		email.setOnTouchListener(this);
 		
 		EditText userName = (EditText) findViewById(R.id.my_username);
+		userName.setInputType(InputType.TYPE_NULL);
 		userName.setOnTouchListener(this);
-		userName.setText(mPrefrences.getString("UserName", ""));
+		userName.setText(IGManager.getUsername());
 		
 		LinearLayout password = (LinearLayout) findViewById(R.id.my_password);
 		password.setOnTouchListener(this);
@@ -94,7 +104,12 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 			case R.id.my_username:
 				break;
 			case R.id.logout_lay:
+				 //登出
 				IndoorGuiderApplication.getInstance().logout();
+		        pd = new ProgressDialog(MyActivity.this);
+				pd.setCanceledOnTouchOutside(false);
+				pd.setMessage(getString(R.string.is_outing));
+				pd.show();
 				break;
 			case R.id.my_sex:
 				break;
@@ -103,7 +118,6 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 			case R.id.my_email:
 				break;
 			case R.id.my_password:
-				
 				break;
             case R.id.back_icon:
             	Intent i = new Intent(this, MoreActivity.class);

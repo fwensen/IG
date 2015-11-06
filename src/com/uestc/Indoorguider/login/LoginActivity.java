@@ -1,29 +1,18 @@
 package com.uestc.Indoorguider.login;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.uestc.Indoorguider.APPActivity;
 import com.uestc.Indoorguider.Constant;
 import com.uestc.Indoorguider.IndoorGuiderApplication;
-import com.uestc.Indoorguider.IndoorGuiderHelper;
-import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.more.MoreActivity;
-import com.uestc.Indoorguider.util.ClientAgent;
-import com.uestc.Indoorguider.util.ConnectTool;
-import com.uestc.Indoorguider.util.SendToServerThread;
-
-
-import android.app.Activity;
 import android.app.Dialog;
-
-import android.content.Context;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiManager;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,6 +39,8 @@ public class LoginActivity extends APPActivity
 	 EditText loginPw;
 	 TextView registertText,title;
 	 Button LoginBut;
+	 boolean progressShow ;
+	 ProgressDialog pd;
 	 protected void handleResult(JSONObject obj)
 	 {
 		  try {
@@ -70,6 +61,7 @@ public class LoginActivity extends APPActivity
 				    	 IndoorGuiderApplication.getInstance().setPassword(userpw);
 							
 				     }
+				     pd.dismiss();
 				     IndoorGuiderApplication.getInstance().saveAlreadyLogin(true);
 			    	 Intent intent=new Intent(LoginActivity.this,MoreActivity.class);
 			    	 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);  
@@ -81,15 +73,17 @@ public class LoginActivity extends APPActivity
 			    //密码错误
 			    case Constant.LOGIN_ERROR_PS:
 			    	//获取消息中的数据
-			    	String hint ="密码错误！";
-				    Toast.makeText(LoginActivity.this, hint, Toast.LENGTH_LONG).show();
+			    	 pd.dismiss();
+			    	 String hint ="密码错误！";
+				     Toast.makeText(LoginActivity.this, hint, Toast.LENGTH_LONG).show();
 			    break;
 			    
 			    //用户名未注册
 			    case Constant.LOGIN_ERROR_NO:
 			    	//获取消息中的数据
-			    	String hint1 = "用户名不存在！";
-				    Toast.makeText(LoginActivity.this, hint1, Toast.LENGTH_LONG).show();
+			    	 pd.dismiss();
+			    	 String hint1 = "用户名不存在！";
+				     Toast.makeText(LoginActivity.this, hint1, Toast.LENGTH_LONG).show();
 			    break;
 			    
 			  }
@@ -165,7 +159,19 @@ public class LoginActivity extends APPActivity
 						  }
 						   
 						 //登陆
-						   IndoorGuiderApplication.getInstance().login(username,userpw);
+						  progressShow = true;
+						  pd = new ProgressDialog(LoginActivity.this);
+						  pd.setCanceledOnTouchOutside(false);
+						  pd.setOnCancelListener(new OnCancelListener() {
+
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								progressShow = false;
+							}
+						  });
+						  pd.setMessage(getString(R.string.is_landing));
+						  pd.show();
+						  IndoorGuiderApplication.getInstance().login(username,userpw);
 						 
 				    }	
 		       }        	

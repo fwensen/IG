@@ -379,11 +379,6 @@ public class MapActivity extends APPActivity implements OnClickListener{
 				//获取终点位置，请求路径
 				srcLocation[0] = homeToMapX(locationNow[0]);
 			    srcLocation[1] = homeToMapY(locationNow[1]);
-				//requestPath(srcLocation,destLocation);	
-			    srcLocation[0] = 449;
-			    srcLocation[1] = 1687;
-			    destLocation[0] = 449;
-			    destLocation[1]= 2085;
 			    requestPath(srcLocation,destLocation);
 				return;			
 		}

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uestc.Indoorguider.IndoorGuiderApplication;
+import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.history.HistoryActivity;
 import com.uestc.Indoorguider.login.LoginActivity;
@@ -36,6 +37,7 @@ public class MoreActivity extends Activity implements OnClickListener{
 	private TextView setIP;
 	public static String userName;
 	public static String userImg;
+	private IndoorGuiderManager IGManager;
 	SharedPreferences mPrefrences;
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -45,7 +47,7 @@ public class MoreActivity extends Activity implements OnClickListener{
 		TextView title = (TextView) findViewById(R.id.title_text);
 		title.setText("∏¸∂‡");
 		mPrefrences = PreferenceManager.getDefaultSharedPreferences(this);
-		
+		IGManager = IndoorGuiderManager.getInstance();
 		layout_have_login = (RelativeLayout) findViewById(R.id.have_login_layout);
 		layout_no_login = (LinearLayout) findViewById(R.id.no_login_layout);
 		layout_no_login.setOnClickListener(this);
@@ -154,16 +156,16 @@ public class MoreActivity extends Activity implements OnClickListener{
 	
    private void  initLoginBar()
    {
-	   if(mPrefrences.getBoolean("HaveLogin", false))
+	   if(IGManager.getAlreadyLogin())
 		{
 			layout_have_login.setVisibility(View.VISIBLE);
 			layout_no_login.setVisibility(View.GONE);
 			TextView name = (TextView) findViewById(R.id.login_username);
-			userName = mPrefrences.getString("UserName", "√…√Êœ¿");
+			userName = IGManager.getUsername();
 			name.setText(userName);
-			//userImg  = 
 			TextView score = (TextView) findViewById(R.id.login_score);
-			score.setText(mPrefrences.getString("Score", "0"));
+//			int s = IGManager.getScore();
+//			score.setText(0);
 		}
 		else
 		{

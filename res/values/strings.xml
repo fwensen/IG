@@ -23,7 +23,9 @@
     <string name="m_haveBuy">若已购票，请打勾</string>
     
     <string name="loginbs">用户登录</string>
-     <string name="registerbs">用户注册</string>
+    <string name="is_landing">登录中...</string>
+    <string name="is_outing">正在登出...</string>
+    <string name="registerbs">用户注册</string>
     
     <string name="user_name">用户名</string>
     <string name="password">密    码</string>

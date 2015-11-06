@@ -17,6 +17,7 @@ public class IndoorGuiderManager extends IndoorGuiderManagerModel {
 	 private static final String PREF_USERNAME = "username";
 	 private static final String PREF_PWD = "pwd";
 	 private static final String PREF_ALREADY_LOGIN = "already_login";
+	 private static final String  PREF_SCORE = "user_score";
 	 private Context context = null;
 	 private static IndoorGuiderManager me ;
 	 public IndoorGuiderManager(Context context){
@@ -55,6 +56,20 @@ public class IndoorGuiderManager extends IndoorGuiderManagerModel {
 		// TODO Auto-generated method stub
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.edit().putString(PREF_PWD, password).commit();
+	}
+	
+	 @Override
+	public boolean setScore(int score) {
+		// TODO Auto-generated method stub
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.edit().putInt(PREF_SCORE, score).commit();
+	
+	}
+	@Override
+	public int getScore() {
+		// TODO Auto-generated method stub
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getInt(PREF_SCORE, 0);
 	}
 	@Override
 	public boolean saveAlreadyLogin(boolean alreadyLogin) {
