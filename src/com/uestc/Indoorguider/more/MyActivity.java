@@ -45,6 +45,7 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 		// TODO Auto-generated method stub
 		
 			try {
+				pd.dismiss();
 				switch(obj.getInt("typecode"))
 				  {
 				    //ÍË³ö³É¹¦

@@ -26,29 +26,7 @@
 	  android:hint="密码"
   ></EditText>
   
-  <LinearLayout
-	  android:gravity="right"
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:orientation="horizontal"
-	  android:layout_marginTop="20dip">
-      >
-	  <TextView
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:layout_marginRight="4dp"
-		  android:text="@string/isrem"
-		  android:textSize="18dip" /> 
-	   
-	   <CheckBox
-	        android:id="@+id/auto_login_check"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:textOn=""
-		    android:textOff=""
-		    android:checked="true"
-		    />
-  </LinearLayout>
+  
   
   
    <Button
@@ -61,7 +39,7 @@
 	
 	  android:layout_marginLeft="10dp"
 	  android:layout_marginRight="10dp"
-	   android:layout_marginTop="20dp" ></Button>
+	   android:layout_marginTop="50dp" ></Button>
 
    <RelativeLayout
        android:layout_width="wrap_content"

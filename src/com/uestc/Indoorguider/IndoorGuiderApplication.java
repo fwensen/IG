@@ -112,6 +112,10 @@ public class IndoorGuiderApplication extends Application {
 		IGHelper.login(username, password);
 	}
 	
+	public void register(String username, String password) {
+		IGHelper.register(username, password);
+	}
+	
 	//从XML中解析出siteinfo
 		private ArrayList<SiteInfo> getSites(InputStream xml) throws XmlPullParserException, IOException {
 				

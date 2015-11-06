@@ -56,8 +56,7 @@ public class IndoorGuiderHelper extends IndoorGuiderHelperModel{
 		   if(ConnectTool.checkConnect(IndoorGuiderApplication.getInstance(),wifiManager))
 		   {
 			   JSONObject obj = new JSONObject();
-				
-				try {
+			   try {
 					obj.put("typecode",Constant.LOGIN_REQUEST_NAME);
 				    obj.put("username", username);
 					obj.put("password",password);
@@ -74,5 +73,30 @@ public class IndoorGuiderHelper extends IndoorGuiderHelperModel{
 				}	 	
 		   }
 	   }
+
+	@Override
+	public void register(String username, String password) {
+		// TODO Auto-generated method stub
+		WifiManager wifiManager = (WifiManager)IndoorGuiderApplication.getInstance().getSystemService(Context.WIFI_SERVICE);
+		if(ConnectTool.checkConnect(IndoorGuiderApplication.getInstance(), wifiManager)){
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put("typecode", Constant.REGISTER_REQUEST_NAME);
+			    obj.put("username", username);
+				obj.put("password",password);
+				Handler handler = SendToServerThread.getHandler();
+				if(handler!= null)
+				{
+					Message msg = handler.obtainMessage();
+					msg.obj = obj;
+					handler.sendMessage(msg);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	 		
+			
+		}
+	}
 
 }

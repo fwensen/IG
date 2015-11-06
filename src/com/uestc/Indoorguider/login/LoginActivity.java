@@ -34,7 +34,6 @@ public class LoginActivity extends APPActivity
 	 String did;//记录从SharedPreferences获取的记录的内容
 	 Bundle b;
 	 //需要使用的控件
-	 CheckBox autoLogin;
 	 EditText loginName;
 	 EditText loginPw;
 	 TextView registertText,title;
@@ -44,23 +43,13 @@ public class LoginActivity extends APPActivity
 	 protected void handleResult(JSONObject obj)
 	 {
 		  try {
-			switch(obj.getInt("typecode"))
+			  pd.dismiss();
+			  switch(obj.getInt("typecode"))
 			  {
 			    //登录成功
 			    case Constant.LOGIN_SUCCESS:
-			    	//是否自动登录
-				     if(autoLogin.isChecked())
-				       {
-				    	 IndoorGuiderApplication.getInstance().setUserName(username);
-				    	 IndoorGuiderApplication.getInstance().setPassword(userpw);
-								
-								
-				    	}
-				     else{
-				    	 IndoorGuiderApplication.getInstance().setUserName(username);
-				    	 IndoorGuiderApplication.getInstance().setPassword(userpw);
-							
-				     }
+				     IndoorGuiderApplication.getInstance().setUserName(username);
+				     IndoorGuiderApplication.getInstance().setPassword(userpw);
 				     pd.dismiss();
 				     IndoorGuiderApplication.getInstance().saveAlreadyLogin(true);
 			    	 Intent intent=new Intent(LoginActivity.this,MoreActivity.class);
@@ -120,7 +109,6 @@ public class LoginActivity extends APPActivity
 	        LoginBut=(Button)findViewById(R.id.ok);
 	        loginName=(EditText)this.findViewById(R.id.loginid);
 		    loginPw=(EditText) this.findViewById(R.id.loginpw);
-    	    autoLogin= (CheckBox) this.findViewById(R.id.auto_login_check);	
 			registertText = (TextView)findViewById(R.id.register);
 			registertText.setOnClickListener(
 					new OnClickListener()

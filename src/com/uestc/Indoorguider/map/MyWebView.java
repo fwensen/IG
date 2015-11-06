@@ -25,8 +25,6 @@ public class MyWebView extends WebView {
 	// 
 	public static float webviewX0;
 	public static float webviewY0;
-	
-	private final String TAG_BROAD = "TAG_BROAD";
 	public static int P = 5;
 	public static int offsetX = 282;
 	public static float offsetY = (float) 1667.12;

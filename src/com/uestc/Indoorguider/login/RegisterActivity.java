@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import com.uestc.Indoorguider.APPActivity;
 import com.uestc.Indoorguider.Constant;
+import com.uestc.Indoorguider.IndoorGuiderApplication;
 import com.uestc.Indoorguider.R;
 import com.uestc.Indoorguider.util.ConnectTool;
 import com.uestc.Indoorguider.util.SendToServerThread;
@@ -29,7 +30,6 @@ public class RegisterActivity extends APPActivity {
 	 * @param args
 	 */
     private EditText userName, userPw,userPwConfirm;
-    private ImageButton backBut ;
     private Button registerBut;
     private String userid;
     private String userpw;
@@ -69,8 +69,6 @@ public class RegisterActivity extends APPActivity {
 		userName = (EditText) findViewById(R.id.r_username);
 		userPw = (EditText) findViewById(R.id.r_pw);
 		userPwConfirm = (EditText) findViewById(R.id.r_confirm_ps);
-		backBut = (ImageButton) findViewById(R.id.back_icon);
-		
 		registerBut = (Button)findViewById(R.id.register);
 		registerBut.setOnClickListener(new OnClickListener()
 		{
@@ -106,35 +104,13 @@ public class RegisterActivity extends APPActivity {
 				  }
 				  
 				 //зЂВс
-				   register();
+				  IndoorGuiderApplication.getInstance().register(userid,userpw);
 			}
 			
 		});
 	}
 	 
-	public void register()
-	{
-		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		if(ConnectTool.checkConnect(this, wifiManager)){
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put("typecode", Constant.REGISTER_REQUEST_NAME);
-			    obj.put("username", userid);
-				obj.put("password",userpw);
-				Handler handler = SendToServerThread.getHandler();
-				if(handler!= null)
-				{
-					Message msg = handler.obtainMessage();
-					msg.obj = obj;
-					handler.sendMessage(msg);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	 		
-			
-		}
-	 }
+	
 	
     public void onClick(View v){
     	this.finish();
