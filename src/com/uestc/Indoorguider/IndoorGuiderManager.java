@@ -29,7 +29,7 @@ public class IndoorGuiderManager extends IndoorGuiderManagerModel {
 	 {
 		 return me;
 	 }
-	 
+	
 	 
 	 @Override
 	public boolean setUsername(String username) {

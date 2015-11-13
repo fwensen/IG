@@ -36,6 +36,7 @@ public class HistoryPathShow extends Activity implements
 	private static  WebView webView = null;
 	private static final String TAG = "pathshow"; 
 	private ImageButton backButton;
+	private String timePoint ;
 	TextView tvTitle;   //标题
 	//TextView prop_show; //显示进度
 	@SuppressLint("NewApi") @Override
@@ -256,6 +257,7 @@ public class HistoryPathShow extends Activity implements
 		endPos = points*4;
 		String currentPath = trimPath(mPath.substring(0, endPos));	
 		webView.loadUrl("javascript:drawPath('"+currentPath+"')");
+		timePoint = pthInSites.get(points).getTime();
 		description.setText(pthInSites.get(points).getTime());
 		//description.setText(pthInSites.get(points).getTime());
 		
@@ -271,6 +273,6 @@ public class HistoryPathShow extends Activity implements
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		// TODO Auto-generated method stub
-		description.setText("拖动查看路径");
+		description.setText(timePoint);
 	}
 }

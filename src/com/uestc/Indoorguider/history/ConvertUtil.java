@@ -130,7 +130,8 @@ public class ConvertUtil {
 				JSONObject node = (JSONObject) path.get(i);
 				int x = node.getInt("x");
 				int y = node.getInt("y");
-				int z = node.getInt("z");
+				//int z = node.getInt("z");
+				int z = 0;
 				//test*********
 				String time = node.getString("time");
 				pathItem.add(new Site(x,  y,  z, time));

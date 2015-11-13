@@ -22,7 +22,7 @@ public class Constant {
 	
 	
 	//默认情况下的ip和point
-	public static final String ip="121.49.97.136";
+	public static final String ip="222.197.180.140";
 	public static final int  port  = 40010;
 	//Main
 	public static final int INDOOR = 2;
@@ -107,20 +107,20 @@ public class Constant {
 	public static final int LOCATION_QR_ERROR        		= 1551;
 	
 	//历史记录************************
-		//查询
-		public static final int HISTORY_QUERY = 1060;
-		public static final int HISTORY_QR_SUCCESS = 1560; 
-		public static final int HISTORY_QR_FAIL = 1561;
-		
-		//删除所有
-		public static final int HISTORY_DELALL_REQUEST = 1070;
-		public static final int HISTORY_DELALL_RQ_SUCCESS = 1570;
-		public static final int HISTORY_DELALL_RQ_FAIL = 1571;
-		//删除特定条目
-		public static final int HISTORY_DELGIVEN_REQUEST = 1075;
-		public static final int HISTORY_DELGIVEN_RQ_SUCCESS = 1575;
-		public static final int HISTORY_DELGIVEN_RQ_FAIL = 1576;
-		//*****************************
+	//查询
+	public static final int HISTORY_QUERY = 1060;
+	public static final int HISTORY_QR_SUCCESS = 1560; 
+	public static final int HISTORY_QR_FAIL = 1561;
+	
+	//删除所有
+	public static final int HISTORY_DELALL_REQUEST = 1070;
+	public static final int HISTORY_DELALL_RQ_SUCCESS = 1570;
+	public static final int HISTORY_DELALL_RQ_FAIL = 1571;
+	//删除特定条目
+	public static final int HISTORY_DELGIVEN_REQUEST = 1075;
+	public static final int HISTORY_DELGIVEN_RQ_SUCCESS = 1575;
+	public static final int HISTORY_DELGIVEN_RQ_FAIL = 1576;
+	//*****************************
 	
 	//网络错误
 	public static final int NETWORK_EXCEPTION = 20000;

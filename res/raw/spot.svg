@@ -1573,9 +1573,7 @@ viewBox="0 0 2000 3000"
   <polygon class="fil2" points="331.49,2340.92 388.55,2340.92 388.55,2288.34 331.49,2288.34 "/>
  </g>
 
-
-
- <g id="公共厕所">
+ <g id="卫生间">
   <metadata id="CorelCorpID_10Corel-Layer"/>
   <g style="clip-path:url(#id204)">
    <polygon class="fil6" points="503.666,2266.5 554.404,2266.5 554.404,2317.23 503.666,2317.23 "/>
@@ -1829,7 +1827,7 @@ viewBox="0 0 2000 3000"
 	    node.setAttribute("fill","none");
 	    node.setAttribute("stroke","red");
             node.setAttribute("stroke-miterlimit","10");
-	    node.setAttribute("stroke-width","2.5");
+	    node.setAttribute("stroke-width","7");
 	    node.setAttribute("d",myPath);
 	    l3.appendChild(node);
 	}

@@ -936,7 +936,7 @@ viewBox="0 0 2000 3000"
   </g>
   <polygon class="fil2" points="1548.39,1447.45 1642.06,1447.45 1642.06,1351.92 1548.39,1351.92 "/>
  </g>
- <g id="候车处">
+ <g id="候车处" visibility="hidden">
   <metadata id="CorelCorpID_3Corel-Layer"/>
   <g style="clip-path:url(#id16)">
    <polygon class="fil6" points="301.485,2013.38 369.678,2013.38 369.678,2083.08 301.485,2083.08 "/>
@@ -966,7 +966,7 @@ viewBox="0 0 2000 3000"
   <polygon class="fil2" points="509.769,501.981 577.962,501.981 577.962,432.271 509.769,432.271 "/>
  </g>
 
- <g id="公交站台" >
+ <g id="公交站台" visibility="hidden">
   <metadata id="CorelCorpID_4Corel-Layer"/>
   <g style="clip-path:url(#id24)">
    <polygon class="fil6" points="312.364,1803.36 390.518,1803.36 390.518,1873.7 312.364,1873.7 "/>
@@ -1021,7 +1021,7 @@ viewBox="0 0 2000 3000"
   </g>
   <polygon class="fil2" points="1546.51,930.578 1648.08,930.578 1648.08,839.167 1546.51,839.167 "/>
  </g>
- <g id="出租车" >
+ <g id="出租车" visibility="hidden">
   <metadata id="CorelCorpID_5Corel-Layer"/>
   <g style="clip-path:url(#id40)">
    <polygon class="fil6" points="290.836,1713.41 427.908,1713.41 427.908,1785.8 290.836,1785.8 "/>
@@ -1050,7 +1050,7 @@ viewBox="0 0 2000 3000"
   </g>
   <polygon class="fil2" points="288.829,735.532 425.903,735.532 425.903,663.145 288.829,663.145 "/>
  </g>
- <g id="餐饮购物" >
+ <g id="餐饮购物" visibility="hidden">
   <metadata id="CorelCorpID_6Corel-Layer"/>
   <g style="clip-path:url(#id48)">
    <polygon class="fil6" points="347.222,2486.46 395.945,2486.46 395.945,2535.94 347.222,2535.94 "/>
@@ -1262,7 +1262,7 @@ viewBox="0 0 2000 3000"
   <polygon class="fil2" points="1561.71,2583.65 1603.53,2583.65 1603.53,2541.17 1561.71,2541.17 "/>
  </g>
 
- <g id="旅客服务">
+ <g id="旅客服务" visibility="hidden">
   <metadata id="CorelCorpID_7Corel-Layer"/>
   <g style="clip-path:url(#id112)">
    <polygon class="fil6" points="507.381,2129.78 551.798,2129.78 551.798,2181.92 507.381,2181.92 "/>
@@ -1517,7 +1517,7 @@ viewBox="0 0 2000 3000"
   <polygon class="fil2" points="1545.06,493.901 1632.08,493.901 1632.08,412.088 1545.06,412.088 "/>
  </g>
 
- <g id="停车场" >
+ <g id="停车场" visibility="hidden">
   <metadata id="CorelCorpID_9Corel-Layer"/>
   <g style="clip-path:url(#id188)">
    <polygon class="fil6" points="803.749,2625.78 901.285,2625.78 901.285,2715.67 803.749,2715.67 "/>
@@ -1829,7 +1829,7 @@ viewBox="0 0 2000 3000"
 	    node.setAttribute("fill","none");
 	    node.setAttribute("stroke","red");
             node.setAttribute("stroke-miterlimit","10");
-	    node.setAttribute("stroke-width","2.5");
+	    node.setAttribute("stroke-width","7");
 	    node.setAttribute("d",myPath);
 	    l3.appendChild(node);
 	}

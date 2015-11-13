@@ -96,11 +96,11 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	File tfile,mypath;
 	String TAG ="scale";
 	public final static int REQUEST_MYLOCATION = 0;
-	public final static int REQUEST_NEAR = 1;
+	public final static int REQUEST_SITE_NEAR = 1;
 	public final static int RESULT_MYLOCATION = 10;
 
 	public static int windowHeight ,windowWidth;
-	private float[] locationOld = {854,7541,1};//历史x坐标
+	private float[] locationOld = {854,7541,1};//unit :px
 	private float[] locationNow = {20000,20000,1};//最新x坐标
 	
 	double angle = 0;//行人方位，由传感器获取更新
@@ -169,8 +169,9 @@ public class MapActivity extends APPActivity implements OnClickListener{
         more.setOnClickListener(this);
         ticket =  (LinearLayout) findViewById(R.id.ticket);
         ticket.setOnClickListener(this) ;
-
-       
+        ImageView siteCancle = (ImageView) findViewById(R.id.site_cancel);
+        siteCancle.setOnClickListener(this);
+        
         //获取位置XML文件****************
         /*
         Log.v("xml", "0: "+sites.get(0).getX());
@@ -349,38 +350,52 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		// TODO Auto-generated method stub
 		Intent i;
 		switch(v.getId()){
-			case R.id.myLocation:
-				//scan two-dimension code to get location
-				i = new Intent(MapActivity.this,CaptureActivity.class);
-	            startActivityForResult(i, REQUEST_MYLOCATION);
-	            return;
-			case R.id.near:
-				i = new Intent(MapActivity.this,SiteActivity.class);
-	            startActivityForResult(i, REQUEST_NEAR);
-	            return;
-			case R.id.ticket:
-				String s = "售票处";
-				String v1 = "visible";
-				webView.loadUrl("javascript:setVisibility('"+s+"','"+v1+"')");
-				return;
-			case R.id.more:
-				i = new Intent(MapActivity.this,MoreActivity.class);
-	            startActivity(i);
-				return;	
-			case R.id.facility_go:
-				//操作间隔
-				long dur  = System.currentTimeMillis()-facility_go_time;
-				if((System.currentTimeMillis()-facility_go_time) < 3000)
-				{
-					Toast.makeText(this, "正在努力为您安排路线，请稍等！", Toast.LENGTH_SHORT).show();
-					break;
-				}
-				facility_go_time = System.currentTimeMillis();
-				//获取终点位置，请求路径
-				srcLocation[0] = homeToMapX(locationNow[0]);
-			    srcLocation[1] = homeToMapY(locationNow[1]);
-			    requestPath(srcLocation,destLocation);
-				return;			
+		case R.id.site_cancel:
+			//隐藏站点提示
+			RelativeLayout siteLayout =(RelativeLayout)findViewById(R.id.siteInf);
+            siteLayout.setVisibility(View.GONE);
+            MyWebView.typeFlag = false;
+            //恢复正常地图图层
+            TextView siteText = (TextView) findViewById(R.id.siteText);
+            String siteName = siteText.getText().toString();
+            String visibility = "hidden";
+            webView.loadUrl("javascript:setVisibility('"+siteName+"','"+visibility+"')");	
+            MyWebView.getInstance().showBaseLayer();
+            MyWebView.getInstance().showMapLayer();
+			break;
+		case R.id.myLocation:
+			//scan two-dimension code to get location
+			i = new Intent(MapActivity.this,CaptureActivity.class);
+            startActivityForResult(i, REQUEST_MYLOCATION);
+            return;
+		case R.id.near:
+			i = new Intent(MapActivity.this,SiteActivity.class);
+            startActivityForResult(i, REQUEST_SITE_NEAR);
+            return;
+		case R.id.ticket:
+			String s = "售票处";
+			String v1 = "visible";
+			webView.loadUrl("javascript:setVisibility('"+s+"','"+v1+"')");
+			return;
+		case R.id.more:
+			i = new Intent(MapActivity.this,MoreActivity.class);
+            startActivity(i);
+			return;	
+		case R.id.facility_go:
+			//操作间隔
+			long dur  = System.currentTimeMillis()-facility_go_time;
+			if((System.currentTimeMillis()-facility_go_time) < 3000)
+			{
+				Toast.makeText(this, "正在努力为您安排路线，请稍等！", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			facility_go_time = System.currentTimeMillis();
+			//获取终点位置，请求路径
+			srcLocation[0] = homeToMapX(locationNow[0]);
+		    srcLocation[1] = homeToMapY(locationNow[1]);
+		    srcLocation[2] = 1;
+		    requestPath(srcLocation,destLocation);
+			return;			
 		}
 		
 	}
@@ -425,20 +440,23 @@ public class MapActivity extends APPActivity implements OnClickListener{
     {  
 		if(data!= null)
        {
-	        if (requestCode== REQUEST_NEAR)  
+	        if (requestCode== REQUEST_SITE_NEAR)  
 	        {  
 	            if (resultCode==SiteActivity.RESULT_CODE)  
 	            {  
 	                Bundle bundle=data.getExtras();  
-	                String str = bundle.getString("siteName");  
+	                String sitename = bundle.getString("sitename");  
 	                TextView siteText = (TextView) findViewById(R.id.siteText);
-	                siteText.setText(str);
+	                siteText.setText(sitename);
 	                RelativeLayout siteLayout =(RelativeLayout)findViewById(R.id.siteInf);
 	                siteLayout.setVisibility(View.VISIBLE);
-	              //调用javascript中的方法
-	                    String name = "L_wc";
-	            	    String v =" visible";
-	            		webView.loadUrl("javascript:setVisibility()");	       	     
+	                //隐藏其他类型的站点
+	                MyWebView.getInstance().hiddenAll();
+            	    String visibility =" visible";
+            	    //显示制定类型
+            	    MyWebView.typeFlag = true; 
+            		webView.loadUrl("javascript:setVisibility('"+sitename+"','"+visibility+"')");
+            	  
 	            }  
 	        }
 	        else if(requestCode== REQUEST_MYLOCATION)
@@ -491,7 +509,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		} 		
 	}
 	
-	  //实际坐标到地图坐标
+   //实际坐标到地图坐标
    public int homeToMapX(float home)
    {
 	   int map = (int) (home/MyWebView.P+MyWebView.offsetX);
@@ -591,12 +609,12 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		return Math.sqrt( Math.pow(k[0] - sites[m][0],  2)  + 
 									   Math.pow(k[1] - sites[m][1],  2));		
    }
-	
    /**显示导引路线*/
    private void showRoute(JSONObject obj) throws JSONException{
-
-	   main_bar.setVisibility(View.VISIBLE);
-	   facility_infor.setVisibility(View.GONE);
+	   
+   
+	    main_bar.setVisibility(View.VISIBLE);
+	    facility_infor.setVisibility(View.GONE);
 		JSONArray pathArray = obj.getJSONArray("path");
 		String path = "M";
 		JSONObject node = new  JSONObject();
@@ -604,7 +622,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		// for kdtree
 		sites = new double[pathArray.length()][2];
 		Log.v("test", "in response!");
-		for(; i<pathArray.length()-1; i++)
+		for(; i<pathArray.length(); i++)
 		{
 			node = (JSONObject) pathArray.get(i);
 			path = path + node.getInt("x")+" "+node.getInt("y")+"L";
@@ -614,9 +632,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			Log.v("test", "site[0]: " + sites[i][0]);
 			Log.v("test", "site[1]: " + sites[i][1]);
 		}
-		//最后一个节点
+		//最后一个节点（目的地坐标）
+		path = path + destLocation[0]+" "+destLocation[1];
+		--i;
 		node = (JSONObject) pathArray.get(i);
-		path = path + node.getInt("x")+" "+node.getInt("y");
 		//init last site
 		sites[i][0] = node.getInt("x");
 		sites[i][1] = node.getInt("y");
@@ -634,7 +653,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			}
 		//调用javascript中的方法画出路线
 		isGuided = true;     //guided!
-       webView.loadUrl("javascript:drawPath('"+path+"')");
+        webView.loadUrl("javascript:drawPath('"+path+"')");
 	   
    }
    /**
@@ -656,7 +675,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		Log.v("test", "y: " + locationNow[1]);
 		Log.v("test", "destination x: "+ destLocation[0]);
 		Log.v("test", "destination y: "+ destLocation[1]);
-		if((Math.pow(locationOld[0]-locationNow[0],2)+Math.pow(locationOld[1]-locationNow[1],2))>Math.pow(10,2))//1m=20px
+		if((Math.pow(locationOld[0]-locationNow[0],2)+Math.pow(locationOld[1]-locationNow[1],2))>Math.pow(2,2))//1m=20px
 		{
 			//webView.loadUrl("javascript:drawcircle('"+x+"','"+y+"')");
 			//放入 角度，位置xy

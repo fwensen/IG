@@ -10,6 +10,7 @@ import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.wifi.ScanWifiThread;
 
 public class ConnectTool {
+	static int count ;
 	
 	public static void startConnectThreads(Context context,WifiManager wifiManager)
 	{
@@ -21,6 +22,13 @@ public class ConnectTool {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	    
+	    while(!ClientAgent.flag)
+	    {
+	    	count++;
+	    	//等待连接完成
+	    }
+			
 	    
 	    //发送线程
         Thread threadSend = new SendToServerThread();

@@ -46,7 +46,7 @@ public class SiteActivity extends Activity implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.site_activity);
+		setContentView(R.layout.activity_sites);
 		TextView title = (TextView) findViewById(R.id.title_text);
 		title.setText("站内服务");
 		layout_site_row1 = (LinearLayout) findViewById(R.id.site_row1);
@@ -155,40 +155,43 @@ public class SiteActivity extends Activity implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Intent i ;
+		Intent i = new Intent(SiteActivity.this,MapActivity.class);
+		String siteName  = "";
 		switch(v.getId())
 		{
 			case 11:
-				
-			i = new Intent(SiteActivity.this,MapActivity.class);
-			startActivity(i);
-			this.finish();
+			    siteName = "售票处";
 				break;
 			case 12:
+			    siteName = "候车处";
 				break;
 			case 13:
+				siteName = "卫生间";
 				break;
 			case 21:
+				siteName = "出租车";
 				break;
 			case 22:
+				siteName = "公交车";
 				break;
 			case 23:
+				siteName = "停车场";
 				break;
 			case 31:
+				siteName = "出口";
 				break;
 			case 32:
 				//餐饮购物
-				i = new Intent(SiteActivity.this,SiteItemActivity.class);
-				startActivity(i);
+				siteName = "餐饮购物";
 				break;
 			case 33:
 				//旅客服务
-				i = new Intent(SiteActivity.this,SiteItemActivity.class);
-				startActivity(i);
+				siteName = "旅客服务";
 				break;
 		}
-		
-		
+		i.putExtra("sitename",siteName);
+		setResult(RESULT_CODE,i);
+		this.finish();
 	}
 
 	

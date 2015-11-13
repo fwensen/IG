@@ -47,7 +47,7 @@ public class  ClientAgent extends Thread
 	
 	public ClientAgent(Context context)
 	{
-		flag = true;
+	//	flag = true;
 //		this.mainHandler = MainActivity.msgHandler;
 ////		this.loginHandler = LoginActivity.msgHandler;
 ////		this.registerHandler = RegisterActivity.msgHandler;
@@ -75,6 +75,7 @@ public class  ClientAgent extends Thread
 				flag = false;
 				return;
 			}
+			flag = true;
 			br = new BufferedReader(new InputStreamReader(sc.getInputStream()));
 			dout =new DataOutputStream( sc.getOutputStream() );
 		} catch (SocketTimeoutException e) 
@@ -163,6 +164,7 @@ public class  ClientAgent extends Thread
 				{ 
 				    // int length =  obj.toString().length();
 				    //dout.writeBytes(length+obj.toString());
+					Log.i("send to server", "--->" + obj.getInt("typecode"));  
 					dout.writeUTF(obj.toString());
 					dout.flush();
 					System.out.println("send!");

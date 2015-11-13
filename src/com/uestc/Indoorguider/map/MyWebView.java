@@ -28,16 +28,22 @@ public class MyWebView extends WebView {
 	public static int P = 5;
 	public static int offsetX = 282;
 	public static float offsetY = (float) 1667.12;
-	static float scale;
 	private boolean scaleFlag1  = false;
 	private boolean scaleFlag2  = false;
+	public float scale;
+	public static boolean typeFlag;//表示是否当前在筛选模式,true-用户缩放不改变当前地图显示站点类别
 	float xd,xu; 
 	float yd,yu;
 	float OldX1,OldX2,OldY1,OldY2,NewX1,NewX2,NewY1,NewY2;
 	static Handler h ;
+	private static MyWebView myWebView;
 	public MyWebView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		myWebView= this;
 		// TODO Auto-generated constructor stub
+	}
+	public static MyWebView getInstance(){
+		return myWebView;
 	}
 	
 //	@Override
@@ -99,52 +105,80 @@ public class MyWebView extends WebView {
 		 		
 		 	}
 		 
-           super.onTouchEvent(event);
-         scale = getScale();
-       	//地图被放大到一定程度，显示细节
-       	if(scale>0.4 && scaleFlag1 == false)
-       	{
-       		String[] sites = {"候车处","餐饮购物","停车场"};
-       		String v1 = "visible";
-       		for(String site:sites)
-				{
-					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-				}
-       		scaleFlag1  = true;
-       	}
-       	if(scale>0.8 && scaleFlag2 == false)
-       	{
-       		String[] sites = {"旅客服务","公交站台","出租车"};
-       		String v1 = "visible";
-       		for(String site:sites)
-				{
-					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-				}
-       		scaleFlag2  = true;
-       	}
-       	else if(scale<0.8 && scaleFlag2 == true){
-       		String[] sites = {"旅客服务","公交站","出租车"};
-       		String v1 = "hidden";
-       		for(String site:sites)
-				{
-					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-				}
-       		scaleFlag2  = false;
-       	}
-       	else if(scale<0.4 && scaleFlag1 == true){
-       		String[] sites = {"候车处","餐饮购物","停车场"};
-       		String v1 = "hidden";
-       		for(String site:sites)
-				{
-					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-				}
-       		scaleFlag1  = false;
-       	}
-           
-           return super.onTouchEvent(event);
+         super.onTouchEvent(event);
+         showMapLayer();
+         return super.onTouchEvent(event);
 
     }   
  
+ 
+        public void showMapLayer(){
+        	if(!typeFlag){
+        		scale = getScale();
+            	//地图被放大到一定程度，显示细节
+               	if(scale>0.4 && scaleFlag1 == false)
+               	{
+               		String[] sites = {"候车处","餐饮购物","停车场"};
+               		String v1 = "visible";
+               		for(String site:sites)
+        				{
+        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+        				}
+               		scaleFlag1  = true;
+               	}
+               	if(scale>0.8 && scaleFlag2 == false)
+               	{
+               		String[] sites = {"旅客服务","公交站台","出租车"};
+               		String v1 = "visible";
+               		for(String site:sites)
+        				{
+        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+        				}
+               		scaleFlag2  = true;
+               	}
+               	else if(scale<0.8 && scaleFlag2 == true){
+               		String[] sites = {"旅客服务","公交站","出租车"};
+               		String v1 = "hidden";
+               		for(String site:sites)
+        				{
+        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+        				}
+               		scaleFlag2  = false;
+               	}
+               	else if(scale<0.4 && scaleFlag1 == true){
+               		String[] sites = {"候车处","餐饮购物","停车场"};
+               		String v1 = "hidden";
+               		for(String site:sites)
+        				{
+        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+        				}
+               		scaleFlag1  = false;
+               	}
+        		
+        	}
+            
+        }
+        
+        public void showBaseLayer(){
+        	String[] sites = {"售票处","出口","卫生间"};
+       		String v1 = "visible";
+       		for(String site:sites)
+				{
+					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+				}
+        	
+        }
+        
+        public void hiddenAll()
+        {
+        	String[] sites = {"售票处","候车处","卫生间","出租车","公交站","餐饮购物","停车场","旅客服务","出口"};
+       		String v1 = "hidden";
+       		for(String site:sites)
+				{
+					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+				}
+        	
+        }
  
     //向MainActivity发送站点简介
 		private static void sendHandlerMsg(Handler h, float[] destLocation)
