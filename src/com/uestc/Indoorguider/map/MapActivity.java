@@ -150,6 +150,9 @@ public class MapActivity extends APPActivity implements OnClickListener{
         setContentView(R.layout.main);
         initSensors();// 初始化传感器和位置服务
         //开启服务
+        //  test
+       
+        
 	    Intent intent = new Intent();
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
 	    startService(intent);

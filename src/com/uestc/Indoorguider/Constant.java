@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.jdom.Content;
 
+import com.uestc.Indoorguider.util.ClientAgent;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -22,8 +24,8 @@ public class Constant {
 	
 	
 	//默认情况下的ip和point
-	public static final String ip="121.49.97.136";
-	public static final int port  = 40001;
+	public static final String ip="222.197.180.14";
+	public static final int port  = 40010;
 	//Main
 	public static final int INDOOR = 2;
 	public static final int OUTDOOR = 1;
@@ -173,7 +175,4 @@ public class Constant {
 		 sacMap.put("Restaurant", "餐厅");		 
 		 return sacMap;
 	 }
-	
-    
-	
 }

@@ -125,7 +125,7 @@ public class MoreActivity extends Activity implements OnClickListener{
 		}
 		
 		//for test**************************
-		if(!mPrefrences.getBoolean("HaveLogin", false))
+		if(mPrefrences.getBoolean("HaveLogin", false))
 		{
 			Toast.makeText(this, "请先登录！", Toast.LENGTH_SHORT).show();
 			//跳转到登录页面

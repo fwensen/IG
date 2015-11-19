@@ -29,7 +29,7 @@ public class MyDBHelper {
 	public final static String FIELD_pointid = "pointid";
 	public final static String FIELD_time = "time";
 	
-	private final static String DATABASE_NAME = "history.db3";
+	private final static String DATABASE_NAME = "history2.db3";
 
 	protected static final String HISTORY_TABLE_DDL ="CREATE TABLE IF NOT EXISTS " + HISTORY_TABLE + "("
 			+  FIELD_historyid + " INTEGER primary key autoincrement, "
@@ -58,6 +58,7 @@ public class MyDBHelper {
 		if (db == null) {
 			Log.v(TAG, "DB == null");
 			String sqliteFilePath =HISTORY_PATH+ DATABASE_NAME;
+			//String sqliteFilePath = DATABASE_NAME;
 			Log.v(TAG, HISTORY_PATH);
 			File dir = new File(HISTORY_PATH);
 		     if(!dir.exists()) {	  
