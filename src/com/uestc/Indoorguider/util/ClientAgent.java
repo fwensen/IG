@@ -38,7 +38,7 @@ public class  ClientAgent extends Thread
 	static DataInputStream din;//输入流
 	static DataOutputStream dout;//输出流
 	BufferedReader br ;
-	public static boolean flag ;//是否结束客服端线程
+	public static boolean flag ;
 	protected static Handler handlerNow;//当前activity的handler
 	public static int exType = 0 ;
 	private  JSONObject objIn;
@@ -47,12 +47,7 @@ public class  ClientAgent extends Thread
 	
 	public ClientAgent(Context context)
 	{
-	//	flag = true;
-//		this.mainHandler = MainActivity.msgHandler;
-////		this.loginHandler = LoginActivity.msgHandler;
-////		this.registerHandler = RegisterActivity.msgHandler;
-//		this.captureHandler = CaptureActivity.msgHandler;
-		
+		flag = true;
 	}
 	
 	public static void setHandler(Handler handler)
@@ -119,8 +114,6 @@ public class  ClientAgent extends Thread
 				getinfo = br.readLine();
 				while(getinfo != null)
 				{
-					System.out.println("rec!");
-					System.out.println(getinfo);
 					objIn = new JSONObject(getinfo);
 					Log.i("recv from server", "<---" + objIn);
 					if(handlerNow != null)
@@ -164,11 +157,13 @@ public class  ClientAgent extends Thread
 				{ 
 				    // int length =  obj.toString().length();
 				    //dout.writeBytes(length+obj.toString());
-					Log.i("send to server", "--->" + obj.getInt("typecode"));  
+					
 					dout.writeUTF(obj.toString());
 					dout.flush();
-					System.out.println("send!");
-					Log.i("send to server", "--->" + obj);  
+					if(obj.getInt("typecode") == 1010){
+						Log.i("send to server", "--->" + obj.getInt("typecode")+"\r\n"+obj);
+					}
+					
 				} 
 				catch (SocketException e) 
 				{			

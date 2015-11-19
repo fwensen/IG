@@ -101,6 +101,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
 
 	public static int windowHeight ,windowWidth;
 	private float[] locationOld = {854,7541,1};//unit :px
+	/**
+	 * 最新位置
+	 * 单位：px
+	 */
 	private float[] locationNow = {20000,20000,1};//最新x坐标
 	
 	double angle = 0;//行人方位，由传感器获取更新
@@ -678,7 +682,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		if((Math.pow(locationOld[0]-locationNow[0],2)+Math.pow(locationOld[1]-locationNow[1],2))>Math.pow(2,2))//1m=20px
 		{
 			//webView.loadUrl("javascript:drawcircle('"+x+"','"+y+"')");
-			//放入 角度，位置xy
+			//放入 角度，位置x,y
 			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+homeToMapX(locationOld[0])+"','"+homeToMapY(locationOld[1])+"')");
 		}
 		locationOld = locationNow;

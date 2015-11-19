@@ -10,32 +10,24 @@ import com.uestc.Indoorguider.IndoorGuiderManager;
 import com.uestc.Indoorguider.wifi.ScanWifiThread;
 
 public class ConnectTool {
-	static int count ;
-	
+    private static  long count;
 	public static void startConnectThreads(Context context,WifiManager wifiManager)
 	{
 		//开启接收线程
 	    new ClientAgent(context).start();
 	    try {
-			Thread.sleep(2);
+			Thread.sleep(100);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    
-	    while(!ClientAgent.flag)
-	    {
-	    	count++;
-	    	//等待连接完成
-	    }
-			
 	    
 	    //发送线程
         Thread threadSend = new SendToServerThread();
         threadSend.start();
        
         try {
-			Thread.sleep(2);
+			Thread.sleep(100);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -44,9 +36,10 @@ public class ConnectTool {
       //scan WIFI signal 
 	      Thread threadRssi = new ScanWifiThread(wifiManager);
 	      threadRssi.start();
-	  //登陆检测
-	      if(IndoorGuiderApplication.getInstance().getAlreadyLogin())
+	  //登陆状态检测
+	      if(IndoorGuiderApplication.getInstance().getAlreadyLogin() && (System.currentTimeMillis()-count>5000))
 	      {
+	    	  count = System.currentTimeMillis();
 	    	//请求登陆
 	    	  IndoorGuiderApplication.getInstance().login(IndoorGuiderApplication.getInstance().getUserName(),
 	    			  IndoorGuiderApplication.getInstance().getPassword());

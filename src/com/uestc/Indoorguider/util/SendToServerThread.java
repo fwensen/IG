@@ -15,10 +15,10 @@ public class SendToServerThread extends Thread {
 	
     private static Handler mHandler;  
     private final static Object mSync = new Object();  
-	
+  
 	public void run(){
 		
-		System.out.println("sendThread flag  "+ClientAgent.flag);
+		Log.i("sendThread",ClientAgent.flag+"");
 		while(ClientAgent.flag)
 		{
 			
