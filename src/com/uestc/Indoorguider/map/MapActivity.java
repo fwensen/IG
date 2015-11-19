@@ -603,15 +603,15 @@ public class MapActivity extends APPActivity implements OnClickListener{
    }
    */
    /**偏离计算*/
-   double culculateNearestDistance(double[] location) 
+   double culculateNearestDistance(float[] location) 
 			throws KeySizeException, KeyDuplicateException {
 		
 		Log.v("test", "into calculate");
 		Log.v("test", "k[0] and k[1]: " + location[0] + "  " +location[1]);
 		int m = kdtree.nearest(new double[]{location[0], location[1]});
 		Log.v("test", "find ok");
-		return Math.sqrt( Math.pow(location[0] - sites[m][0],  2)  + 
-									   Math.pow(location[1] - sites[m][1],  2));		
+		return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2)  + 
+									   Math.pow(homeToMapY(location[1]) - sites[m][1],  2));		
    }
    /**显示导引路线*/
    private void showRoute(JSONObject obj) throws JSONException{
@@ -619,7 +619,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
    
 	    main_bar.setVisibility(View.VISIBLE);
 	    facility_infor.setVisibility(View.GONE);
-		JSONArray pathArray = obj.getJSONArray("path");
+		JSONArray pathArray = obj.getJSONArray("path");//unit:px
 		String path = "M";
 		JSONObject node = new  JSONObject();
 		int i = 0;
@@ -691,7 +691,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		if (isGuided) {
 			double dis = 0;
 			Log.v("test", "test in calculate");
-			double [] location = {locationNow[0], locationNow[1]};
+			float [] location = {locationNow[0], locationNow[1]};
 			try {
 				dis = culculateNearestDistance(location);
 				Log.v("test", "test in calculate");
