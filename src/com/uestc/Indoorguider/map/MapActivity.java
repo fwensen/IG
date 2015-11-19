@@ -100,10 +100,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	public final static int RESULT_MYLOCATION = 10;
 
 	public static int windowHeight ,windowWidth;
-	private float[] locationOld = {854,7541,1};//unit :px
+	private float[] locationOld = {854,7541,1};//unit:cm
 	/**
 	 * 最新位置
-	 * 单位：px
+	 * 单位：cm
 	 */
 	private float[] locationNow = {20000,20000,1};//最新x坐标
 	
@@ -603,15 +603,15 @@ public class MapActivity extends APPActivity implements OnClickListener{
    }
    */
    /**偏离计算*/
-   double culculateNearestDistance(double[] k) 
+   double culculateNearestDistance(double[] location) 
 			throws KeySizeException, KeyDuplicateException {
 		
 		Log.v("test", "into calculate");
-		Log.v("test", "k[0] and k[1]: " + k[0] + "  " +k[1]);
-		int m = kdtree.nearest(new double[]{k[0], k[1]});
+		Log.v("test", "k[0] and k[1]: " + location[0] + "  " +location[1]);
+		int m = kdtree.nearest(new double[]{location[0], location[1]});
 		Log.v("test", "find ok");
-		return Math.sqrt( Math.pow(k[0] - sites[m][0],  2)  + 
-									   Math.pow(k[1] - sites[m][1],  2));		
+		return Math.sqrt( Math.pow(location[0] - sites[m][0],  2)  + 
+									   Math.pow(location[1] - sites[m][1],  2));		
    }
    /**显示导引路线*/
    private void showRoute(JSONObject obj) throws JSONException{
