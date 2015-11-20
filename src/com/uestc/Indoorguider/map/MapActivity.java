@@ -610,8 +610,8 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		Log.v("test", "k[0] and k[1]: " + location[0] + "  " +location[1]);
 		int m = kdtree.nearest(new double[]{location[0], location[1]});
 		Log.v("test", "find ok");
-		return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2)  + 
-									   Math.pow(homeToMapY(location[1]) - sites[m][1],  2));		
+		return Math.sqrt( Math.pow(location[0] - sites[m][0],  2)  + 
+									   Math.pow(location[1] - sites[m][1],  2));		
    }
    /**显示导引路线*/
    private void showRoute(JSONObject obj) throws JSONException{
@@ -672,7 +672,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
   }
    /**更新行人坐标*/
    private void updateLocation(JSONObject obj) throws JSONException{
-	    locationNow[0] = obj.getInt("x"); //CM
+	    locationNow[0] = obj.getInt("x"); //unit:CM
 		locationNow[1] = obj.getInt("y"); 
 		locationNow[2] = obj.getInt("z");
 		Log.v("test", "x: " + locationNow[0] );
@@ -691,7 +691,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		if (isGuided) {
 			double dis = 0;
 			Log.v("test", "test in calculate");
-			float [] location = {locationNow[0], locationNow[1]};
+			float [] location = {homeToMapX(locationNow[0]), homeToMapY(locationNow[1])};
 			try {
 				dis = culculateNearestDistance(location);
 				Log.v("test", "test in calculate");
@@ -703,7 +703,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			}
 			Log.v("test", "in dis calculate!");
 			if (dis > MinDistance) {
-				Log.v("test", "request");
+				Log.v("distance", "request");
 				requestPath(new float[]
 					{locationNow[0],  locationNow[1], 1},  destLocation);
 			}
