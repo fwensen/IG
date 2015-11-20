@@ -122,18 +122,56 @@ public class ConvertUtil {
     	SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd"); 
     	try {
     		//mapId = obj.getLong("mapid");
-			dt = ft.parse(obj.getString("date"));
-			startTime = obj.getString("starttime");
-			endTime = obj.getString("endtime");
-			JSONArray path = obj.getJSONArray("path");
+    		try {
+    			dt = ft.parse(obj.getString("date"));
+    		} catch (JSONException e) {
+    			dt = new Date();
+    		}
+    		try {
+    			startTime = obj.getString("starttime");
+    		} catch (JSONException e) {
+    			startTime = "";
+    		}
+    		try {
+    			endTime = obj.getString("endtime");
+    		} catch (JSONException e) {
+    			endTime = "";
+    		}
+    		
+    		JSONArray path = obj.getJSONArray("path");
 			for (int i = 0; i < path.length(); i++) {
 				JSONObject node = (JSONObject) path.get(i);
-				int x = node.getInt("x");
-				int y = node.getInt("y");
+
+				//int x = node.getInt("x");
+				//int y = node.getInt("y");
 				//int z = node.getInt("z");
-				int z = 0;
+				//int z = 0;
 				//test*********
 				String time = node.getString("time");
+				int x, y, z;
+				//String time;
+				try {
+					x = node.getInt("x");
+				} catch(JSONException e) {
+					x = 0;
+				}
+				try {
+					y = node.getInt("y");
+				} catch (JSONException e) {
+					y = 0;
+				}
+				try {
+					z = node.getInt("z");
+				} catch (JSONException e) {
+					z = 0;
+				}
+					//test*********
+				try {
+					time = node.getString("time");
+				} catch(JSONException e) {
+					time = "";
+				}
+
 				pathItem.add(new Site(x,  y,  z, time));
 			}
 		} catch (ParseException e) {

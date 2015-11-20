@@ -73,7 +73,7 @@ import edu.wlu.cs.levy.CG.KeySizeException;
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener{
 
-	private final static int MinDistance = 300;
+	private final static int MinDistance = 250;
 	private static  MyWebView webView = null;
 	private LinearLayout myLocation = null;
 	private LinearLayout near = null;
@@ -154,6 +154,9 @@ public class MapActivity extends APPActivity implements OnClickListener{
         setContentView(R.layout.main);
         initSensors();// 初始化传感器和位置服务
         //开启服务
+        //  test
+       
+        
 	    Intent intent = new Intent();
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
 	    startService(intent);
@@ -608,11 +611,26 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		
 		Log.v("test", "into calculate");
 		Log.v("test", "k[0] and k[1]: " + location[0] + "  " +location[1]);
-		int m = kdtree.nearest(new double[]{location[0], location[1]});
+		int m = kdtree.nearest(new double[]{homeToMapX(location[0]), homeToMapY(location[1])});
 		Log.v("test", "find ok");
-		return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2)  + 
-									   Math.pow(homeToMapY(location[1]) - sites[m][1],  2));		
+		
+		printSites(location);
+		Log.v("sites", "return "+"x: " + sites[m][0] + " y: " + sites[m][1]);
+		Log.v("sites", "return m: " + m);
+		return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2.0)  + 
+									   Math.pow(homeToMapY(location[1]) - sites[m][1],  2.0));		
    }
+    
+   //test
+   void printSites(float[] current) {
+	   
+	   int i;
+	   Log.v("sites","current: " + "x: "+homeToMapX(current[0]) + " y:" + homeToMapY(current[1]));
+	   for (i = 0; i < sites.length; i++) {
+		   Log.v("sites", "all sites "+i+"--x: " + sites[i][0] + " y: " + sites[i][1]);
+	   }
+   }
+   
    /**显示导引路线*/
    private void showRoute(JSONObject obj) throws JSONException{
 	   
@@ -694,6 +712,8 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			float [] location = {locationNow[0], locationNow[1]};
 			try {
 				dis = culculateNearestDistance(location);
+				Log.v("sites", "distance: " + dis);
+				Log.v("sites", "--------------------------------");
 				Log.v("test", "test in calculate");
 				Log.v("test", "dis: " + dis);
 			} catch (KeySizeException e) {
@@ -705,7 +725,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			if (dis > MinDistance) {
 				Log.v("test", "request");
 				requestPath(new float[]
-					{locationNow[0],  locationNow[1], 1},  destLocation);
+					{homeToMapX(locationNow[0]),  homeToMapY(locationNow[1]), locationNow[2]},  destLocation);
 			}
 		}
    }

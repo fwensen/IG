@@ -162,6 +162,10 @@ public class HistoryActivity extends APPActivity implements OnScrollListener {
 					int position, long id) {				
 				Bundle data = new Bundle();
 				HistoryItem itm = items.get(position);
+				if (itm == null) {
+					Toast.makeText(HistoryActivity.this, "item not exist！", 3000).show();
+					return;
+				}
 				data.putSerializable("historyitem", itm);
 				//创建一个Intent
 				Intent intent = new Intent(HistoryActivity.this
@@ -290,7 +294,7 @@ public class HistoryActivity extends APPActivity implements OnScrollListener {
 			if(!dbHelper.checkIfDBHasHistory()) {			
 				if (!sendRequest(Constant.HISTORY_QUERY, null, 1, 5) )
 					mHandler.sendEmptyMessage(MSG_LOADMORE_FAIL);//请求失败
-			//test();
+			test();
 		} else {			
 			historyCursor = dbHelper.getAllHistory();
 			//historyCursor.moveToFirst();
