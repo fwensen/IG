@@ -611,19 +611,19 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		
 		Log.v("test", "into calculate");
 		Log.v("test", "k[0] and k[1]: " + location[0] + "  " +location[1]);
-		int m = kdtree.nearest(new double[]{homeToMapX(location[0]), homeToMapY(location[1])});
+		int m = kdtree.nearest(new double[]{location[0], location[1]});
 		Log.v("test", "find ok");
-<<<<<<< HEAD
+
 		
 		printSites(location);
 		Log.v("sites", "return "+"x: " + sites[m][0] + " y: " + sites[m][1]);
 		Log.v("sites", "return m: " + m);
-		return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2.0)  + 
-									   Math.pow(homeToMapY(location[1]) - sites[m][1],  2.0));		
-=======
+		//return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2.0)  + 
+		//							   Math.pow(homeToMapY(location[1]) - sites[m][1],  2.0));		
+
 		return Math.sqrt( Math.pow(location[0] - sites[m][0],  2)  + 
 									   Math.pow(location[1] - sites[m][1],  2));		
->>>>>>> 358f933d351fa3e5a254387020876ad06b0da4c8
+
    }
     
    //test
@@ -714,7 +714,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		if (isGuided) {
 			double dis = 0;
 			Log.v("test", "test in calculate");
-			float [] location = {homeToMapX(locationNow[0]), homeToMapY(locationNow[1])};
+			float [] location = {locationNow[0], locationNow[1]};
 			try {
 				dis = culculateNearestDistance(location);
 				Log.v("sites", "distance: " + dis);

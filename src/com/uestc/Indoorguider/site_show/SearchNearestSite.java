@@ -23,9 +23,11 @@ public class SearchNearestSite {
 	double[][] sites;
 	KDTree<Integer> kd;
 	//使用单例模式
-	private static final SearchNearestSite serchNearest = new SearchNearestSite();
-	public static SearchNearestSite getInstance(){		
-		return serchNearest;
+	private static SearchNearestSite searchNearest = new SearchNearestSite();
+	public static SearchNearestSite getInstance(){
+		if (searchNearest == null)
+			searchNearest = new SearchNearestSite();
+		return searchNearest;
 	}
 
 	public String findClickedNearestSite(SiteInfo goal) 
