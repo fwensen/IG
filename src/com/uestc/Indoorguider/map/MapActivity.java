@@ -73,7 +73,7 @@ import edu.wlu.cs.levy.CG.KeySizeException;
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener{
 
-	private final static int MinDistance = 250;
+	private final static int MinDistance_px = 100;
 	private static  MyWebView webView = null;
 	private LinearLayout myLocation = null;
 	private LinearLayout near = null;
@@ -81,16 +81,20 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	private LinearLayout more = null;
 	private LinearLayout main_bar,facility_infor,facility_go = null;
     private TextView facility_name ;//设施名称
-    float[] srcLocation = new float[3] ;
-	private float[] destLocation = new float[3]; //记录目标设施位置，用于导引请求。
-	public static Boolean isForeground = true;//是否位于最前面foreground process
+	private TextView recordText ;//测试记录
 	
+	public static int windowHeight ,windowWidth;
+    private float[] srcLocation_px = new float[3] ;
+	private float[] destLocation_px = new float[3]; //记录目标设施位置，用于导引请求。unit:px
+	
+	public static Boolean isForeground = true;//是否位于最前面foreground process
+
 	private boolean isGuided;
 	WifiManager wifiManager;
-	Boolean flag = false;
+	private boolean flag = false;
 	
 	// double array
-	double [][] sites;
+	double [][] sites_px;
 	KDTree<Integer> kdtree;
 	
 	File tfile,mypath;
@@ -99,13 +103,16 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	public final static int REQUEST_SITE_NEAR = 1;
 	public final static int RESULT_MYLOCATION = 10;
 
-	public static int windowHeight ,windowWidth;
-	private float[] locationOld = {854,7541,1};//unit:cm
+	/**
+	 * 上一次定位位置
+	 * unit:cm
+	 */
+	private float[] locationOld_cm = {854,7541,1};
 	/**
 	 * 最新位置
 	 * 单位：cm
 	 */
-	private float[] locationNow = {20000,20000,1};//最新x坐标
+	private float[] locationNow_cm = {20000,20000,1};
 	
 	double angle = 0;//行人方位，由传感器获取更新
 
@@ -155,8 +162,6 @@ public class MapActivity extends APPActivity implements OnClickListener{
         initSensors();// 初始化传感器和位置服务
         //开启服务
         //  test
-       
-        
 	    Intent intent = new Intent();
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
 	    startService(intent);
@@ -178,7 +183,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
         ticket.setOnClickListener(this) ;
         ImageView siteCancle = (ImageView) findViewById(R.id.site_cancel);
         siteCancle.setOnClickListener(this);
-        
+        recordText = (TextView)findViewById(R.id.recordText);
         //获取位置XML文件****************
         /*
         Log.v("xml", "0: "+sites.get(0).getX());
@@ -398,10 +403,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			}
 			facility_go_time = System.currentTimeMillis();
 			//获取终点位置，请求路径
-			srcLocation[0] = homeToMapX(locationNow[0]);
-		    srcLocation[1] = homeToMapY(locationNow[1]);
-		    srcLocation[2] = 1;
-		    requestPath(srcLocation,destLocation);
+			srcLocation_px[0] = cmToPx_X(locationNow_cm[0]);
+		    srcLocation_px[1] = cmToPx_Y(locationNow_cm[1]);
+		    srcLocation_px[2] = 1;
+		    requestPath(srcLocation_px,destLocation_px);
 			return;			
 		}
 		
@@ -517,14 +522,14 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	}
 	
    //实际坐标到地图坐标
-   public int homeToMapX(float home)
+   public int cmToPx_X(float dimension_cm)
    {
-	   int map = (int) (home/MyWebView.P+MyWebView.offsetX);
+	   int map = (int) (dimension_cm/MyWebView.P+MyWebView.offsetX);
 	   return map;
    }
-   public int homeToMapY(float home)
+   public int cmToPx_Y(float dimension_cm)
    {
-	   int map = (int) (home/MyWebView.P+MyWebView.offsetY);
+	   int map = (int) (dimension_cm/MyWebView.P+MyWebView.offsetY);
 	   return map;
    }
 
@@ -606,23 +611,23 @@ public class MapActivity extends APPActivity implements OnClickListener{
    }
    */
    /**偏离计算*/
-   double culculateNearestDistance(float[] location) 
+   double culculateNearestDistance(float[] location_cm) 
 			throws KeySizeException, KeyDuplicateException {
 		
 		Log.v("test", "into calculate");
-		Log.v("test", "k[0] and k[1]: " + location[0] + "  " +location[1]);
-		int m = kdtree.nearest(new double[]{location[0], location[1]});
+		Log.v("test", "k[0] and k[1]: " + location_cm[0] + "  " +location_cm[1]);
+		int m = kdtree.nearest(new double[]{location_cm[0], location_cm[1]});
 		Log.v("test", "find ok");
 
 		
-		printSites(location);
-		Log.v("sites", "return "+"x: " + sites[m][0] + " y: " + sites[m][1]);
+		printSites(location_cm);
+		Log.v("sites", "return "+"x: " + sites_px[m][0] + " y: " + sites_px[m][1]);
 		Log.v("sites", "return m: " + m);
-		//return Math.sqrt( Math.pow(homeToMapX(location[0]) - sites[m][0],  2.0)  + 
-		//							   Math.pow(homeToMapY(location[1]) - sites[m][1],  2.0));		
+		return Math.sqrt( Math.pow(cmToPx_X(location_cm[0]) - sites_px[m][0],  2.0)  + 
+									   Math.pow(cmToPx_Y(location_cm[1]) - sites_px[m][1],  2.0));		
 
-		return Math.sqrt( Math.pow(location[0] - sites[m][0],  2)  + 
-									   Math.pow(location[1] - sites[m][1],  2));		
+//		return Math.sqrt( Math.pow(location_cm[0] - sites_px[m][0],  2)  + 
+//									   Math.pow(location_cm[1] - sites_px[m][1],  2));		
 
    }
     
@@ -630,9 +635,9 @@ public class MapActivity extends APPActivity implements OnClickListener{
    void printSites(float[] current) {
 	   
 	   int i;
-	   Log.v("sites","current: " + "x: "+homeToMapX(current[0]) + " y:" + homeToMapY(current[1]));
-	   for (i = 0; i < sites.length; i++) {
-		   Log.v("sites", "all sites "+i+"--x: " + sites[i][0] + " y: " + sites[i][1]);
+	   Log.v("sites","current: " + "x: "+cmToPx_X(current[0]) + " y:" + cmToPx_Y(current[1]));
+	   for (i = 0; i < sites_px.length; i++) {
+		   Log.v("sites", "all sites "+i+"--x: " + sites_px[i][0] + " y: " + sites_px[i][1]);
 	   }
    }
    
@@ -642,37 +647,37 @@ public class MapActivity extends APPActivity implements OnClickListener{
    
 	    main_bar.setVisibility(View.VISIBLE);
 	    facility_infor.setVisibility(View.GONE);
-		JSONArray pathArray = obj.getJSONArray("path");//unit:px
+		JSONArray pathArray_px = obj.getJSONArray("path");//unit:px
 		String path = "M";
 		JSONObject node = new  JSONObject();
 		int i = 0;
 		// for kdtree
-		sites = new double[pathArray.length()][2];
+		sites_px = new double[pathArray_px.length()][2];
 		Log.v("test", "in response!");
-		for(; i<pathArray.length(); i++)
+		for(; i<pathArray_px.length(); i++)
 		{
-			node = (JSONObject) pathArray.get(i);
+			node = (JSONObject) pathArray_px.get(i);
 			path = path + node.getInt("x")+" "+node.getInt("y")+"L";
 			//init sites
-			sites[i][0] = node.getInt("x");
-			sites[i][1] = node.getInt("y");
-			Log.v("test", "site[0]: " + sites[i][0]);
-			Log.v("test", "site[1]: " + sites[i][1]);
+			sites_px[i][0] = node.getInt("x");
+			sites_px[i][1] = node.getInt("y");
+			Log.v("test", "site[0]: " + sites_px[i][0]);
+			Log.v("test", "site[1]: " + sites_px[i][1]);
 		}
 		//最后一个节点（目的地坐标）
-		path = path + destLocation[0]+" "+destLocation[1];
+		path = path + destLocation_px[0]+" "+destLocation_px[1];
 		--i;
-		node = (JSONObject) pathArray.get(i);
+		node = (JSONObject) pathArray_px.get(i);
 		//init last site
-		sites[i][0] = node.getInt("x");
-		sites[i][1] = node.getInt("y");
-		Log.v("test", "site[0]: " + sites[i][0]);
-		Log.v("test", "site[1]: " + sites[i][1]);
+		sites_px[i][0] = node.getInt("x");
+		sites_px[i][1] = node.getInt("y");
+		Log.v("test", "site[0]: " + sites_px[i][0]);
+		Log.v("test", "site[1]: " + sites_px[i][1]);
 		// build the kdtree
 		kdtree = new KDTree<Integer>(2);
-		for (int j = 0; j < sites.length; ++j)
+		for (int j = 0; j < sites_px.length; ++j)
 			try {
-				kdtree.insert(sites[j], j);
+				kdtree.insert(sites_px[j], j);
 			} catch (KeySizeException e) {
 				e.printStackTrace();
 			} catch (KeyDuplicateException e) {
@@ -688,33 +693,37 @@ public class MapActivity extends APPActivity implements OnClickListener{
    private void showfacilityName(JSONObject obj) throws JSONException{
 	    main_bar.setVisibility(View.GONE);
 		facility_infor.setVisibility(View.VISIBLE);
-		destLocation[0] = obj.getInt("x");
-		destLocation[1] = obj.getInt("y");
-		destLocation[2] = 1;
+		destLocation_px[0] = obj.getInt("x");
+		destLocation_px[1] = obj.getInt("y");
+		destLocation_px[2] = 1;
 		//facility_name.setText(text);
   }
-   /**更新行人坐标*/
+   /**
+    * 更新行人坐标
+    * 收到的定位信息单位：cm
+    * */
    private void updateLocation(JSONObject obj) throws JSONException{
-	    locationNow[0] = obj.getInt("x"); //unit:CM
-		locationNow[1] = obj.getInt("y"); 
-		locationNow[2] = obj.getInt("z");
-		Log.v("test", "x: " + locationNow[0] );
-		Log.v("test", "y: " + locationNow[1]);
-		Log.v("test", "destination x: "+ destLocation[0]);
-		Log.v("test", "destination y: "+ destLocation[1]);
-		if((Math.pow(locationOld[0]-locationNow[0],2)+Math.pow(locationOld[1]-locationNow[1],2))>Math.pow(2,2))//1m=20px
+	    locationNow_cm[0] = obj.getInt("x"); //unit:CM
+		locationNow_cm[1] = obj.getInt("y"); 
+		locationNow_cm[2] = obj.getInt("z");
+		recordText.setText(locationNow_cm[0]+" "+locationNow_cm[1]);
+		Log.v("test", "x: " + locationNow_cm[0] );
+		Log.v("test", "y: " + locationNow_cm[1]);
+		Log.v("test", "destination x: "+ destLocation_px[0]);
+		Log.v("test", "destination y: "+ destLocation_px[1]);
+		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(2,2))//1m=20px
 		{
 			//webView.loadUrl("javascript:drawcircle('"+x+"','"+y+"')");
 			//放入 角度，位置x,y
-			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+homeToMapX(locationOld[0])+"','"+homeToMapY(locationOld[1])+"')");
+			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
 		}
-		locationOld = locationNow;
+		locationOld_cm = locationNow_cm;
 		
 		//get the nearest site, and culculate the distance
 		if (isGuided) {
 			double dis = 0;
 			Log.v("test", "test in calculate");
-			float [] location = {locationNow[0], locationNow[1]};
+			float [] location = {locationNow_cm[0], locationNow_cm[1]};
 			try {
 				dis = culculateNearestDistance(location);
 				Log.v("sites", "distance: " + dis);
@@ -727,17 +736,17 @@ public class MapActivity extends APPActivity implements OnClickListener{
 				e.printStackTrace();
 			}
 			Log.v("test", "in dis calculate!");
-			if (dis > MinDistance) {
+			if (dis > MinDistance_px) {
 				Log.v("distance", "request");
 				requestPath(new float[]
-					{homeToMapX(locationNow[0]),  homeToMapY(locationNow[1]), locationNow[2]},  destLocation);
+					{cmToPx_X(locationNow_cm[0]),  cmToPx_Y(locationNow_cm[1]), locationNow_cm[2]},  destLocation_px);
 			}
 		}
    }
    /**更新行人方位*/
    private void updateOrientation(JSONObject obj) throws JSONException{
 	   angle = obj.getDouble("angle");
-	   webView.loadUrl("javascript:setPointer('"+angle+"','"+homeToMapX(locationOld[0])+"','"+homeToMapY(locationOld[1])+"')");
+	   webView.loadUrl("javascript:setPointer('"+angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
    }
   
 }

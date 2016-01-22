@@ -18,7 +18,7 @@ public class ScanWifiThread extends Thread {
 			
 			try {
 
-				Thread.sleep(100);//0.1s
+				Thread.sleep(50);//0.1s
 				
 			} catch (Exception e) {
                 
