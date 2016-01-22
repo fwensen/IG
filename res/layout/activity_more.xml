@@ -132,11 +132,9 @@
 	      	<View  
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/line"
-       
-        />
-      	<!--user information bar -->
-	    <LinearLayout 
+        android:background="@color/line"/>
+          	 <!--user history bar -->
+	         <LinearLayout 
 	            android:id="@+id/history_lay" 
 			    android:gravity="center_vertical" 
 			    android:orientation="horizontal" 
@@ -177,7 +175,6 @@
 			    android:orientation="horizontal" 
 			    android:layout_width="fill_parent" 
 			    android:layout_height="50.0dip"
-			  
 			    android:background="#ffffffff">		    
 		        <ImageView 
 		            android:id="@+id/notice_img" 

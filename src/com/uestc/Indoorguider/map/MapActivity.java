@@ -703,6 +703,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
     * 收到的定位信息单位：cm
     * */
    private void updateLocation(JSONObject obj) throws JSONException{
+	   if(obj.getInt("x") ==0 &&obj.getInt("y") == 0)
+	   {
+		   return;
+	   }
 	    locationNow_cm[0] = obj.getInt("x"); //unit:CM
 		locationNow_cm[1] = obj.getInt("y"); 
 		locationNow_cm[2] = obj.getInt("z");
@@ -711,7 +715,8 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		Log.v("test", "y: " + locationNow_cm[1]);
 		Log.v("test", "destination x: "+ destLocation_px[0]);
 		Log.v("test", "destination y: "+ destLocation_px[1]);
-		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(2,2))//1m=20px
+	
+		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(50,2))//1m=20px
 		{
 			//webView.loadUrl("javascript:drawcircle('"+x+"','"+y+"')");
 			//放入 角度，位置x,y
@@ -745,6 +750,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
    }
    /**更新行人方位*/
    private void updateOrientation(JSONObject obj) throws JSONException{
+	 
 	   angle = obj.getDouble("angle");
 	   webView.loadUrl("javascript:setPointer('"+angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
    }

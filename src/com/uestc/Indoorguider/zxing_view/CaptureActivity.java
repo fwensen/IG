@@ -200,7 +200,7 @@ public class CaptureActivity extends Activity implements Callback
 		
 		try {
 			String rawdata = obj.getText(); 
-			data = rawdata.split(";",2);
+			data = rawdata.split("#",2);
 			location = data[1].split(" ",5);
 			jObj.put("type", location[0]);
 		    jObj.put("ID", location[1]);

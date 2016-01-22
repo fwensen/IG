@@ -35,41 +35,65 @@ public class WifiStateReceiver extends BroadcastReceiver {
     	   this.wifi = wifi;
         }
 	    public void onReceive(Context context, Intent intent) {
-		    List<ScanResult> temp = new ArrayList<ScanResult>();
-		    // []ssid={"20:dc:e6:6d:13:0e","30:49:3b:09:68:25","30:49:3b:09:68:27","30:49:3b:09:6a:4f","30:49:3b:09:6b:49"};
-		    if(num == 0)
-		    {
+	    	listWifi = wifi.getScanResults();
+	    	
+	    	wifiLocationSingle();
+	    	
+//		    List<ScanResult> temp = new ArrayList<ScanResult>();
+//		    // []ssid={"20:dc:e6:6d:13:0e","30:49:3b:09:68:25","30:49:3b:09:68:27","30:49:3b:09:6a:4f","30:49:3b:09:6b:49"};
+//		    if(num == 0)
+//		    {
 		    	listWifi = wifi.getScanResults();
-		    	num ++;
-		    }
-		    else{
-		    	temp =  wifi.getScanResults();
-		    	sumRssi(temp);
-		    	num ++;
-		    	if(num == N)
-		    	{
-		    		wifiLocation();
-		    		num =0;
-		    		listWifi =  new ArrayList<ScanResult>();//一轮结束，清空
-		    	    count = new int[50];//清空
-		    	}
-		    }
-			
-	        /*array = new JSONArray();
-			for (int i = 0; i < listWifi.size(); i++) {
-			     
-					JSONObject obj = new JSONObject();
-					try {
-						obj.put("ssid", listWifi.get(i).BSSID);
-						obj.put("level", listWifi.get(i).level);
-						array.put(obj);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-			}*/
+//		    	num ++;
+//		    }
+//		    else{
+//		    	temp =  wifi.getScanResults();
+//		    	sumRssi(temp);
+//		    	num ++;
+//		    	if(num == N)
+//		    	{
+//		    		wifiLocation();
+//		    		num =0;
+//		    		listWifi =  new ArrayList<ScanResult>();//一轮结束，清空
+//		    	    count = new int[50];//清空
+//		    	}
+//		    }
+//		
 	}
+	    
+	    public  void wifiLocationSingle()
+		{   
+			String rssi= "";
+			int i = 0;
+			
+			for (; i < listWifi.size()-1; i++) 
+			{
+				//由于count初始化为0 ，故加上1
+			     rssi += listWifi.get(i).BSSID + "," + listWifi.get(i).level+";";
+			}
+			rssi += listWifi.get(i).BSSID + "," + listWifi.get(i).level;
+				JSONObject msgObj = new JSONObject();
+				try {
+					if(MapActivity.isForeground == true)
+					{
+						msgObj.put("typecode", Constant.LOCATION_REQUEST_WIFI);
+					}else{
+						msgObj.put("typecode", Constant.LOCATION_REQUEST_WIFI2);
+					}
+					msgObj.put("rssi", rssi);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Handler handler = SendToServerThread.getHandler();
+				if(handler!= null)
+				{
+					Message msg = handler.obtainMessage();
+					msg.obj = msgObj;		
+					handler.sendMessage(msg);
+				}
+		}
+	    
 	public  void wifiLocation()
 	{   
 		String rssi= "";
@@ -102,6 +126,7 @@ public class WifiStateReceiver extends BroadcastReceiver {
 				handler.sendMessage(msg);
 			}
 	}
+	
 	private void sumRssi( List<ScanResult> temp)
 	{
 		   
