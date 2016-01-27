@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@android:id/tabhost"
+     >
+     
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+    <FrameLayout 
+        android:id="@android:id/tabcontent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"        
+        ></FrameLayout>
+    
+    <!-- 隐藏TabWidget -->
+<TabWidget 
+    android:id="@android:id/tabs"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+  </TabWidget>  
+  
+    <RadioGroup 
+        android:id="@+id/main_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+     	android:paddingTop="8dp"      
+       	android:orientation="horizontal"
+        >
+        <RadioButton 
+          android:id="@+id/tab_icon_train"
+          android:checked="true"  
+          android:drawableTop="@drawable/traffic_train_selector"    
+          android:text="火车"
+          style="@style/tab_button_bg"
+            />
+        
+         <RadioButton 
+           android:id="@+id/tab_icon_plane"     
+          android:drawableTop="@drawable/traffic_plane_selector" 
+             
+          android:text="飞机"
+          style="@style/tab_button_bg"
+            />
+         
+         
+          <RadioButton 
+          android:id="@+id/tab_icon_steamer"   
+          android:drawableTop="@drawable/traffic_steamer_selector"    
+          android:text="轮船"
+          style="@style/tab_button_bg"
+            />
+          
+          
+           <RadioButton 
+          android:id="@+id/tab_icon_car"          
+      	
+          android:drawableTop="@drawable/traffic_car_selector"    
+          android:text="汽车"
+		  style="@style/tab_button_bg"
+            />
+        
+    </RadioGroup>
+</LinearLayout>
+</TabHost>

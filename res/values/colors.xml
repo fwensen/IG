@@ -31,4 +31,39 @@
   
   
   
+  <color name="red">#ffff0000</color>
+    <color name="gray">#ffcccccc</color>
+    <color name="black">#ff000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="dark_red">#ffcc0000</color>
+    <color name="half_transparent">#b0000000</color>
+    <color name="main_tab_backcolor">#F0F0F0</color>
+    <color name="global_background">#fff5f5f5</color>
+    <color name="C_white">#ffffffff</color>
+    <color name="G_black_light_5">#ffcccccc</color>
+    <color name="H_orange_light_1">#ffe55245</color>
+    <color name="A_orange">#ffff4400</color>
+    <color name="K_black_light_6">#ffe5e5e5</color>
+    <color name="F_black_light_4">#ff999999</color>
+    <color name="D_black_light_1">#ff333333</color>
+    <color name="red_dark">#4D0000</color>
+    <color name="login_register_button1">#8E8E8E</color>
+    <color name="login_register_button2">#5B5B5B</color>
+    <color name="E_black_light_3">#ff666666</color>
+    <color name="focused">#BEBEBE</color>
+    <color name="gold">#b89766</color>
+    <color name="grew">#5B5B5B</color>
+    <color name="L_black_light_2">#ff444444</color>
+    <color name="green">#2828FF</color>
+    <color name="green1">#019858</color>
+    <color name="bule1">#0762B5</color>
+    <color name="darkblue">#0056A6</color>
+    <color name="store_manage_title">#3C3C3C</color>
+    <color name="B_black">#ff000000</color>
+    <color name="N_blue">#ff4598e6</color>
+    <color name="B_black_50">#80000000</color>
+    <color name="B_black_30">#4c000000</color>
+    <color name="B_black_85">#d9000000</color>
+    
+  
 </resources>

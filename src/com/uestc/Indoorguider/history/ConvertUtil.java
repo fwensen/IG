@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import android.database.Cursor;
 import android.util.Log;
 import com.uestc.Indoorguider.history.HistoryItem;
+import com.uestc.Indoorguider.map.MyWebView;
 public class ConvertUtil {
 
 	static public ArrayList<HistoryItem> historyAndPointsToList(ArrayList<Map<String,String>> history, 
@@ -108,6 +109,20 @@ public class ConvertUtil {
 			return result;
 		}
 	
+
+	   //实际坐标到地图坐标
+	   public static int cmToPx_X(float dimension_cm)
+	   {
+		   int map = (int) (dimension_cm/MyWebView.P+MyWebView.offsetX);
+		   return map;
+	   }
+	   public static int cmToPx_Y(float dimension_cm)
+	   {
+		   int map = (int) (dimension_cm/MyWebView.P+MyWebView.offsetY);
+		   return map;
+	   }
+	
+	
 	 //从JSONObject中取得HistoryItem
     public static HistoryItem getItemFromJson(JSONObject obj) {
     	
@@ -151,12 +166,12 @@ public class ConvertUtil {
 				int x, y, z;
 				//String time;
 				try {
-					x = node.getInt("x");
+					x = cmToPx_X(node.getInt("x"));
 				} catch(JSONException e) {
 					x = 0;
 				}
 				try {
-					y = node.getInt("y");
+					y = cmToPx_Y(node.getInt("y"));
 				} catch (JSONException e) {
 					y = 0;
 				}

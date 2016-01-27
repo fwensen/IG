@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="45dp"
+    android:orientation="horizontal" 
+    android:background="@drawable/listviewselector_color">
+
+    <TextView
+        android:id="@+id/train_indextxt"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="center|center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="@color/gray" >
+    </View>
+
+    <TextView
+        android:id="@+id/train_ordertxt"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1.2"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="@color/gray" >
+    </View>
+
+    <TextView
+        android:id="@+id/train_starttimetxt"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="2.5"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="@color/gray" >
+    </View>
+
+    <TextView
+        android:id="@+id/train_arrivetimetxt"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="2.5"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="@color/gray" >
+    </View>
+
+    <TextView
+        android:id="@+id/train_totaltimetxt"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1.7"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+</LinearLayout>

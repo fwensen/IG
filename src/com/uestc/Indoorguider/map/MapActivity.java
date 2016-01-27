@@ -16,6 +16,7 @@ import com.uestc.Indoorguider.site_show.SearchNearestSite;
 import com.uestc.Indoorguider.site_show.SiteActivity;
 import com.uestc.Indoorguider.site_show.SiteInfo;
 import com.uestc.Indoorguider.ticket.TicketRequestActivity;
+import com.uestc.Indoorguider.traffic.TrafficActivity;
 import com.uestc.Indoorguider.util.ClientAgent;
 import com.uestc.Indoorguider.util.ConnectTool;
 import com.uestc.Indoorguider.util.SendToServerThread;
@@ -73,7 +74,7 @@ import edu.wlu.cs.levy.CG.KeySizeException;
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener{
 
-	private final static int MinDistance_px = 100;
+	private final static int MinDistance_px = 1000;
 	private static  MyWebView webView = null;
 	private LinearLayout myLocation = null;
 	private LinearLayout near = null;
@@ -385,10 +386,10 @@ public class MapActivity extends APPActivity implements OnClickListener{
             startActivityForResult(i, REQUEST_SITE_NEAR);
             return;
 		case R.id.ticket:
-			String s = " €∆±¥¶";
-			String v1 = "visible";
-			webView.loadUrl("javascript:setVisibility('"+s+"','"+v1+"')");
-			return;
+			i = new Intent(MapActivity.this,TrafficActivity.class);
+			startActivity(i);
+            return;
+	
 		case R.id.more:
 			i = new Intent(MapActivity.this,MoreActivity.class);
             startActivity(i);
