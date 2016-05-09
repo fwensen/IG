@@ -158,11 +158,14 @@ public class  ClientAgent extends Thread
 				    // int length =  obj.toString().length();
 				    //dout.writeBytes(length+obj.toString());
 					
+//					dout.writeShort(s.length());
+//					dout.writeUTF(s);
+					//dout.writeShort(obj.toString().length()+2);
 					dout.writeUTF(obj.toString());
 					dout.flush();
-					if(obj.getInt("typecode") == 1010){
-						Log.i("send to server", "--->" + obj.getInt("typecode")+"\r\n"+obj);
-					}
+					
+					Log.i("send to server", "--->" + obj.toString().length()+" "+obj.getInt("typecode")+"\r\n"+obj);
+					
 					
 				} 
 				catch (SocketException e) 

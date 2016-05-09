@@ -1763,6 +1763,7 @@ viewBox="0 0 2000 3000"
        <circle class="fil3 str0" cx="0" cy="0" r="20"/>
    </g>
 
+
    <g id= "select_pointer">
        <circle class="fil20 str0" cx="0" cy="0" r="20"/>
    
@@ -1787,7 +1788,7 @@ viewBox="0 0 2000 3000"
 </g>
 
 
-<!-- 行人朝向指示 -->
+<!-- 行人朝向指示，地图缩放时大小不变 -->
 <g id="L5" transform="rotate(45 50 50)">
     <use id="pnow" x="10" y="10" xlink:href = '#pointer'/>
 </g>
@@ -1796,7 +1797,7 @@ viewBox="0 0 2000 3000"
     <use id = "aim" x= "20" y = "20" xlink:href= '#select_pointer'/>
 </g>
 
-<!-- 目的地指示 -->
+<!-- 目的地指示 ，地图缩放时大小不变 -->
 <g id="L7" >
     <use id = "mappin" x= "-80" y = "-160" xlink:href= '#destination'/>
 </g>
@@ -1872,6 +1873,7 @@ viewBox="0 0 2000 3000"
 	}
       <!-- 目的地指示 --> 
       function setAim(x,y){
+            var  dest = document.get
 	    var l7= document.getElementById("L7");
             l7.setAttribute("transform","translate("+x+" "+y+")")
 	}
@@ -1881,7 +1883,14 @@ viewBox="0 0 2000 3000"
 	    var l8= document.getElementById("L8");
             l8.setAttribute("transform","translate("+x+" "+y+")")
 	}
+      <!-- 缩放元素 --> 
+      function scalePic(sX,sY){
+	    var l5= document.getElementById("L5");
+            l8.setAttribute("transform","translate("+x+" "+y+")")
+	}
 
 </script>
 
 </svg>
+
+

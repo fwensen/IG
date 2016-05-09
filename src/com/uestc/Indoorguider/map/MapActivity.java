@@ -73,7 +73,7 @@ import edu.wlu.cs.levy.CG.KeySizeException;
 //关于android2.3中javascript交互的问题
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener{
-
+    private boolean firstData  = true;//第一次收到数据
 	private final static int MinDistance_px = 1000;
 	private static  MyWebView webView = null;
 	private LinearLayout myLocation = null;
@@ -87,6 +87,8 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	public static int windowHeight ,windowWidth;
     private float[] srcLocation_px = new float[3] ;
 	private float[] destLocation_px = new float[3]; //记录目标设施位置，用于导引请求。unit:px
+	private float[] pathDestLocation_px = new float[3]; //记录路径请求的目的地位置，用于导引请求。unit:px
+	
 	
 	public static Boolean isForeground = true;//是否位于最前面foreground process
 
@@ -118,11 +120,13 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	double angle = 0;//行人方位，由传感器获取更新
 
 	private SensorManager mSensorManager;// 传感器管理对象
-	private Sensor accSensor;  
+	private Sensor accSensor; 
+	private Sensor stepSensor; 
 	private Sensor magneticSensor;  
 	private SensorEventListener sensorEventListener;
 	Intent intent;
 	long facility_go_time = 0;//设施点按键时间
+	boolean isMove =true;
 	@Override
 	protected void handleResult(JSONObject obj) 
 	{
@@ -132,6 +136,9 @@ public class MapActivity extends APPActivity implements OnClickListener{
 				case Constant.LOCATION_WIFI_SUCCESS://行人位置更新（wifi定位）
 					 updateLocation(obj);
 					 break;
+				case Constant.ACCELERATOR:
+					 isMove = obj.getBoolean("ismove");
+				     break;
 				case Constant.LOCATION_WIFI_ERROR:
 					break;
 				case Constant.ORIENTATION://行人朝向更新
@@ -338,6 +345,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		//注册传感器监听器******************
 	    mSensorManager.registerListener(sensorEventListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);  
 	    mSensorManager.registerListener(sensorEventListener, magneticSensor,SensorManager.SENSOR_DELAY_NORMAL);  
+	    
 	}
 	
 	@Override
@@ -402,12 +410,16 @@ public class MapActivity extends APPActivity implements OnClickListener{
 				Toast.makeText(this, "正在努力为您安排路线，请稍等！", Toast.LENGTH_SHORT).show();
 				break;
 			}
+			
 			facility_go_time = System.currentTimeMillis();
 			//获取终点位置，请求路径
 			srcLocation_px[0] = cmToPx_X(locationNow_cm[0]);
 		    srcLocation_px[1] = cmToPx_Y(locationNow_cm[1]);
 		    srcLocation_px[2] = 1;
-		    requestPath(srcLocation_px,destLocation_px);
+		    pathDestLocation_px[0] = destLocation_px[0];
+		    pathDestLocation_px[1] = destLocation_px[1];
+		    pathDestLocation_px[2] = destLocation_px[2];
+		    requestPath(srcLocation_px,pathDestLocation_px);
 			return;			
 		}
 		
@@ -649,7 +661,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	    main_bar.setVisibility(View.VISIBLE);
 	    facility_infor.setVisibility(View.GONE);
 		JSONArray pathArray_px = obj.getJSONArray("path");//unit:px
-		String path = "M";
+		String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
 		JSONObject node = new  JSONObject();
 		int i = 0;
 		// for kdtree
@@ -666,7 +678,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 			Log.v("test", "site[1]: " + sites_px[i][1]);
 		}
 		//最后一个节点（目的地坐标）
-		path = path + destLocation_px[0]+" "+destLocation_px[1];
+		path = path + pathDestLocation_px[0]+" "+pathDestLocation_px[1];
 		--i;
 		node = (JSONObject) pathArray_px.get(i);
 		//init last site
@@ -716,14 +728,26 @@ public class MapActivity extends APPActivity implements OnClickListener{
 		Log.v("test", "y: " + locationNow_cm[1]);
 		Log.v("test", "destination x: "+ destLocation_px[0]);
 		Log.v("test", "destination y: "+ destLocation_px[1]);
-	
-		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(50,2))//1m=20px
+		if(firstData)
+		{
+			//放入 角度，位置x,y
+			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
+		    locationOld_cm[0] = locationNow_cm[0];
+		    locationOld_cm[1] = locationNow_cm[1];
+		    locationOld_cm[2] = locationNow_cm[2];
+		    firstData = false;
+		}
+	 
+		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(50,2) && isMove )//1m=20px
 		{
 			//webView.loadUrl("javascript:drawcircle('"+x+"','"+y+"')");
 			//放入 角度，位置x,y
 			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
+		    locationOld_cm[0] = locationNow_cm[0];
+		    locationOld_cm[1] = locationNow_cm[1];
+		    locationOld_cm[2] = locationNow_cm[2];
 		}
-		locationOld_cm = locationNow_cm;
+		
 		
 		//get the nearest site, and culculate the distance
 		if (isGuided) {
@@ -754,6 +778,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	 
 	   angle = obj.getDouble("angle");
 	   webView.loadUrl("javascript:setPointer('"+angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
+	  // Log.i("角度",locationOld_cm[0]+" "+locationOld_cm[1]);
    }
   
 }

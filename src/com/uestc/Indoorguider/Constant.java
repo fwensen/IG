@@ -25,7 +25,8 @@ public class Constant {
 	
 	//默认情况下的ip和point
 
-	public static final String ip="222.197.180.140";
+	//public static final String ip="222.197.180.140";
+	public static final String ip="121.49.97.136";
 	public static final int  port  = 40001;
 
 	//public static final String ip="222.197.180.14";
@@ -100,7 +101,7 @@ public class Constant {
 	
 	//WIFI定位
 	public static final int LOCATION_REQUEST_WIFI 		= 1040;
-	public static final int LOCATION_REQUEST_WIFI2 		= 1042;
+	public static final int LOCATION_REQUEST_WIFI2 		= 1042;//未在定位界面
 	
 	public static final int LOCATION_WIFI_RESPONSE     		= 154;
 	public static final int LOCATION_WIFI_SUCCESS      		= 1540;
@@ -134,6 +135,7 @@ public class Constant {
 	
 	//行人方位
 	public static final int ORIENTATION = 10000;
+	public static final int ACCELERATOR = 10001;
 	
 	//站点详情
 	public static final int FACILITY_INFOR = 10100;

@@ -91,7 +91,7 @@ public class MyWebView extends WebView {
 				    	System.out.println(scale);
 				    	System.out.println(y0);
 				    	loadUrl("javascript:setAim('"+x0+"','"+y0+"')");
-				    	//loadUrl("javascript:drawcircle('"+x0+"','"+y0+"')");
+				    	
 			        	//查询数据库，匹配该坐标是否有站点存在
 				    	float[] destLocation = new float[3];
 				    	destLocation[0] = x0;//单位：px

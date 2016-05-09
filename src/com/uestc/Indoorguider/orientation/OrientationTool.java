@@ -25,8 +25,17 @@ public class OrientationTool {
 	          
 	    if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)  
 	    magneticFieldValues = sensorEvent.values;  
-	    if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER)  
-	        accelerometerValues = sensorEvent.values;  
+	    if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER)  {
+	    	 accelerometerValues = sensorEvent.values;  
+	    	// Log.i("acc",accelerometerValues[0]+" "+accelerometerValues[1]+" "+accelerometerValues[2]);
+	    	 if(Math.abs(accelerometerValues[0])<1 && Math.abs(accelerometerValues[1])<1 ){
+	    		 sendAccMsg(handlerMain,false);
+	    	 }
+	    	 else{
+	    		 sendAccMsg(handlerMain,true);
+	    		 }
+	    }
+	       
 	    calculateOrientation();  
 	    }  
 	    
@@ -75,8 +84,28 @@ public class OrientationTool {
 			h.sendMessage(msg);
 			
 		}
+		
+		//向MainActivity发送角度消息
+				private static void sendAccMsg(Handler h, boolean isMove)
+				{
+				
+					JSONObject obj= new JSONObject();
+					try {
+						obj.put("typecode", Constant.ACCELERATOR);
+						obj.put("ismove",isMove);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Message msg = h.obtainMessage();
+			    	msg.obj = obj;
+					h.sendMessage(msg);
+					
+				}
 		public static void setMainHandler(Handler h){
 		    handlerMain = h;
 		}
+		
+		
 
 }
