@@ -330,7 +330,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 				return false;
 			}
 		});		
-		webView.loadUrl("file:///android_res/raw/spot.svg");		
+		webView.loadUrl("file:///android_res/raw/newmap.svg");		
     
    }
     
