@@ -330,7 +330,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 				return false;
 			}
 		});		
-		webView.loadUrl("file:///android_res/raw/newmap.svg");		
+		webView.loadUrl("file:///android_res/raw/spot.svg");		
     
    }
     
@@ -661,36 +661,67 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	    main_bar.setVisibility(View.VISIBLE);
 	    facility_infor.setVisibility(View.GONE);
 		JSONArray pathArray_px = obj.getJSONArray("path");//unit:px
-		String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
+		String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1] ;
 		JSONObject node = new  JSONObject();
 		int i = 0;
 		// for kdtree
 		sites_px = new double[pathArray_px.length()][2];
 		Log.v("test", "in response!");
-		for(; i<pathArray_px.length(); i++)
+		int group3 =  pathArray_px.length()/3;
+		int k = pathArray_px.length()%3;
+		int j = 0;
+		for(; j < group3; j++)
 		{
-			node = (JSONObject) pathArray_px.get(i);
-			path = path + node.getInt("x")+" "+node.getInt("y")+"L";
-			//init sites
-			sites_px[i][0] = node.getInt("x");
-			sites_px[i][1] = node.getInt("y");
-			Log.v("test", "site[0]: " + sites_px[i][0]);
-			Log.v("test", "site[1]: " + sites_px[i][1]);
+			node = (JSONObject) pathArray_px.get(j+0);
+			path = path + " C"+node.getInt("x")+" "+node.getInt("y");
+			sites_px[j][0] = node.getInt("x");
+			sites_px[j][1] = node.getInt("y");
+			node = (JSONObject) pathArray_px.get(j+1);
+			path = path + ","+node.getInt("x")+" "+node.getInt("y");
+			sites_px[j+1][0] = node.getInt("x");
+			sites_px[j+1][1] = node.getInt("y");
+			node = (JSONObject) pathArray_px.get(j+2);
+			path = path + ","+node.getInt("x")+" "+node.getInt("y");
+			sites_px[j+2][0] = node.getInt("x");
+		    sites_px[j+2][1] = node.getInt("y");
 		}
-		//最后一个节点（目的地坐标）
-		path = path + pathDestLocation_px[0]+" "+pathDestLocation_px[1];
-		--i;
-		node = (JSONObject) pathArray_px.get(i);
-		//init last site
-		sites_px[i][0] = node.getInt("x");
-		sites_px[i][1] = node.getInt("y");
-		Log.v("test", "site[0]: " + sites_px[i][0]);
-		Log.v("test", "site[1]: " + sites_px[i][1]);
+		int index = 3*j;
+		switch(k)
+		{
+		    case 1:
+		    	//二次贝塞尔相连
+		    	node = (JSONObject) pathArray_px.get(index);
+				path = path + " Q"+node.getInt("x")+" "+node.getInt("y");
+				sites_px[index][0] = node.getInt("x");
+				sites_px[index][1] = node.getInt("y");
+				path = path + ","+pathDestLocation_px[0]+" "+pathDestLocation_px[1];
+		    	break;
+		    case 2:
+		    	//三次贝塞尔
+		    	node = (JSONObject) pathArray_px.get(index);
+				path = path + " C"+node.getInt("x")+" "+node.getInt("y");
+				sites_px[index][0] = node.getInt("x");
+				sites_px[index][1] = node.getInt("y");
+				node = (JSONObject) pathArray_px.get(index+1);
+				path = path + ","+node.getInt("x")+" "+node.getInt("y");
+				sites_px[index+1][0] = node.getInt("x");
+				sites_px[index+1][1] = node.getInt("y");
+				path = path + ","+pathDestLocation_px[0]+" "+pathDestLocation_px[1];
+		    	break;
+		}
+		
+//		--i;
+//		node = (JSONObject) pathArray_px.get(i);
+//		//init last site
+//		sites_px[i][0] = node.getInt("x");
+//		sites_px[i][1] = node.getInt("y");
+//		Log.v("test", "site[0]: " + sites_px[i][0]);
+//		Log.v("test", "site[1]: " + sites_px[i][1]);
 		// build the kdtree
 		kdtree = new KDTree<Integer>(2);
-		for (int j = 0; j < sites_px.length; ++j)
+		for (int q = 0; q < sites_px.length; ++q)
 			try {
-				kdtree.insert(sites_px[j], j);
+				kdtree.insert(sites_px[q], q);
 			} catch (KeySizeException e) {
 				e.printStackTrace();
 			} catch (KeyDuplicateException e) {
