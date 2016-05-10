@@ -82,7 +82,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	private LinearLayout more = null;
 	private LinearLayout main_bar,facility_infor,facility_go = null;
     private TextView facility_name ;//设施名称
-	private TextView recordText ;//测试记录
+	//private TextView recordText ;//测试记录
 	
 	public static int windowHeight ,windowWidth;
     private float[] srcLocation_px = new float[3] ;
@@ -191,7 +191,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
         ticket.setOnClickListener(this) ;
         ImageView siteCancle = (ImageView) findViewById(R.id.site_cancel);
         siteCancle.setOnClickListener(this);
-        recordText = (TextView)findViewById(R.id.recordText);
+        //recordText = (TextView)findViewById(R.id.recordText);
         //获取位置XML文件****************
         /*
         Log.v("xml", "0: "+sites.get(0).getX());
@@ -723,7 +723,7 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	    locationNow_cm[0] = obj.getInt("x"); //unit:CM
 		locationNow_cm[1] = obj.getInt("y"); 
 		locationNow_cm[2] = obj.getInt("z");
-		recordText.setText(locationNow_cm[0]+" "+locationNow_cm[1]);
+		//recordText.setText(locationNow_cm[0]+" "+locationNow_cm[1]);
 		Log.v("test", "x: " + locationNow_cm[0] );
 		Log.v("test", "y: " + locationNow_cm[1]);
 		Log.v("test", "destination x: "+ destLocation_px[0]);
