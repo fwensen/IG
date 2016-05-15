@@ -1,6 +1,9 @@
 package com.uestc.Indoorguider.map;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,8 +11,6 @@ import org.json.JSONObject;
 import com.uestc.Indoorguider.APPActivity;
 import com.uestc.Indoorguider.Constant;
 import com.uestc.Indoorguider.R;
-import com.uestc.Indoorguider.R.id;
-import com.uestc.Indoorguider.R.layout;
 import com.uestc.Indoorguider.more.MoreActivity;
 import com.uestc.Indoorguider.orientation.OrientationTool;
 import com.uestc.Indoorguider.site_show.SearchNearestSite;
@@ -22,6 +23,7 @@ import com.uestc.Indoorguider.util.ConnectTool;
 import com.uestc.Indoorguider.util.SendToServerThread;
 import com.uestc.Indoorguider.wifi.WifiStateReceiver;
 import com.uestc.Indoorguider.zxing_view.CaptureActivity;
+import com.uestc.Indoorguider.map.search_destination.SearchDestination;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -58,10 +60,13 @@ import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,9 +75,10 @@ import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeyMissingException;
 import edu.wlu.cs.levy.CG.KeySizeException;
+import com.uestc.Indoorguider.map.search_destination.*;
 //关于android2.3中javascript交互的问题
 //http://code.google.com/p/android/issues/detail?id=12987
-public class MapActivity extends APPActivity implements OnClickListener{
+public class MapActivity extends APPActivity implements OnClickListener, SearchDestination.SearchViewListener{
     private boolean firstData  = true;//第一次收到数据
 	private final static int MinDistance_px = 1000;
 	private static  MyWebView webView = null;
@@ -127,6 +133,32 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	Intent intent;
 	long facility_go_time = 0;//设施点按键时间
 	boolean isMove =true;
+	
+    // 搜索结果列表view
+    private ListView lvResults;
+    private SearchDestination searchView;
+    //热搜框列表adapter
+    private ArrayAdapter<String> hintAdapter;
+     // 自动补全列表adapter
+    private ArrayAdapter<String> autoCompleteAdapter;
+    //搜索结果列表adapter
+    private SearchAdapter resultAdapter;
+    private List<DestinationSite> dbData;
+    // 热搜版数据
+    private List<String> hintData;
+
+     //搜索过程中自动补全数据
+    private List<String> autoCompleteData;
+
+     //搜索结果的数据
+    private List<DestinationSite> resultData;
+    private static int DEFAULT_HINT_SIZE = 4;
+
+    /**
+     * 提示框显示项的个数
+     */
+    private static int hintSize = DEFAULT_HINT_SIZE;
+
 	@Override
 	protected void handleResult(JSONObject obj) 
 	{
@@ -168,8 +200,13 @@ public class MapActivity extends APPActivity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         initSensors();// 初始化传感器和位置服务
+        
+        searchView = (SearchDestination) findViewById(R.id.main_search_layout);
+        searchView.setSearchViewListener(this);
+        searchView.setAutoCompleteAdapter(autoCompleteAdapter);
         //开启服务
-        //  test
+        //设置监听
+        
 	    Intent intent = new Intent();
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
 	    startService(intent);
@@ -811,5 +848,127 @@ public class MapActivity extends APPActivity implements OnClickListener{
 	   webView.loadUrl("javascript:setPointer('"+angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
 	  // Log.i("角度",locationOld_cm[0]+" "+locationOld_cm[1]);
    }
-  
+
+   
+   
+   /**
+    * 设置提示框显示项的个数
+    *
+    * @param hintSize 提示框显示个数
+    */
+   public static void setHintSize(int hintSize) {
+   	MapActivity.hintSize = hintSize;
+   }
+   
+   
+   //自动补全，回调
+   @Override
+   public void onRefreshAutoComplete(String text) {
+	 //更新数据
+      getAutoCompleteData(text);
+	
+   }	
+
+   //查询，回调
+   @Override
+   public void onSearch(String text) {
+	   //更新result数据
+       getResultData(text);
+       lvResults.setVisibility(View.VISIBLE);
+       //第一次获取结果 还未配置适配器
+       if (lvResults.getAdapter() == null) {
+           //获取搜索数据 设置适配器
+           lvResults.setAdapter(resultAdapter);
+       } else {
+           //更新搜索数据
+           resultAdapter.notifyDataSetChanged();
+       }
+       Toast.makeText(this, "完成搜素", Toast.LENGTH_SHORT).show();
+
+	
+   }
+
+   /**
+    * 初始化数据
+    */
+   private void initData() {
+       //从数据库获取数据
+       getDbData();
+       //初始化热搜版数据
+       getHintData();
+       //初始化自动补全数据
+       getAutoCompleteData(null);
+       //初始化搜索结果数据
+       getResultData(null);
+   }
+
+   /**
+    * 获取db 数据
+    */
+   private void getDbData() {
+       int size = 100;
+       dbData = new ArrayList<>(size);
+       for (int i = 0; i < size; i++) {
+           dbData.add(new DestinationSite(R.drawable.icon, "android开发必备技能" + (i + 1), "Android自定义view——自定义搜索view"));
+       }
+   }
+
+   /**
+    * 获取热搜版data 和adapter
+    */
+   private void getHintData() {
+       hintData = new ArrayList<>(hintSize);
+       for (int i = 1; i <= hintSize; i++) {
+           hintData.add("热搜版" + i + "：Android自定义View");
+       }
+       hintAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, hintData);
+   }
+
+   /**
+    * 获取自动补全data 和adapter
+    */
+   private void getAutoCompleteData(String text) {
+       if (autoCompleteData == null) {
+           //初始化
+           autoCompleteData = new ArrayList<>(hintSize);
+       } else {
+           // 根据text 获取auto data
+           autoCompleteData.clear();
+           for (int i = 0, count = 0; i < dbData.size()
+                   && count < hintSize; i++) {
+               if (dbData.get(i).getTitle().contains(text.trim())) {
+                   autoCompleteData.add(dbData.get(i).getTitle());
+                   count++;
+               }
+           }
+       }
+       if (autoCompleteAdapter == null) {
+           autoCompleteAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, autoCompleteData);
+       } else {
+           autoCompleteAdapter.notifyDataSetChanged();
+       }
+   }
+
+   /**
+    * 获取搜索结果data和adapter
+    */
+   private void getResultData(String text) {
+       if (resultData == null) {
+           // 初始化
+           resultData = new ArrayList<>();
+       } else {
+           resultData.clear();
+           for (int i = 0; i < dbData.size(); i++) {
+               if (dbData.get(i).getTitle().contains(text.trim())) {
+                   resultData.add(dbData.get(i));
+               }
+           }
+       }
+       if (resultAdapter == null) {
+           resultAdapter = new SearchAdapter(this, resultData, R.layout.search_site);
+       } else {
+           resultAdapter.notifyDataSetChanged();
+       }
+   }
+
 }
