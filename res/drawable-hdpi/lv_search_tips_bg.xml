@@ -12,7 +12,7 @@
     android:left="2dp"
     android:right="2dp">
     <shape>
-        <solid android:color="#fff" />
+        <solid android:color="#000" />
     </shape>
 </item>
 </layer-list>

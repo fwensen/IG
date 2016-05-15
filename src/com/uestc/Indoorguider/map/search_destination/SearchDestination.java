@@ -87,6 +87,17 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 	 }
 	
 	
+	  /**
+     * 设置热搜版提示 adapter
+     */
+    public void setTipsHintAdapter(ArrayAdapter<String> adapter) {
+        this.mHintAdapter = adapter;
+        if (lvContent.getAdapter() == null) {
+        	lvContent.setAdapter(mHintAdapter);
+        }
+    }
+
+	
 	public void setAutoCompleteAdapter(ArrayAdapter<String> adapter) {
         this.mAutoCompleteAdapter = adapter;
     }
@@ -154,7 +165,7 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
             ivDelete.setVisibility(GONE);
             break;
         case R.id.search_btn_back:
-            ((Activity) context).finish();
+        	notifyStartSearching(null);
             break;
 		}
 	}

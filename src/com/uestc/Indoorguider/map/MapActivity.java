@@ -135,7 +135,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	boolean isMove =true;
 	
     // 搜索结果列表view
-    private ListView lvResults;
+    //private ListView lvResults;
     private SearchDestination searchView;
     //热搜框列表adapter
     private ArrayAdapter<String> hintAdapter;
@@ -200,10 +200,20 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         initSensors();// 初始化传感器和位置服务
-        
+        initData();
+        //lvResults = (ListView) findViewById(R.id.main_lv_search_results);
         searchView = (SearchDestination) findViewById(R.id.main_search_layout);
         searchView.setSearchViewListener(this);
+        searchView.setTipsHintAdapter(hintAdapter);
         searchView.setAutoCompleteAdapter(autoCompleteAdapter);
+        /*
+        lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(MapActivity.this, position + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+        */
         //开启服务
         //设置监听
         
@@ -869,20 +879,12 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	
    }	
 
-   //查询，回调
+   //查询，回调, 完成搜索时的工作
    @Override
    public void onSearch(String text) {
 	   //更新result数据
        getResultData(text);
-       lvResults.setVisibility(View.VISIBLE);
-       //第一次获取结果 还未配置适配器
-       if (lvResults.getAdapter() == null) {
-           //获取搜索数据 设置适配器
-           lvResults.setAdapter(resultAdapter);
-       } else {
-           //更新搜索数据
-           resultAdapter.notifyDataSetChanged();
-       }
+      
        Toast.makeText(this, "完成搜素", Toast.LENGTH_SHORT).show();
 
 	
