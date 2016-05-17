@@ -885,9 +885,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	   //更新result数据
        getResultData(text);
       
-       Toast.makeText(this, "完成搜素", Toast.LENGTH_SHORT).show();
-
-	
+      
    }
 
    /**
@@ -908,10 +906,13 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
     * 获取db 数据
     */
    private void getDbData() {
-       int size = 100;
+       int size = 10;
        dbData = new ArrayList<>(size);
+       DerectionConstant dc = new DerectionConstant();
+       dc.fillDerection();
+       //just for test
        for (int i = 0; i < size; i++) {
-           dbData.add(new DestinationSite(R.drawable.icon, "android开发必备技能" + (i + 1), "Android自定义view——自定义搜索view"));
+           dbData.add(new DestinationSite(R.drawable.icon, dc.DERECTION_ALL.get(i), dc.DERECTION_ALL.get(i)));
        }
    }
 
@@ -920,9 +921,13 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
     */
    private void getHintData() {
        hintData = new ArrayList<>(hintSize);
-       for (int i = 1; i <= hintSize; i++) {
-           hintData.add("热搜版" + i + "：Android自定义View");
-       }
+       
+       int i = 1;
+       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_13);
+       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_AIRPORT);
+       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_918);
+       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_915);
+       
        hintAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, hintData);
    }
 
