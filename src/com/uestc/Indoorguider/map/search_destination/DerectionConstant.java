@@ -7,7 +7,7 @@ import java.util.List;
 public class DerectionConstant {
 
 	//just for test
-	public ArrayList<String> DERECTION_ALL = new ArrayList<>();
+	public ArrayList<String> DERECTION_ALL = new ArrayList<String>();
 	public void fillDerection() {
 		DERECTION_ALL.add(DERECTION_13);
 		DERECTION_ALL.add(DERECTION_852);

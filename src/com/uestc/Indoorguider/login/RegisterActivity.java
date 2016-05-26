@@ -115,5 +115,17 @@ public class RegisterActivity extends APPActivity {
     public void onClick(View v){
     	this.finish();
     }
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initContent() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

@@ -129,6 +129,16 @@ public class MyActivity extends APPActivity implements OnTouchListener {
 		}
 		return false;
 	}
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	protected void initContent() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	
