@@ -1,55 +1,42 @@
 package com.uestc.Indoorguider.map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Point;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Display;
-import android.view.MotionEvent;
-import android.view.View;
-
 import com.uestc.Indoorguider.Constant;
 import com.uestc.Indoorguider.orientation.OrientationTool;
-import com.uestc.Indoorguider.site_show.SearchNearestSite;
-import com.uestc.Indoorguider.site_show.SiteInfo;
 import com.uestc.Indoorguider.util.ConnectTool;
 import com.uestc.Indoorguider.util.SendToServerThread;
 
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
-import edu.wlu.cs.levy.CG.KeyMissingException;
 import edu.wlu.cs.levy.CG.KeySizeException;
 
 /**
  * 地图工具类，负责对地图的相关操作
  * 
  * */
-public class MapUtil {
+public class MapUtils {
  
 	private Context context;
     private MyWebView webView ;
-    private boolean isGuided;
+    private boolean isGuided = false; //导引开始的标志
 	private final static int MinDistance_px = 1000;
 	private KDTree<Integer>  kdtree ;
 	boolean isMove =true;
 	double [][] sites_px;
+	private boolean firstData  = true;//第一次收到定位数据
 	
-	public MapUtil(Context context, MyWebView webView){
+	public MapUtils(Context context, MyWebView webView){
 		this.context = context;
 		this.webView = webView;
 	}
 	
- //实际坐标到地图坐标
+   //实际坐标（cm）到地图坐标(px)单位转换
    public int cmToPx_X(float dimension_cm)
    {
 	   int map = (int) (MyWebView.offsetX-dimension_cm/MyWebView.P);
@@ -61,7 +48,9 @@ public class MapUtil {
 	   return map;
    }
 	
-	
+	/**
+	 * 请求导引路径
+	 * */
 	public void requestPath( float[] srcLocation,float[] destLocation)
 	{
 		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -242,8 +231,7 @@ public class MapUtil {
     * 更新行人坐标
     * 收到的定位信息单位：cm
     * */
-   
-   private boolean firstData  = true;//第一次收到数据
+
    public void updateLocation(float[] locationNow_cm ,float[] locationOld_cm, float[] destLocation_px, JSONObject obj) throws JSONException{
 	   if(obj.getInt("x") ==0 &&obj.getInt("y") == 0)
 	   {
@@ -257,8 +245,6 @@ public class MapUtil {
 		{
 			//放入 角度，位置x,y
 			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
-			webView.loadUrl("javascript:setAim('"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
-			
 			locationOld_cm[0] = locationNow_cm[0];
 		    locationOld_cm[1] = locationNow_cm[1];
 		    locationOld_cm[2] = locationNow_cm[2];

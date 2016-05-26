@@ -60,7 +60,7 @@ import com.uestc.Indoorguider.map.search_destination.*;
 //关于android2.3中javascript交互的问题
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener, SearchDestination.SearchViewListener{
-    private MapUtil mapUtil;
+    private MapUtils mapUtil;
 	private static  MyWebView webView = null;
 	private LinearLayout myLocation = null;
 	private LinearLayout near = null;
@@ -76,9 +76,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	private float[] pathDestLocation_px = new float[3]; //记录路径请求的目的地位置，用于导引请求。unit:px
 	
 	
-	public static Boolean isForeground = true;//是否位于最前面foreground process
+	public static Boolean isForeground = true;//是否位于最前面foreground process ,用于告诉服务器是否返回定位信息
 
-	private boolean isGuided;
 	WifiManager wifiManager;
 	
 	
@@ -186,7 +185,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");	    
 	    startService(intent);
         getWindowSize();
-        isGuided = false;
+      
    }
     
 	
@@ -197,7 +196,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 		isForeground = true;
 		OrientationTool.setMainHandler(handler);
 		MyWebView.setMainHandler(handler);
-		//注册传感器监听器******************
+		//注册传感器监听器
 	    mSensorManager.registerListener(sensorEventListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);  
 	    mSensorManager.registerListener(sensorEventListener, magneticSensor,SensorManager.SENSOR_DELAY_NORMAL);  
 	    
@@ -591,14 +590,11 @@ protected void initView() {
 
 @Override
 protected void initContent() {
-	  mapUtil = new MapUtil(this,webView);
+	  mapUtil = new MapUtils(this,webView);
 	  searchView.setSearchViewListener(this);
       searchView.setTipsHintAdapter(hintAdapter);
       searchView.setAutoCompleteAdapter(autoCompleteAdapter);
 	  configWebView();
-	
-	      
-	
   }
 
 private void configWebView(){
