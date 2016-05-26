@@ -121,7 +121,12 @@ public abstract class APPActivity  extends Activity{
 	         return super.dispatchTouchEvent(ev);
 	     }
 	     
-	   
+	     
+	     protected abstract void initView();
+	     protected abstract void initContent();
+	     
+	     
+	     
 	
 	
 }

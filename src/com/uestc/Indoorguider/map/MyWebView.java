@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.uestc.Indoorguider.Constant;
+import com.uestc.Indoorguider.orientation.OrientationTool;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +26,9 @@ public class MyWebView extends WebView {
 	// 
 	public static float webviewX0;
 	public static float webviewY0;
-	public static int P = 5;
-	public static int offsetX = 282;
-	public static float offsetY = (float) 1667.12;
+	public static float P = 8.47f;
+	public static int offsetX = 2796;
+	public static float offsetY = (float) 1926;
 	private boolean scaleFlag1  = false;
 	private boolean scaleFlag2  = false;
 	public float scale;
@@ -91,7 +92,7 @@ public class MyWebView extends WebView {
 				    	System.out.println(scale);
 				    	System.out.println(y0);
 				    	loadUrl("javascript:setAim('"+x0+"','"+y0+"')");
-				    	
+			
 			        	//查询数据库，匹配该坐标是否有站点存在
 				    	float[] destLocation = new float[3];
 				    	destLocation[0] = x0;//单位：px
@@ -106,7 +107,7 @@ public class MyWebView extends WebView {
 		 	}
 		 
          super.onTouchEvent(event);
-         showMapLayer();
+     // 2016.26   showMapLayer();
          return super.onTouchEvent(event);
 
     }   

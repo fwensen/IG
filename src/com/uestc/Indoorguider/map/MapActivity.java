@@ -3,8 +3,6 @@ package com.uestc.Indoorguider.map;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,36 +14,23 @@ import com.uestc.Indoorguider.orientation.OrientationTool;
 import com.uestc.Indoorguider.site_show.SearchNearestSite;
 import com.uestc.Indoorguider.site_show.SiteActivity;
 import com.uestc.Indoorguider.site_show.SiteInfo;
-import com.uestc.Indoorguider.ticket.TicketRequestActivity;
 import com.uestc.Indoorguider.traffic.TrafficActivity;
-import com.uestc.Indoorguider.util.ClientAgent;
-import com.uestc.Indoorguider.util.ConnectTool;
-import com.uestc.Indoorguider.util.SendToServerThread;
-import com.uestc.Indoorguider.wifi.WifiStateReceiver;
 import com.uestc.Indoorguider.zxing_view.CaptureActivity;
 import com.uestc.Indoorguider.map.search_destination.SearchDestination;
-
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -60,18 +45,14 @@ import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-//Washington and Lee University: kdtree, http://home.wlu.edu/~levys/software/kd/docs/
-import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeyMissingException;
 import edu.wlu.cs.levy.CG.KeySizeException;
@@ -79,8 +60,7 @@ import com.uestc.Indoorguider.map.search_destination.*;
 //关于android2.3中javascript交互的问题
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener, SearchDestination.SearchViewListener{
-    private boolean firstData  = true;//第一次收到数据
-	private final static int MinDistance_px = 1000;
+    private MapUtil mapUtil;
 	private static  MyWebView webView = null;
 	private LinearLayout myLocation = null;
 	private LinearLayout near = null;
@@ -100,11 +80,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 
 	private boolean isGuided;
 	WifiManager wifiManager;
-	private boolean flag = false;
 	
-	// double array
-	double [][] sites_px;
-	KDTree<Integer> kdtree;
 	
 	File tfile,mypath;
 	String TAG ="scale";
@@ -116,18 +92,17 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	 * 上一次定位位置
 	 * unit:cm
 	 */
-	private float[] locationOld_cm = {854,7541,1};
+	private float[] locationOld_cm = {15200,540,1};
 	/**
 	 * 最新位置
 	 * 单位：cm
 	 */
 	private float[] locationNow_cm = {20000,20000,1};
 	
-	double angle = 0;//行人方位，由传感器获取更新
+	
 
 	private SensorManager mSensorManager;// 传感器管理对象
 	private Sensor accSensor; 
-	private Sensor stepSensor; 
 	private Sensor magneticSensor;  
 	private SensorEventListener sensorEventListener;
 	Intent intent;
@@ -166,7 +141,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			switch(obj.getInt("typecode"))
 			{
 				case Constant.LOCATION_WIFI_SUCCESS://行人位置更新（wifi定位）
-					 updateLocation(obj);
+					 mapUtil.updateLocation(locationNow_cm, locationOld_cm, destLocation_px, obj);
 					 break;
 				case Constant.ACCELERATOR:
 					 isMove = obj.getBoolean("ismove");
@@ -174,10 +149,11 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 				case Constant.LOCATION_WIFI_ERROR:
 					break;
 				case Constant.ORIENTATION://行人朝向更新
-					updateOrientation(obj);
+					mapUtil.updateOrientation(obj, locationNow_cm);
+					//updateOrientation(obj);
 					break;
 				case Constant.GUIDE_SUCCESS://导引路线更新，返回以地图为原点
-					showRoute(obj);
+					mapUtil.showRoute(obj, srcLocation_px, pathDestLocation_px);
 					break;
 				case Constant.GUIDE_ERROR:
 					Toast.makeText(MapActivity.this, "路线请求不成功，请换个地点位重试！", Toast.LENGTH_SHORT).show();
@@ -199,186 +175,18 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        initView();
+        initContent();
         initSensors();// 初始化传感器和位置服务
         initData();
         //lvResults = (ListView) findViewById(R.id.main_lv_search_results);
-        searchView = (SearchDestination) findViewById(R.id.main_search_layout);
-        searchView.setSearchViewListener(this);
-        searchView.setTipsHintAdapter(hintAdapter);
-        searchView.setAutoCompleteAdapter(autoCompleteAdapter);
-        /*
-        lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(MapActivity.this, position + "", Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
+       
         //开启服务
-        //设置监听
-        
 	    Intent intent = new Intent();
-	    intent.setAction("com.uestc.Indoorguider.util.UtilService");
+	    intent.setAction("com.uestc.Indoorguider.util.UtilService");	    
 	    startService(intent);
         getWindowSize();
         isGuided = false;
-        webView = (MyWebView) findViewById(R.id.webview);
-        main_bar = (LinearLayout) findViewById(R.id.main_bar);
-        facility_infor = (LinearLayout) findViewById(R.id.facility_infor);
-        facility_name = (TextView)findViewById(R.id.facility_name);
-        facility_go = (LinearLayout) findViewById(R.id.facility_go);
-        facility_go.setOnClickListener(this);
-        myLocation = (LinearLayout) findViewById(R.id.myLocation);
-        myLocation.setOnClickListener(this);
-        near = (LinearLayout) findViewById(R.id.near);
-        near.setOnClickListener(this); 
-        more = (LinearLayout) findViewById(R.id.more);
-        more.setOnClickListener(this);
-        ticket =  (LinearLayout) findViewById(R.id.ticket);
-        ticket.setOnClickListener(this) ;
-        ImageView siteCancle = (ImageView) findViewById(R.id.site_cancel);
-        siteCancle.setOnClickListener(this);
-        //recordText = (TextView)findViewById(R.id.recordText);
-        //获取位置XML文件****************
-        /*
-        Log.v("xml", "0: "+sites.get(0).getX());
-        SearchTree tree = new SearchTree(sites);
-		SiteInfo mGoal = new SiteInfo(1, 1574, 233, 0, "nn");
-		SiteInfo target = tree.searchNearestNeighbor(mGoal, tree.mTree);
-		Log.v("xml", "result x: "+target.getX()+" y: "+target.getY());
-        */
-        //获取完成*************************
-		//设置支持JavaScript脚本
-		WebSettings webSettings = webView.getSettings();  
-		webSettings.setJavaScriptEnabled(true);
-		//webSettings.setUseWideViewPort(false);  
-		//设置可以访问文件
-		webSettings.setAllowFileAccess(true);
-		//设置支持缩放
-		webSettings.setBuiltInZoomControls(true);	
-	    webSettings.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);//内容成单列显示出来	
-		// 缩放至屏幕的大小
-		webSettings.setUseWideViewPort(true); 
-        webSettings.setLoadWithOverviewMode(true);  
-		
-		webSettings.setDatabaseEnabled(true);  
-		String dir = this.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
-		webSettings.setDatabasePath(dir);	
-		//使用localStorage则必须打开
-		webSettings.setDomStorageEnabled(true);		
-		webSettings.setGeolocationEnabled(true);
-		//webSettings.setGeolocationDatabasePath(dir);
-		webSettings.setJavaScriptEnabled(true);
-			 
-		//设置WebViewClient
-		webView.setWebViewClient(new WebViewClient(){   
-		    public boolean shouldOverrideUrlLoading(WebView view, String url) {   
-		        view.loadUrl(url);   
-		        return true;   
-		    }  
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-			}
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				super.onPageStarted(view, url, favicon);
-			}
-			@Override
-		    public void onScaleChanged(WebView view, float oldScale, float newScale)
-			{
-				float s = newScale;
-				float s2 = s;
-			}
-		});
-		
-		
-		//设置WebChromeClient
-		webView.setWebChromeClient(new WebChromeClient(){
-			//处理javascript中的alert
-			public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-				//构建一个Builder来显示网页中的对话框
-				Builder builder = new Builder(MapActivity.this);
-				builder.setTitle("Alert");
-				builder.setMessage(message);
-				builder.setPositiveButton(android.R.string.ok,
-						new AlertDialog.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								result.confirm();
-							}
-						});
-				builder.setCancelable(false);
-				builder.create();
-				builder.show();
-				return true;
-			};
-			//处理javascript中的confirm
-			public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-				Builder builder = new Builder(MapActivity.this);
-				builder.setTitle("confirm");
-				builder.setMessage(message);
-				builder.setPositiveButton(android.R.string.ok,
-						new AlertDialog.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								result.confirm();
-							}
-						});
-				builder.setNegativeButton(android.R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								result.cancel();
-							}
-						});
-				builder.setCancelable(false);
-				builder.create();
-				builder.show();
-				return true;
-			};
-			
-			@Override
-			//设置网页加载的进度条
-			public void onProgressChanged(WebView view, int newProgress) {
-				MapActivity.this.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, newProgress * 100);
-				super.onProgressChanged(view, newProgress);
-			}
-
-			//设置应用程序的标题title
-			public void onReceivedTitle(WebView view, String title) {
-				MapActivity.this.setTitle(title);
-				super.onReceivedTitle(view, title);
-			}
-
-			public void onExceededDatabaseQuota(String url,
-					String databaseIdentifier, long currentQuota,
-					long estimatedSize, long totalUsedQuota,
-					WebStorage.QuotaUpdater quotaUpdater) {
-				quotaUpdater.updateQuota(estimatedSize * 2);
-			}
-			
-			public void onGeolocationPermissionsShowPrompt(String origin,
-					GeolocationPermissions.Callback callback) {
-				callback.invoke(origin, true, false);
-				super.onGeolocationPermissionsShowPrompt(origin, callback);
-			}
-			
-			public void onReachedMaxAppCacheSize(long spaceNeeded,
-					long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
-				quotaUpdater.updateQuota(spaceNeeded * 2);
-			}
-		});
-		// 覆盖默认后退按钮的作用，替换成WebView里的查看历史页面  
-		webView.setOnKeyListener(new View.OnKeyListener() {
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (event.getAction() == KeyEvent.ACTION_DOWN) {
-					if ((keyCode == KeyEvent.KEYCODE_BACK)
-							&& webView.canGoBack()) {
-						webView.goBack();
-						return true;
-					}
-				}
-				return false;
-			}
-		});		
-		webView.loadUrl("file:///android_res/raw/spot.svg");		
-    
    }
     
 	
@@ -400,7 +208,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	{
 		super.onPause();
 		isForeground = false;
-		//注销传感器监听器******************
+		//注销传感器监听器
 		mSensorManager.unregisterListener(sensorEventListener);  
 		OrientationTool.setMainHandler(null);
 	}
@@ -460,13 +268,13 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			
 			facility_go_time = System.currentTimeMillis();
 			//获取终点位置，请求路径
-			srcLocation_px[0] = cmToPx_X(locationNow_cm[0]);
-		    srcLocation_px[1] = cmToPx_Y(locationNow_cm[1]);
+			srcLocation_px[0] = mapUtil.cmToPx_X(locationNow_cm[0]);
+		    srcLocation_px[1] = mapUtil.cmToPx_Y(locationNow_cm[1]);
 		    srcLocation_px[2] = 1;
 		    pathDestLocation_px[0] = destLocation_px[0];
 		    pathDestLocation_px[1] = destLocation_px[1];
 		    pathDestLocation_px[2] = destLocation_px[2];
-		    requestPath(srcLocation_px,pathDestLocation_px);
+		    mapUtil.requestPath(srcLocation_px,pathDestLocation_px);
 			return;			
 		}
 		
@@ -549,49 +357,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
        }
     }  
 	
-	protected void requestPath(float[] srcLocation,float[] destLocation)
-	{
-		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		if(ConnectTool.checkConnect(this,wifiManager))
-		{
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put("typecode", Constant.GUIDE_REQUEST);
-				JSONObject src = new JSONObject();
-				src.put("x", srcLocation[0]);
-				src.put("y", srcLocation[1]);
-				src.put("z", srcLocation[2]);
-				obj.put("sour", src);
-				JSONObject dest = new JSONObject();
-				dest.put("x", destLocation[0]);
-				dest.put("y", destLocation[1]);
-				dest.put("z", destLocation[2]);
-				obj.put("dest", dest);
-				Handler handler = SendToServerThread.getHandler();
-				if(handler!= null)
-				{
-					Message msg = handler.obtainMessage();
-					msg.obj = obj;		
-					handler.sendMessage(msg);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	 	
-		} 		
-	}
-	
-   //实际坐标到地图坐标
-   public int cmToPx_X(float dimension_cm)
-   {
-	   int map = (int) (dimension_cm/MyWebView.P+MyWebView.offsetX);
-	   return map;
-   }
-   public int cmToPx_Y(float dimension_cm)
-   {
-	   int map = (int) (dimension_cm/MyWebView.P+MyWebView.offsetY);
-	   return map;
-   }
 
    @TargetApi(13)
    public void getWindowSize()
@@ -670,115 +435,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	   return true;
    }
    */
-   /**偏离计算*/
-   double culculateNearestDistance(float[] location_cm) 
-			throws KeySizeException, KeyDuplicateException {
-		
-		Log.v("test", "into calculate");
-		Log.v("test", "k[0] and k[1]: " + location_cm[0] + "  " +location_cm[1]);
-		int m = kdtree.nearest(new double[]{location_cm[0], location_cm[1]});
-		Log.v("test", "find ok");
 
-		
-		printSites(location_cm);
-		Log.v("sites", "return "+"x: " + sites_px[m][0] + " y: " + sites_px[m][1]);
-		Log.v("sites", "return m: " + m);
-		return Math.sqrt( Math.pow(cmToPx_X(location_cm[0]) - sites_px[m][0],  2.0)  + 
-									   Math.pow(cmToPx_Y(location_cm[1]) - sites_px[m][1],  2.0));		
-
-//		return Math.sqrt( Math.pow(location_cm[0] - sites_px[m][0],  2)  + 
-//									   Math.pow(location_cm[1] - sites_px[m][1],  2));		
-
-   }
-    
-   //test
-   void printSites(float[] current) {
-	   
-	   int i;
-	   Log.v("sites","current: " + "x: "+cmToPx_X(current[0]) + " y:" + cmToPx_Y(current[1]));
-	   for (i = 0; i < sites_px.length; i++) {
-		   Log.v("sites", "all sites "+i+"--x: " + sites_px[i][0] + " y: " + sites_px[i][1]);
-	   }
-   }
-   
-   /**显示导引路线*/
-   private void showRoute(JSONObject obj) throws JSONException{
-	   
-   
-	    main_bar.setVisibility(View.VISIBLE);
-	    facility_infor.setVisibility(View.GONE);
-		JSONArray pathArray_px = obj.getJSONArray("path");//unit:px
-		String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1] ;
-		JSONObject node = new  JSONObject();
-		int i = 0;
-		// for kdtree
-		sites_px = new double[pathArray_px.length()][2];
-		Log.v("test", "in response!");
-		int group3 =  pathArray_px.length()/3;
-		int k = pathArray_px.length()%3;
-		int j = 0;
-		for(; j < group3; j++)
-		{
-			node = (JSONObject) pathArray_px.get(j+0);
-			path = path + " C"+node.getInt("x")+" "+node.getInt("y");
-			sites_px[j][0] = node.getInt("x");
-			sites_px[j][1] = node.getInt("y");
-			node = (JSONObject) pathArray_px.get(j+1);
-			path = path + ","+node.getInt("x")+" "+node.getInt("y");
-			sites_px[j+1][0] = node.getInt("x");
-			sites_px[j+1][1] = node.getInt("y");
-			node = (JSONObject) pathArray_px.get(j+2);
-			path = path + ","+node.getInt("x")+" "+node.getInt("y");
-			sites_px[j+2][0] = node.getInt("x");
-		    sites_px[j+2][1] = node.getInt("y");
-		}
-		int index = 3*j;
-		switch(k)
-		{
-		    case 1:
-		    	//二次贝塞尔相连
-		    	node = (JSONObject) pathArray_px.get(index);
-				path = path + " Q"+node.getInt("x")+" "+node.getInt("y");
-				sites_px[index][0] = node.getInt("x");
-				sites_px[index][1] = node.getInt("y");
-				path = path + ","+pathDestLocation_px[0]+" "+pathDestLocation_px[1];
-		    	break;
-		    case 2:
-		    	//三次贝塞尔
-		    	node = (JSONObject) pathArray_px.get(index);
-				path = path + " C"+node.getInt("x")+" "+node.getInt("y");
-				sites_px[index][0] = node.getInt("x");
-				sites_px[index][1] = node.getInt("y");
-				node = (JSONObject) pathArray_px.get(index+1);
-				path = path + ","+node.getInt("x")+" "+node.getInt("y");
-				sites_px[index+1][0] = node.getInt("x");
-				sites_px[index+1][1] = node.getInt("y");
-				path = path + ","+pathDestLocation_px[0]+" "+pathDestLocation_px[1];
-		    	break;
-		}
-		
-//		--i;
-//		node = (JSONObject) pathArray_px.get(i);
-//		//init last site
-//		sites_px[i][0] = node.getInt("x");
-//		sites_px[i][1] = node.getInt("y");
-//		Log.v("test", "site[0]: " + sites_px[i][0]);
-//		Log.v("test", "site[1]: " + sites_px[i][1]);
-		// build the kdtree
-		kdtree = new KDTree<Integer>(2);
-		for (int q = 0; q < sites_px.length; ++q)
-			try {
-				kdtree.insert(sites_px[q], q);
-			} catch (KeySizeException e) {
-				e.printStackTrace();
-			} catch (KeyDuplicateException e) {
-				e.printStackTrace();
-			}
-		//调用javascript中的方法画出路线
-		isGuided = true;     //guided!
-        webView.loadUrl("javascript:drawPath('"+path+"')");
-	   
-   }
+  
    /**
     * 显示设施名称*/
    private void showfacilityName(JSONObject obj) throws JSONException{
@@ -789,76 +447,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 		destLocation_px[2] = 1;
 		//facility_name.setText(text);
   }
-   /**
-    * 更新行人坐标
-    * 收到的定位信息单位：cm
-    * */
-   private void updateLocation(JSONObject obj) throws JSONException{
-	   if(obj.getInt("x") ==0 &&obj.getInt("y") == 0)
-	   {
-		   return;
-	   }
-	    locationNow_cm[0] = obj.getInt("x"); //unit:CM
-		locationNow_cm[1] = obj.getInt("y"); 
-		locationNow_cm[2] = obj.getInt("z");
-		//recordText.setText(locationNow_cm[0]+" "+locationNow_cm[1]);
-		Log.v("test", "x: " + locationNow_cm[0] );
-		Log.v("test", "y: " + locationNow_cm[1]);
-		Log.v("test", "destination x: "+ destLocation_px[0]);
-		Log.v("test", "destination y: "+ destLocation_px[1]);
-		if(firstData)
-		{
-			//放入 角度，位置x,y
-			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
-		    locationOld_cm[0] = locationNow_cm[0];
-		    locationOld_cm[1] = locationNow_cm[1];
-		    locationOld_cm[2] = locationNow_cm[2];
-		    firstData = false;
-		}
-	 
-		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(50,2) && isMove )//1m=20px
-		{
-			//webView.loadUrl("javascript:drawcircle('"+x+"','"+y+"')");
-			//放入 角度，位置x,y
-			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
-		    locationOld_cm[0] = locationNow_cm[0];
-		    locationOld_cm[1] = locationNow_cm[1];
-		    locationOld_cm[2] = locationNow_cm[2];
-		}
-		
-		
-		//get the nearest site, and culculate the distance
-		if (isGuided) {
-			double dis = 0;
-			Log.v("test", "test in calculate");
-			float [] location = {locationNow_cm[0], locationNow_cm[1]};
-			try {
-				dis = culculateNearestDistance(location);
-				Log.v("sites", "distance: " + dis);
-				Log.v("sites", "--------------------------------");
-				Log.v("test", "test in calculate");
-				Log.v("test", "dis: " + dis);
-			} catch (KeySizeException e) {
-				e.printStackTrace();
-			} catch (KeyDuplicateException e) {
-				e.printStackTrace();
-			}
-			Log.v("test", "in dis calculate!");
-			if (dis > MinDistance_px) {
-				Log.v("distance", "request");
-				requestPath(new float[]
-					{cmToPx_X(locationNow_cm[0]),  cmToPx_Y(locationNow_cm[1]), locationNow_cm[2]},  destLocation_px);
-			}
-		}
-   }
-   /**更新行人方位*/
-   private void updateOrientation(JSONObject obj) throws JSONException{
-	 
-	   angle = obj.getDouble("angle");
-	   webView.loadUrl("javascript:setPointer('"+angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
-	  // Log.i("角度",locationOld_cm[0]+" "+locationOld_cm[1]);
-   }
-
+  
    
    
    /**
@@ -907,7 +496,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
     */
    private void getDbData() {
        int size = 10;
-       dbData = new ArrayList<>(size);
+       dbData = new ArrayList<DestinationSite>(size);
        DerectionConstant dc = new DerectionConstant();
        dc.fillDerection();
        //just for test
@@ -920,7 +509,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
     * 获取热搜版data 和adapter
     */
    private void getHintData() {
-       hintData = new ArrayList<>(hintSize);
+       hintData = new ArrayList<String>(hintSize);
        
        int i = 1;
        hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_13);
@@ -928,7 +517,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
        hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_918);
        hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_915);
        
-       hintAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, hintData);
+       hintAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, hintData);
    }
 
    /**
@@ -937,7 +526,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
    private void getAutoCompleteData(String text) {
        if (autoCompleteData == null) {
            //初始化
-           autoCompleteData = new ArrayList<>(hintSize);
+           autoCompleteData = new ArrayList<String>(hintSize);
        } else {
            // 根据text 获取auto data
            autoCompleteData.clear();
@@ -950,7 +539,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
            }
        }
        if (autoCompleteAdapter == null) {
-           autoCompleteAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, autoCompleteData);
+           autoCompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, autoCompleteData);
        } else {
            autoCompleteAdapter.notifyDataSetChanged();
        }
@@ -962,7 +551,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
    private void getResultData(String text) {
        if (resultData == null) {
            // 初始化
-           resultData = new ArrayList<>();
+           resultData = new ArrayList<DestinationSite>();
        } else {
            resultData.clear();
            for (int i = 0; i < dbData.size(); i++) {
@@ -976,6 +565,174 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
        } else {
            resultAdapter.notifyDataSetChanged();
        }
+   }
+
+@Override
+protected void initView() {
+	// TODO Auto-generated method stub
+	webView = (MyWebView) findViewById(R.id.webview);
+	searchView = (SearchDestination) findViewById(R.id.main_search_layout);
+    main_bar = (LinearLayout) findViewById(R.id.main_bar);
+    facility_infor = (LinearLayout) findViewById(R.id.facility_infor);
+    facility_name = (TextView)findViewById(R.id.facility_name);
+    facility_go = (LinearLayout) findViewById(R.id.facility_go);
+    facility_go.setOnClickListener(this);
+    myLocation = (LinearLayout) findViewById(R.id.myLocation);
+    myLocation.setOnClickListener(this);
+    near = (LinearLayout) findViewById(R.id.near);
+    near.setOnClickListener(this); 
+    more = (LinearLayout) findViewById(R.id.more);
+    more.setOnClickListener(this);
+    ticket =  (LinearLayout) findViewById(R.id.ticket);
+    ticket.setOnClickListener(this) ;
+    ImageView siteCancle = (ImageView) findViewById(R.id.site_cancel);
+    siteCancle.setOnClickListener(this);
+}
+
+@Override
+protected void initContent() {
+	  mapUtil = new MapUtil(this,webView);
+	  searchView.setSearchViewListener(this);
+      searchView.setTipsHintAdapter(hintAdapter);
+      searchView.setAutoCompleteAdapter(autoCompleteAdapter);
+	  configWebView();
+	
+	      
+	
+  }
+
+private void configWebView(){
+	 //设置支持JavaScript脚本
+	WebSettings webSettings = webView.getSettings();  
+	webSettings.setJavaScriptEnabled(true);
+	//webSettings.setUseWideViewPort(false);  
+	//设置可以访问文件
+	webSettings.setAllowFileAccess(true);
+	//设置支持缩放
+	webSettings.setBuiltInZoomControls(true);	
+    webSettings.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);//内容成单列显示出来	
+	// 缩放至屏幕的大小
+	webSettings.setUseWideViewPort(true); 
+    webSettings.setLoadWithOverviewMode(true);  
+	
+	webSettings.setDatabaseEnabled(true);  
+	String dir = this.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
+	webSettings.setDatabasePath(dir);	
+	//使用localStorage则必须打开
+	webSettings.setDomStorageEnabled(true);		
+	webSettings.setGeolocationEnabled(true);
+	//webSettings.setGeolocationDatabasePath(dir);
+	webSettings.setJavaScriptEnabled(true);
+    // TODO Auto-generated method stub
+    //设置WebViewClient
+	webView.setWebViewClient(new WebViewClient(){   
+	    public boolean shouldOverrideUrlLoading(WebView view, String url) {   
+	        view.loadUrl(url);   
+	        return true;   
+	    }  
+		public void onPageFinished(WebView view, String url) {
+			super.onPageFinished(view, url);
+		}
+		public void onPageStarted(WebView view, String url, Bitmap favicon) {
+			super.onPageStarted(view, url, favicon);
+		}
+		@Override
+	    public void onScaleChanged(WebView view, float oldScale, float newScale)
+		{
+			float s = newScale;
+			float s2 = s;
+		}
+	});
+	
+	
+	//设置WebChromeClient
+	webView.setWebChromeClient(new WebChromeClient(){
+		//处理javascript中的alert
+		public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+			//构建一个Builder来显示网页中的对话框
+			Builder builder = new Builder(MapActivity.this);
+			builder.setTitle("Alert");
+			builder.setMessage(message);
+			builder.setPositiveButton(android.R.string.ok,
+					new AlertDialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							result.confirm();
+						}
+					});
+			builder.setCancelable(false);
+			builder.create();
+			builder.show();
+			return true;
+		};
+		//处理javascript中的confirm
+		public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+			Builder builder = new Builder(MapActivity.this);
+			builder.setTitle("confirm");
+			builder.setMessage(message);
+			builder.setPositiveButton(android.R.string.ok,
+					new AlertDialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							result.confirm();
+						}
+					});
+			builder.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							result.cancel();
+						}
+					});
+			builder.setCancelable(false);
+			builder.create();
+			builder.show();
+			return true;
+		};
+		
+		@Override
+		//设置网页加载的进度条
+		public void onProgressChanged(WebView view, int newProgress) {
+			MapActivity.this.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, newProgress * 100);
+			super.onProgressChanged(view, newProgress);
+		}
+
+		//设置应用程序的标题title
+		public void onReceivedTitle(WebView view, String title) {
+			MapActivity.this.setTitle(title);
+			super.onReceivedTitle(view, title);
+		}
+
+		public void onExceededDatabaseQuota(String url,
+				String databaseIdentifier, long currentQuota,
+				long estimatedSize, long totalUsedQuota,
+				WebStorage.QuotaUpdater quotaUpdater) {
+			quotaUpdater.updateQuota(estimatedSize * 2);
+		}
+		
+		public void onGeolocationPermissionsShowPrompt(String origin,
+				GeolocationPermissions.Callback callback) {
+			callback.invoke(origin, true, false);
+			super.onGeolocationPermissionsShowPrompt(origin, callback);
+		}
+		
+		public void onReachedMaxAppCacheSize(long spaceNeeded,
+				long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
+			quotaUpdater.updateQuota(spaceNeeded * 2);
+		}
+	});
+	// 覆盖默认后退按钮的作用，替换成WebView里的查看历史页面  
+	webView.setOnKeyListener(new View.OnKeyListener() {
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
+				if ((keyCode == KeyEvent.KEYCODE_BACK)
+						&& webView.canGoBack()) {
+					webView.goBack();
+					return true;
+				}
+			}
+			return false;
+		}
+	});		
+	webView.loadUrl("file:///android_res/raw/mapholl25.svg");		
+	
    }
 
 }

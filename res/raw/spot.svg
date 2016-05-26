@@ -1806,6 +1806,7 @@ viewBox="0 0 2000 3000"
 <!--扫码定位 -->
 <g id="L8" >
     <use id = "scan" x= "-101.25" y = "-153.125" xlink:href= '#code2'/>
+    <use id="pnow" x="10" y="10" xlink:href = '#pointer'/>
 </g>
 
 
