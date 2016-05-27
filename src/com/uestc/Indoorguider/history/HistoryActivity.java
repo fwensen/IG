@@ -262,9 +262,8 @@ public class HistoryActivity extends APPActivity implements OnScrollListener {
 	}
 	
 	
-	
-	//≥ı ºªØ
-	private void initView() {
+    @Override
+	protected void initView() {
 
 		loadDateNums = -1;
 		dbHelper = new MyDBHelper();		
@@ -574,5 +573,14 @@ public class HistoryActivity extends APPActivity implements OnScrollListener {
 		popup.show();
 		
 		}
+
+	
+	
+
+	@Override
+	protected void initContent() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
