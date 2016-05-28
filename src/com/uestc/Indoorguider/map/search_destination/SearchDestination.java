@@ -82,12 +82,12 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 	            mListener.onSearch(etInputText.getText().toString());
 	        }
 	        //隐藏软键盘
-	     InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-	     imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+	     //InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+	     //imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 	 }
 	
 	
-	  /**
+	 /**
      * 设置热搜版提示 adapter
      */
     public void setTipsHintAdapter(ArrayAdapter<String> adapter) {
@@ -139,7 +139,7 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 	        }
 	    }
 	
-	/*
+	/**
 	 * 回调接口
 	 */
 	public interface SearchViewListener {
@@ -157,15 +157,26 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 	public void onClick(View v) {
 		
 		switch (v.getId()) {
+		/**
+		 * 点击搜索框
+		 */
         case R.id.search_et_input:
         	lvContent.setVisibility(VISIBLE);
             break;
+        /**
+         * 点击删除小图标
+         */
         case R.id.search_iv_delete:
             etInputText.setText("");
             ivDelete.setVisibility(GONE);
             break;
+        /**
+         * 点击出发
+         */
         case R.id.search_btn_back:
+        	//mListener.onSearch(etInputText.getText().toString());
         	notifyStartSearching(null);
+        	etInputText.setText("");
             break;
 		}
 	}

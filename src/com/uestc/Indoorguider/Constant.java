@@ -1,5 +1,6 @@
 package com.uestc.Indoorguider;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -161,31 +162,40 @@ public class Constant {
 		
 	}
 	
-	 
+	/**
+	 * 所有地点对应的中文名
+	 * @author vincent
+	 * @return
+	 */
 	 public static Map<String, String> sitesAndChineseMap() {
 		 
 		 Map<String, String> sacMap = new HashMap<String, String>();
-		 sacMap.put("FirstAid", "急救中心");
-		 sacMap.put("GiftStore", "礼物店");
-		 sacMap.put("Taxi", "出租车");
-		 sacMap.put("Bus", "公交站");
-		 sacMap.put("WashRoom", "洗手间");
-		 sacMap.put("Ticket", "票台");
-		 sacMap.put("WaitRoom", "等待室");
-		 sacMap.put("Exit", "出口");
-		 sacMap.put("Parking", "停车场");
-		 sacMap.put("ATM", "ATM");
-		 sacMap.put("KFC", "肯德基");
-		 sacMap.put("Charging", "充电处");
-		 sacMap.put("WesternFood", "西餐厅");
-		 sacMap.put("Stair", "楼梯");
-		 sacMap.put("StationExit", "站台出口");
-		 sacMap.put("StationEntrance", "站台入口");
-		 sacMap.put("Luggage", "行李寄存处");
-		 sacMap.put("Coffee", "咖啡厅");
-		 sacMap.put("Lost", "失物招领处");
-		 sacMap.put("C-Restaurant", "中餐厅");
-		 sacMap.put("Restaurant", "餐厅");		 
+		 sacMap.put("WashRoom", "洗手间");//
+		 sacMap.put("FoodSquare", "美食广场");//
+		 sacMap.put("McDonald", "麦当劳");//
+		 sacMap.put("ATM_1", "取款机(靠近美食广场)");//
+		 sacMap.put("ATM_2", "取款机(靠近咨询室)");//
+		 sacMap.put("DiTie", "地铁入口");//
+		 sacMap.put("FoodCity", "美食城");//
+		 sacMap.put("InqueryOffice", "咨询室");//
+		 sacMap.put("Coach", "长途汽车站");
+		 sacMap.put("Bus", "短途汽车站");
+		 sacMap.put("Bus_418", "公交 418 站台");//
+		 sacMap.put("Bus_107", "公交 107 东直门枢纽站-白石桥东");//
+		 sacMap.put("Bus_123", "公交 123 东直门枢纽站-金五星百货城");//
+		 sacMap.put("Bus_416", "公交 416 东直门枢纽站-来东营西桥东");//
+		 sacMap.put("Bus_404", "公交 404 东直门枢纽站-来东营西桥东");//
+		 sacMap.put("Bus_132", "公交 132 东直门枢纽站-望京北路东口");//
+		 sacMap.put("Bus_401", "公交 401 东直门枢纽站-酒仙桥商场");//
+		 sacMap.put("Coach_852", "长途汽车 852 平谷方向");
+		 sacMap.put("Coach_918", "长途汽车 918 平谷方向");
+		 sacMap.put("Coach_866", "长途汽车 866 雁栖方向");
+		 sacMap.put("Coach_916", "长途汽车 916 怀柔方向");
+		 sacMap.put("Coach_915", "长途汽车 915 顺义南彩方向");
+		 sacMap.put("Coach_916F", "长途汽车 915快 顺义南彩方向");
+		 sacMap.put("Coach_980", "长途汽车 980 密云方向");
+		 sacMap.put("Coach_106", "长途汽车 106 北京南站");
 		 return sacMap;
 	 }
+	 
 }

@@ -96,7 +96,9 @@ public class MapUtil {
 	
   
 
-   /**Æ«Àë¼ÆËã*/
+   /**
+    * Æ«Àë¼ÆËã
+    */
 	public double culculateNearestDistance(float[] location_cm) 
 			throws KeySizeException, KeyDuplicateException {
 		
@@ -275,7 +277,9 @@ public class MapUtil {
 		}
 		
 		
-		//get the nearest site, and culculate the distance
+		/**
+		 * get the nearest site, and culculate the distance
+		 */
 		if (isGuided) {
 			double dis = 0;
 			Log.v("test", "test in calculate");

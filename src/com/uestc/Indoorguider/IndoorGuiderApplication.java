@@ -30,7 +30,14 @@ public class IndoorGuiderApplication extends Application {
 
 	public  static Map<String, String> sitesNameEnAndChinese = null;
 	public  static ArrayList<SiteInfo> sitesApplication  = null;
-	private InputStream inputStream ; 
+	/**
+	 * 地点的坐标信息，包括边界
+	 */
+	private InputStream Site_Info_Stream;
+	/**
+	 * 所有地点的信息，仅有sitename,x,y,z
+	 */
+	public static InputStream All_Site_Stream;
 	
 	@Override
 	public void onCreate() {
@@ -39,29 +46,19 @@ public class IndoorGuiderApplication extends Application {
 		IGManager = new IndoorGuiderManager(this);
 
 		IGHelper = new IndoorGuiderHelper();
+
 		sitesNameEnAndChinese = Constant.sitesAndChineseMap();   
-	    inputStream = this.getResources().openRawResource(R.raw.site);	       
-
-
-		
-		 sitesNameEnAndChinese = Constant.sitesAndChineseMap();   
-	       inputStream = this.getResources().openRawResource(R.raw.site);	       
-
-	       try {
-			sitesApplication = getSites(inputStream);
-			//for test***************
-			//for (int i = 0; i < 1000; ++i)
-				//sitesApplication.add(sitesApplication.get(i % sitesApplication.size()));
-	       } catch (XmlPullParserException e) {
-			e.printStackTrace();
-	       } catch (IOException e) {
-			e.printStackTrace();
-	       }    
-
+		Site_Info_Stream = this.getResources().openRawResource(R.raw.site);	       
+		All_Site_Stream = this.getResources().openRawResource(R.raw.all_site);
+		try {
+			sitesApplication = getSites(Site_Info_Stream);
+		} catch (XmlPullParserException e) {
+		 	e.printStackTrace();
+		} catch (IOException e) {
+		 	e.printStackTrace();
+		}    
 
 		IGHelper = new IndoorGuiderHelper();
-
-
 	}
 
 	public static IndoorGuiderApplication getInstance() {
@@ -127,8 +124,26 @@ public class IndoorGuiderApplication extends Application {
 		IGHelper.register(username, password);
 	}
 	
-	//从XML中解析出siteinfo
-		private ArrayList<SiteInfo> getSites(InputStream xml) throws XmlPullParserException, IOException {
+	/**
+	 * 返回所有地点的坐标
+	 * @author vincent
+	 * @return
+	 * @throws XmlPullParserException
+	 * @throws IOException
+	 */
+	public static ArrayList<SiteInfo> getAllSitesInfo() throws XmlPullParserException, IOException {
+		return getSites(All_Site_Stream);
+	}
+	
+	/**
+	 * 读取xml配置文件
+	 * @author vincent
+	 * @param xml
+	 * @return
+	 * @throws XmlPullParserException
+	 * @throws IOException
+	 */
+	public static ArrayList<SiteInfo> getSites(InputStream xml) throws XmlPullParserException, IOException {
 				
 				ArrayList<SiteInfo> sites = null;
 				SiteInfo site = null;
@@ -150,6 +165,10 @@ public class IndoorGuiderApplication extends Application {
 		        			int id = Integer.valueOf(pullParser.nextText());
 		        			site.setID(id);
 		        			
+		        		} else if ("SiteName".equals(pullParser.getName())) {	        			
+		        			String siteName = pullParser.nextText();
+		        			Log.v("xml", "sitename: "+siteName);
+		        			site.setSiteName(siteName);
 		        		} else if ("positionX".equals(pullParser.getName())) {	        			
 		        			//Log.v("xml", "x: "+pullParser.nextText());
 		        			double x = Double.valueOf(pullParser.nextText());
@@ -164,10 +183,6 @@ public class IndoorGuiderApplication extends Application {
 		        			double z = Double.valueOf(pullParser.nextText());
 		        			site.setZ(z);
 		        			
-		        		} else if ("SiteName".equals(pullParser.getName())) {	        			
-		        			String siteName = pullParser.nextText();
-		        			Log.v("xml", "sitename: "+siteName);
-		        			site.setSiteName(siteName);
 		        		} else if ("Left".equals(pullParser.getName())) {
 		        			int l = Integer.valueOf(pullParser.nextText());
 		        			Log.v("xml", "topleftx: "+l);
@@ -181,7 +196,7 @@ public class IndoorGuiderApplication extends Application {
 		        			int r = Integer.valueOf(pullParser.nextText());
 		        			site.setRight(r);
 		        			
-		        		}  else if("Buttom".equals(pullParser.getName())) {
+		        		}  else if("Bottom".equals(pullParser.getName())) {
 		        			int b = Integer.valueOf(pullParser.nextText());
 		        			site.setButtom(b);
 		        		} 
