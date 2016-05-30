@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import com.uestc.Indoorguider.Constant;
 import com.uestc.Indoorguider.orientation.OrientationTool;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -26,7 +27,7 @@ public class MyWebView extends WebView {
 	// 
 	public static float webviewX0;
 	public static float webviewY0;
-	public static float P = 8.47f;
+	public static final float P = 8.47f;
 	public static int offsetX = 2796;
 	public static float offsetY = (float) 1926;
 	private boolean scaleFlag1  = false;
@@ -35,7 +36,7 @@ public class MyWebView extends WebView {
 	public static boolean typeFlag;//表示是否当前在筛选模式,true-用户缩放不改变当前地图显示站点类别
 	float xd,xu; 
 	float yd,yu;
-	float OldX1,OldX2,OldY1,OldY2,NewX1,NewX2,NewY1,NewY2;
+
 	static Handler h ;
 	private static MyWebView myWebView;
 	public MyWebView(Context context, AttributeSet attrs) {
@@ -79,6 +80,7 @@ public class MyWebView extends WebView {
 			        	
 				    	int x = getScrollX();
 				        int y = getScrollY();
+				        //计算在svg文件中的位置（px）
 				    	float x0 =  ((x+xd)/scale);
 				    	float y0 =  ((y+yd)/scale);
 				    	webviewX0 = x0;
@@ -112,7 +114,7 @@ public class MyWebView extends WebView {
 
     }   
  
- 
+   
         public void showMapLayer(){
         	if(!typeFlag){
         		scale = getScale();

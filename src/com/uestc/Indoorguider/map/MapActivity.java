@@ -62,6 +62,8 @@ import com.uestc.Indoorguider.map.search_destination.*;
 public class MapActivity extends APPActivity implements OnClickListener, SearchDestination.SearchViewListener{
     private MapUtils mapUtil;
 	private static  MyWebView webView = null;
+	
+	JSONObject path; //记录导引路径，供楼层切换
 	private LinearLayout myLocation = null;
 	private LinearLayout near = null;
 	private LinearLayout ticket = null;
@@ -69,6 +71,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	private LinearLayout main_bar,facility_infor,facility_go = null;
     private TextView facility_name ;//设施名称
 	//private TextView recordText ;//测试记录
+    
+   
 	
 	public static int windowHeight ,windowWidth;
     private float[] srcLocation_px = new float[3] ;
@@ -97,6 +101,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	 * 单位：cm
 	 */
 	private float[] locationNow_cm = {20000,20000,1};
+	private int currentLayer = 2;//用户当前楼层
 	
 	
 
@@ -132,7 +137,10 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
      * 提示框显示项的个数
      */
     private static int hintSize = DEFAULT_HINT_SIZE;
-
+    public int getCurrentLayer()
+    {
+    	return currentLayer;
+    }
 	@Override
 	protected void handleResult(JSONObject obj) 
 	{
@@ -140,6 +148,19 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			switch(obj.getInt("typecode"))
 			{
 				case Constant.LOCATION_WIFI_SUCCESS://行人位置更新（wifi定位）
+					 if(mapUtil.isChangeLayer(obj.getInt("x"), obj.getInt("y"))){
+						 //切换地图
+						 if(obj.getInt("z")==2){
+							 currentLayer = 1;
+							 webView.loadUrl("file:///android_res/raw/layer1.svg");	
+						 }else{
+							 currentLayer = 2;
+							 webView.loadUrl("file:///android_res/raw/layer2.svg");	
+						 }
+						 if(path != null){
+							 mapUtil.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
+						 }
+					 }
 					 mapUtil.updateLocation(locationNow_cm, locationOld_cm, destLocation_px, obj);
 					 break;
 				case Constant.ACCELERATOR:
@@ -149,13 +170,13 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 					break;
 				case Constant.ORIENTATION://行人朝向更新
 					mapUtil.updateOrientation(obj, locationNow_cm);
-					//updateOrientation(obj);
 					break;
 				case Constant.GUIDE_SUCCESS://导引路线更新，返回以地图为原点
-					mapUtil.showRoute(obj, srcLocation_px, pathDestLocation_px);
+					path = obj;
+					mapUtil.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
 					break;
 				case Constant.GUIDE_ERROR:
-					Toast.makeText(MapActivity.this, "路线请求不成功，请换个地点位重试！", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MapActivity.this, "路线请求不成功，请换个地点重试！", Toast.LENGTH_SHORT).show();
 					break;
 				case Constant.FACILITY_INFOR://站点匹配成功，返回名称、坐标，显示
 					showfacilityName(obj);
@@ -185,6 +206,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");	    
 	    startService(intent);
         getWindowSize();
+       
       
    }
     
@@ -199,7 +221,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 		//注册传感器监听器
 	    mSensorManager.registerListener(sensorEventListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);  
 	    mSensorManager.registerListener(sensorEventListener, magneticSensor,SensorManager.SENSOR_DELAY_NORMAL);  
-	    
 	}
 	
 	@Override
@@ -269,7 +290,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			//获取终点位置，请求路径
 			srcLocation_px[0] = mapUtil.cmToPx_X(locationNow_cm[0]);
 		    srcLocation_px[1] = mapUtil.cmToPx_Y(locationNow_cm[1]);
-		    srcLocation_px[2] = 1;
+		    srcLocation_px[2] = currentLayer;
 		    pathDestLocation_px[0] = destLocation_px[0];
 		    pathDestLocation_px[1] = destLocation_px[1];
 		    pathDestLocation_px[2] = destLocation_px[2];
@@ -727,7 +748,7 @@ private void configWebView(){
 			return false;
 		}
 	});		
-	webView.loadUrl("file:///android_res/raw/mapholl25.svg");		
+	webView.loadUrl("file:///android_res/raw/layer2.svg");		
 	
    }
 

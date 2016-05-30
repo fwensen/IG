@@ -441,8 +441,8 @@ public final class R {
         public static final int escalator=0x7f050006;
         public static final int food=0x7f050007;
         public static final int kfc=0x7f050008;
-        public static final int map25=0x7f050009;
-        public static final int mapholl25=0x7f05000a;
+        public static final int layer1=0x7f050009;
+        public static final int layer2=0x7f05000a;
         public static final int mcdonald=0x7f05000b;
         public static final int newmap=0x7f05000c;
         public static final int point=0x7f05000d;

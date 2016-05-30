@@ -1,4 +1,6 @@
 package com.uestc.Indoorguider.map;
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +32,10 @@ public class MapUtils {
 	boolean isMove =true;
 	double [][] sites_px;
 	private boolean firstData  = true;//第一次收到定位数据
+	
+	
+	
+	
 	
 	public MapUtils(Context context, MyWebView webView){
 		this.context = context;
@@ -145,14 +151,89 @@ public class MapUtils {
         webView.loadUrl("javascript:drawPath('"+path+"')");
 	   
    }
+	
+	 /**显示导引路线*/
+	public void showRouteMultiLayer(JSONObject obj ,float[] srcLocation_px,float[] pathDestLocation_px) throws JSONException{
+		   
+			double [][] sites_px;
+		    JSONArray pathArray_px;
+		    JSONObject currentLayerPath;
+		    int hasMultilayer =  obj.getInt("multilayer");
+		    if(hasMultilayer == 0)
+		    {
+		    	currentLayerPath = obj.getJSONObject("path1");
+		    	
+		    }else{
+		    	currentLayerPath = obj.getJSONObject("path1");
+		    	int layer = currentLayerPath.getInt("z");
+		    	if(layer != ((MapActivity)context).getCurrentLayer())
+		    	{
+		    		currentLayerPath= obj.getJSONObject("path2");
+		    	}
+		    }
+		    pathArray_px = currentLayerPath.getJSONArray("path");//unit:px
+			String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
+			JSONObject node = new JSONObject();
+			int i = 0;
+			// for kdtree
+			sites_px = new double[pathArray_px.length()][2];
+			Log.v("test", "in response!");
+			for(; i<pathArray_px.length(); i++)
+			{
+				node = (JSONObject) pathArray_px.get(i);
+				path = path + node.getInt("x")+" "+node.getInt("y")+"L";
+				//init sites
+				sites_px[i][0] = node.getInt("x");
+				sites_px[i][1] = node.getInt("y");
+				Log.v("test", "site[0]: " + sites_px[i][0]);
+				Log.v("test", "site[1]: " + sites_px[i][1]);
+			}
+			//最后一个节点（目的地坐标）
+			path = path + pathDestLocation_px[0]+" "+pathDestLocation_px[1];
+			--i;
+			node = (JSONObject) pathArray_px.get(i);
+			//init last site
+			sites_px[i][0] = node.getInt("x");
+			sites_px[i][1] = node.getInt("y");
+			Log.v("test", "site[0]: " + sites_px[i][0]);
+			Log.v("test", "site[1]: " + sites_px[i][1]);
+			// build the kdtree
+			kdtree = new KDTree<Integer>(2);
+			for (int j = 0; j < sites_px.length; ++j)
+				try {
+					kdtree.insert(sites_px[j], j);
+				} catch (KeySizeException e) {
+					e.printStackTrace();
+				} catch (KeyDuplicateException e) {
+					e.printStackTrace();
+				}
+			//调用javascript中的方法画出路线
+			isGuided = true;     //guided!
+	        webView.loadUrl("javascript:drawPath('"+path+"')");
+		   
+	   }
    
    /**显示导引路线*/
-  /* private void showRoute1(JSONObject obj) throws JSONException{
+    public void showRoute1(JSONObject obj,float[] srcLocation_px,float[] pathDestLocation_px) throws JSONException{
 	   
 	    double [][] sites_px;
-	    main_bar.setVisibility(View.VISIBLE);
-	    facility_infor.setVisibility(View.GONE);
-		JSONArray pathArray_px = obj.getJSONArray("path");//unit:px
+	    JSONArray pathArray_px;
+	    JSONObject currentLayerPath;
+	    int hasMultilayer =  obj.getInt("multilayer");
+	    if(hasMultilayer == 0)
+	    {
+	    	currentLayerPath = obj.getJSONObject("path1");
+	    	
+	    }else{
+	    	currentLayerPath = obj.getJSONObject("path1");
+	    	int layer = currentLayerPath.getInt("z");
+	    	if(layer != ((MapActivity)context).getCurrentLayer())
+	    	{
+	    		currentLayerPath= obj.getJSONObject("path2");
+	    	}
+	    }
+	    pathArray_px = currentLayerPath.getJSONArray("path");//unit:px
+		
 		String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1] ;
 		JSONObject node = new  JSONObject();
 		int i = 0;
@@ -225,8 +306,33 @@ public class MapUtils {
         webView.loadUrl("javascript:drawPath('"+path+"')");
 	   
    }
-*/
    
+    
+    /**
+     * 滑动窗口，使行人初始位置位于屏幕中央
+    */
+     
+     public void scrollWindow(int x ,int y){
+    	 
+    	 float scale = webView.getScale();
+    	 webView.scrollTo((int)(x*scale), (int)(y*scale));
+    	 
+    	 
+     }
+    
+     
+//    public boolean makeLocationValid(int x_cm,int y_cm){
+//    	
+//    }
+    public boolean isChangeLayer(int x_cm ,int y_cm){
+    	int x_px = cmToPx_X(x_cm);
+    	int y_px = cmToPx_Y(y_cm);
+    	if ((x_px > 741.75 && x_px<1259.86) && (y_px > 1434.49 && y_px < 1660.56)){
+    		return true;
+    	}
+    	return false;
+       
+     }
    /**
     * 更新行人坐标
     * 收到的定位信息单位：cm
@@ -243,11 +349,15 @@ public class MapUtils {
 		
 		if(firstData)
 		{
+			int x = cmToPx_X(locationNow_cm[0]);
+			int y = cmToPx_Y(locationNow_cm[1]);
 			//放入 角度，位置x,y
-			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
+			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+x+"','"+y+"')");
 			locationOld_cm[0] = locationNow_cm[0];
 		    locationOld_cm[1] = locationNow_cm[1];
 		    locationOld_cm[2] = locationNow_cm[2];
+		    //滑动窗口
+		    webView.scrollTo(x, y);
 		    firstData = false;
 		}
 	 
@@ -261,30 +371,30 @@ public class MapUtils {
 		}
 		
 		
-		//get the nearest site, and culculate the distance
-		if (isGuided) {
-			double dis = 0;
-			Log.v("test", "test in calculate");
-			float [] location = {locationNow_cm[0], locationNow_cm[1]};
-			try {
-				dis = culculateNearestDistance(location);
-				Log.v("sites", "distance: " + dis);
-				Log.v("sites", "--------------------------------");
-				Log.v("test", "test in calculate");
-				Log.v("test", "dis: " + dis);
-			} catch (KeySizeException e) {
-				e.printStackTrace();
-			} catch (KeyDuplicateException e) {
-				e.printStackTrace();
-			}
-			Log.v("test", "in dis calculate!");
-			if (dis > MinDistance_px) {
-				Log.v("distance", "request");
-				requestPath(
-						new float[]{cmToPx_X(locationNow_cm[0]),  cmToPx_Y(locationNow_cm[1]), locationNow_cm[2]},  
-						destLocation_px);
-			}
-		}
+//		//get the nearest site, and culculate the distance
+//		if (isGuided) {
+//			double dis = 0;
+//			Log.v("test", "test in calculate");
+//			float [] location = {locationNow_cm[0], locationNow_cm[1]};
+//			try {
+//				dis = culculateNearestDistance(location);
+//				Log.v("sites", "distance: " + dis);
+//				Log.v("sites", "--------------------------------");
+//				Log.v("test", "test in calculate");
+//				Log.v("test", "dis: " + dis);
+//			} catch (KeySizeException e) {
+//				e.printStackTrace();
+//			} catch (KeyDuplicateException e) {
+//				e.printStackTrace();
+//			}
+//			Log.v("test", "in dis calculate!");
+//			if (dis > MinDistance_px) {
+//				Log.v("distance", "request");
+//				requestPath(
+//						new float[]{cmToPx_X(locationNow_cm[0]),  cmToPx_Y(locationNow_cm[1]), locationNow_cm[2]},  
+//						destLocation_px);
+//			}
+//		}
    }
    
    

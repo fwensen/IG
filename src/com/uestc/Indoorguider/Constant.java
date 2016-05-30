@@ -2,6 +2,7 @@ package com.uestc.Indoorguider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.jdom.Content;
 
@@ -28,7 +29,7 @@ public class Constant {
 	//public static final String ip="222.197.180.140";
 	//public static final String ip="121.49.97.136";
 	public static final String ip="101.201.113.254";
-	public static final int  port  = 40001;
+	public static final int  port  = 40015;
 
 	//public static final String ip="222.197.180.14";
 	//public static final int port  = 40010;
@@ -150,6 +151,7 @@ public class Constant {
 	
 	public void initUserInfor(Context context)
 	{
+		
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 		userName = sp.getString("UserName", "");
 		
@@ -182,4 +184,12 @@ public class Constant {
 		 sacMap.put("Restaurant", "餐厅");		 
 		 return sacMap;
 	 }
+	 
+	public static final float[] subWayElevator ={1059.86f , 1430.48f};
+	public static final float[] subWayStair ={1057.86f,  1660.56f};
+	
+	//定位原点
+	//2796，,1926 px
+	
+	
 }
