@@ -53,6 +53,18 @@ public class MapUtils {
 	   int map = (int) (MyWebView.offsetY-dimension_cm/MyWebView.P);
 	   return map;
    }
+   
+ //实际坐标（cm）到地图坐标(px)单位转换，地铁层
+   public int cmToPx_X1(float dimension_cm)
+   {
+	   int map = (int) (MyWebView.offsetX1-dimension_cm/MyWebView.P1);
+	   return map;
+   }
+   public int cmToPx_Y2(float dimension_cm)
+   {
+	   int map = (int) (MyWebView.offsetY1-dimension_cm/MyWebView.P1);
+	   return map;
+   }
 	
 	/**
 	 * 请求导引路径
@@ -351,13 +363,14 @@ public class MapUtils {
 		{
 			int x = cmToPx_X(locationNow_cm[0]);
 			int y = cmToPx_Y(locationNow_cm[1]);
+			((MapActivity) context).setLayer(obj.getInt("z"));
 			//放入 角度，位置x,y
 			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+x+"','"+y+"')");
 			locationOld_cm[0] = locationNow_cm[0];
 		    locationOld_cm[1] = locationNow_cm[1];
 		    locationOld_cm[2] = locationNow_cm[2];
 		    //滑动窗口
-		    webView.scrollTo(x, y);
+		  //  webView.scrollTo(x, y);
 		    firstData = false;
 		}
 	 

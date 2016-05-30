@@ -453,8 +453,10 @@ public final class R {
         public static final int spot=0x7f050012;
         public static final int stairs=0x7f050013;
         public static final int subway=0x7f050014;
-        public static final int toilet=0x7f050015;
-        public static final int waiting=0x7f050016;
+        public static final int ticket=0x7f050015;
+        public static final int ticketwindow=0x7f050016;
+        public static final int toilet=0x7f050017;
+        public static final int waiting=0x7f050018;
     }
     public static final class string {
         public static final int AFM=0x7f090002;

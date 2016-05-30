@@ -141,6 +141,9 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
     {
     	return currentLayer;
     }
+    
+    boolean canGo = false;
+    boolean canBack = false;
 	@Override
 	protected void handleResult(JSONObject obj) 
 	{
@@ -148,19 +151,29 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			switch(obj.getInt("typecode"))
 			{
 				case Constant.LOCATION_WIFI_SUCCESS://行人位置更新（wifi定位）
-					 if(mapUtil.isChangeLayer(obj.getInt("x"), obj.getInt("y"))){
-						 //切换地图
-						 if(obj.getInt("z")==2){
-							 currentLayer = 1;
-							 webView.loadUrl("file:///android_res/raw/layer1.svg");	
-						 }else{
-							 currentLayer = 2;
-							 webView.loadUrl("file:///android_res/raw/layer2.svg");	
+					int layer = obj.getInt("z");
+					 if(layer != currentLayer ){
+							 currentLayer = layer;
+							 if(canGo)
+							 {
+								 webView.goForward();
+								 canGo = false;
+								 canBack = true;
+							 }else if(canBack){
+								 webView.goBack();
+								 canGo = true;
+								 canBack = false;
+							 }
+							 else{
+								 webView.loadUrl("file:///android_res/raw/layer"+layer+".svg");	
+								 canBack = true;
+							 }
+							 
 						 }
 						 if(path != null){
 							 mapUtil.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
 						 }
-					 }
+					 
 					 mapUtil.updateLocation(locationNow_cm, locationOld_cm, destLocation_px, obj);
 					 break;
 				case Constant.ACCELERATOR:
@@ -288,12 +301,22 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			
 			facility_go_time = System.currentTimeMillis();
 			//获取终点位置，请求路径
-			srcLocation_px[0] = mapUtil.cmToPx_X(locationNow_cm[0]);
-		    srcLocation_px[1] = mapUtil.cmToPx_Y(locationNow_cm[1]);
-		    srcLocation_px[2] = currentLayer;
+			CmToPxCalculator calculator = new CmToPxCalculator();
+			//选择计算策略
+			if(currentLayer == 1)
+			{
+				calculator.setStrategy(new Layer1CmToPxSrategy());
+				
+			}else{
+				calculator.setStrategy(new Layer2CmToPxSrategy());
+				
+			}
+			srcLocation_px[0] = calculator.calculatorX(locationNow_cm[0]);
+		    srcLocation_px[1] = calculator.calculatorY(locationNow_cm[1]);
+		    srcLocation_px[2] = locationNow_cm[2];
 		    pathDestLocation_px[0] = destLocation_px[0];
 		    pathDestLocation_px[1] = destLocation_px[1];
-		    pathDestLocation_px[2] = destLocation_px[2];
+		    pathDestLocation_px[2] = currentLayer;
 		    mapUtil.requestPath(srcLocation_px,pathDestLocation_px);
 			return;			
 		}
@@ -369,8 +392,16 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	                String x = addr[2];
 	                String y = addr[3];
 	                String z = addr[4];
+	                if(!z.equals(currentLayer+""))
+	                {
+	                	//切换地图楼层
+	                	webView.loadUrl("file:///android_res/raw/layer"+currentLayer+".svg");		
+	                }
+	  
 	                //画出当前位置
-	                webView.loadUrl("javascript:setScanResult('"+x+"','"+y+"')");	        		
+	                webView.loadUrl("javascript:setScanResult('"+x+"','"+y+"')");	
+	                
+	                        		
 	        	}
 	        }
 
@@ -619,6 +650,7 @@ protected void initContent() {
   }
 
 private void configWebView(){
+
 	 //设置支持JavaScript脚本
 	WebSettings webSettings = webView.getSettings();  
 	webSettings.setJavaScriptEnabled(true);
@@ -734,6 +766,10 @@ private void configWebView(){
 				long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
 			quotaUpdater.updateQuota(spaceNeeded * 2);
 		}
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			view.loadUrl(url);
+			return true;
+			}
 	});
 	// 覆盖默认后退按钮的作用，替换成WebView里的查看历史页面  
 	webView.setOnKeyListener(new View.OnKeyListener() {
@@ -752,4 +788,8 @@ private void configWebView(){
 	
    }
 
+   void setLayer(int layer){
+	 currentLayer = layer;
+	
+}
 }

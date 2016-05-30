@@ -22,7 +22,9 @@ import android.widget.AbsListView.OnScrollListener;
 
 public class MyWebView extends WebView {
 	/**
-	 * 地图与实际的比例 1px= 5cm
+	 * 地图与实际的比例 11.8px= 1m(大厅)
+	 *            29.5px= 1m(地铁层)
+	 * 
 	 * */
 	// 
 	public static float webviewX0;
@@ -30,6 +32,10 @@ public class MyWebView extends WebView {
 	public static final float P = 8.47f;
 	public static int offsetX = 2796;
 	public static float offsetY = (float) 1926;
+	
+	public static final float P1 = 3.39f;//地铁层
+	public static int offsetX1 = 2796;
+	public static float offsetY1 = (float) 1926;
 	private boolean scaleFlag1  = false;
 	private boolean scaleFlag2  = false;
 	public float scale;
