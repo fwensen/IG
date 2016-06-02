@@ -27,7 +27,7 @@ public class MapUtils {
 	private Context context;
     private MyWebView webView ;
     private boolean isGuided = false; //导引开始的标志
-	private final static int MinDistance_px = 1000;
+	private final static int MinDistance_px = 50;
 	private KDTree<Integer>  kdtree ;
 	boolean isMove =true;
 	double [][] sites_px;
@@ -167,22 +167,90 @@ public class MapUtils {
 	 /**显示导引路线*/
 	public void showRouteMultiLayer(JSONObject obj ,float[] srcLocation_px,float[] pathDestLocation_px) throws JSONException{
 		   
-			double [][] sites_px;
+			
 		    JSONArray pathArray_px;
-		    JSONObject currentLayerPath;
+		    JSONObject currentLayerPath = obj.getJSONObject("path1");
+		    int layer = currentLayerPath.getInt("z");
 		    int hasMultilayer =  obj.getInt("multilayer");
+		    
 		    if(hasMultilayer == 0)
 		    {
-		    	currentLayerPath = obj.getJSONObject("path1");
+		    	if(layer != ((MapActivity)context).getCurrentLayer())
+		    	{
+		    		return;
+		    	}
 		    	
 		    }else{
-		    	currentLayerPath = obj.getJSONObject("path1");
-		    	int layer = currentLayerPath.getInt("z");
 		    	if(layer != ((MapActivity)context).getCurrentLayer())
 		    	{
 		    		currentLayerPath= obj.getJSONObject("path2");
 		    	}
 		    }
+		    pathArray_px = currentLayerPath.getJSONArray("path");//unit:px
+			String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
+			JSONObject node = new JSONObject();
+			int i = 0;
+			// for kdtree
+			sites_px = new double[pathArray_px.length()][2];
+			Log.v("test", "in response!");
+			for(; i<pathArray_px.length(); i++)
+			{
+				node = (JSONObject) pathArray_px.get(i);
+				path = path + node.getInt("x")+" "+node.getInt("y")+"L";
+				//init sites
+				sites_px[i][0] = node.getInt("x");
+				sites_px[i][1] = node.getInt("y");
+				Log.v("test", "site[0]: " + sites_px[i][0]);
+				Log.v("test", "site[1]: " + sites_px[i][1]);
+			}
+			//最后一个节点（目的地坐标）
+			path = path + pathDestLocation_px[0]+" "+pathDestLocation_px[1];
+			--i;
+			node = (JSONObject) pathArray_px.get(i);
+			//init last site
+			sites_px[i][0] = node.getInt("x");
+			sites_px[i][1] = node.getInt("y");
+			Log.v("test", "site[0]: " + sites_px[i][0]);
+			Log.v("test", "site[1]: " + sites_px[i][1]);
+			// build the kdtree
+			kdtree = new KDTree<Integer>(2);
+			for (int j = 0; j < sites_px.length; ++j)
+				try {
+					kdtree.insert(sites_px[j], j);
+				} catch (KeySizeException e) {
+					e.printStackTrace();
+				} catch (KeyDuplicateException e) {
+					e.printStackTrace();
+				}
+			//调用javascript中的方法画出路线
+			isGuided = true;     //guided!
+	        webView.loadUrl("javascript:drawPath('"+path+"')");
+	        webView.loadUrl("javascript:setAim('"+pathDestLocation_px[0]+"','"+pathDestLocation_px[1]+"')");
+	        
+		   
+	   }
+	
+
+	 /**显示导引路线*/
+	public void showRouteMultiLayer1(JSONObject obj ,float[] srcLocation_px,float[] pathDestLocation_px) throws JSONException{
+		   
+			double [][] sites_px;
+		    JSONArray pathArray_px;
+		    JSONObject currentLayerPath;
+		    int hasMultilayer =  obj.getInt("multilayer");
+//		    if(hasMultilayer == 0)
+//		    {
+//		    	currentLayerPath = obj.getJSONObject("path1");
+//		    	
+//		    }else{
+//		    	currentLayerPath = obj.getJSONObject("path1");
+//		    	int layer = currentLayerPath.getInt("z");
+//		    	if(layer != ((MapActivity)context).getCurrentLayer())
+//		    	{
+//		    		currentLayerPath= obj.getJSONObject("path2");
+//		    	}
+//		    }
+		    currentLayerPath = obj.getJSONObject("path1");
 		    pathArray_px = currentLayerPath.getJSONArray("path");//unit:px
 			String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
 			JSONObject node = new JSONObject();
@@ -384,7 +452,7 @@ public class MapUtils {
 		}
 		
 		
-//		//get the nearest site, and culculate the distance
+		//get the nearest site, and culculate the distance
 //		if (isGuided) {
 //			double dis = 0;
 //			Log.v("test", "test in calculate");

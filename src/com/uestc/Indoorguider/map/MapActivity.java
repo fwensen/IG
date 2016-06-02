@@ -101,7 +101,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	 * 单位：cm
 	 */
 	private float[] locationNow_cm = {20000,20000,1};
-	private int currentLayer = 2;//用户当前楼层
+	private int currentLayer = 1;//用户当前楼层
 	
 	
 
@@ -303,12 +303,12 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 			//获取终点位置，请求路径
 			CmToPxCalculator calculator = new CmToPxCalculator();
 			//选择计算策略
-			if(currentLayer == 1)
+			if(currentLayer == Constant.LAYER_NEGATIVE1)
 			{
-				calculator.setStrategy(new Layer1CmToPxSrategy());
+				calculator.setStrategy(new LayerNegative1CmToPxSrategy());
 				
 			}else{
-				calculator.setStrategy(new Layer2CmToPxSrategy());
+				calculator.setStrategy(new Layer1CmToPxSrategy());
 				
 			}
 			srcLocation_px[0] = calculator.calculatorX(locationNow_cm[0]);
@@ -392,10 +392,17 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	                String x = addr[2];
 	                String y = addr[3];
 	                String z = addr[4];
+	                if(z.equals("1"))
+	                {
+	                	z = "2";
+	                	
+	                }else{
+	                	z ="1";
+	                }
 	                if(!z.equals(currentLayer+""))
 	                {
 	                	//切换地图楼层
-	                	webView.loadUrl("file:///android_res/raw/layer"+currentLayer+".svg");		
+	                	webView.loadUrl("file:///android_res/raw/layer"+z+".svg");		
 	                }
 	  
 	                //画出当前位置
@@ -784,7 +791,7 @@ private void configWebView(){
 			return false;
 		}
 	});		
-	webView.loadUrl("file:///android_res/raw/layer2.svg");		
+	webView.loadUrl("file:///android_res/raw/layer1.svg");		
 	
    }
 
