@@ -29,7 +29,7 @@ public class Constant {
 	//public static final String ip="222.197.180.140";
 	//public static final String ip="121.49.97.136";
 	public static final String ip="101.201.113.254";
-	public static final int  port  = 40015;
+	public static final int  port  = 40010;
 
 	//public static final String ip="222.197.180.14";
 	//public static final int port  = 40010;

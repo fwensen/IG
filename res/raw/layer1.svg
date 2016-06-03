@@ -9865,6 +9865,12 @@ viewBox="0 0 2953 2362.4"
 
 </g>
 
+<!-- 线路目的地指示 ，地图缩放时大小不变 -->
+<g id="L71" >
+    <use id = "mappin" x= "-80" y = "-160" xlink:href= '#destination'/>
+
+</g>
+
 
 <!--扫码定位 -->
 <g id="L8" >
@@ -9900,6 +9906,8 @@ viewBox="0 0 2953 2362.4"
 	    var l2= document.getElementById(layer);
 	    	l2.setAttribute("visibility",v);
 	}
+
+
 
       <!-- 导引路线 -->
       function drawPath(myPath){
@@ -9962,6 +9970,12 @@ viewBox="0 0 2953 2362.4"
             var  dest = document.get
 	    var l7= document.getElementById("L7");
             l7.setAttribute("transform","translate("+x+" "+y+")")
+	}
+      <!-- 线路目的地指示 --> 
+      function setPathAim(x,y){
+          
+	    var l71= document.getElementById("L71");
+            l71.setAttribute("transform","translate("+x+" "+y+")")
 	}
 
       <!-- 扫码定位指示 --> 

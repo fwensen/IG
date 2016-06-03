@@ -32,6 +32,7 @@ public class MapUtils {
 	boolean isMove =true;
 	double [][] sites_px;
 	private boolean firstData  = true;//第一次收到定位数据
+	private int lastLayer = 1;
 	
 	
 	
@@ -172,12 +173,12 @@ public class MapUtils {
 		    JSONObject currentLayerPath = obj.getJSONObject("path1");
 		    int layer = currentLayerPath.getInt("z");
 		    int hasMultilayer =  obj.getInt("multilayer");
-		    
+		    int currentLayer = ((MapActivity)context).getCurrentLayer();
 		    if(hasMultilayer == 0)
 		    {
-		    	if(layer != ((MapActivity)context).getCurrentLayer())
+		    	if(layer != currentLayer)
 		    	{
-		    		return;
+		    		return;//不是该层的路径，直接跳出
 		    	}
 		    	
 		    }else{
@@ -187,13 +188,18 @@ public class MapUtils {
 		    	}
 		    }
 		    pathArray_px = currentLayerPath.getJSONArray("path");//unit:px
-			String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
-			JSONObject node = new JSONObject();
-			int i = 0;
+		    if(pathArray_px.length()<2)
+		    {return;}
+		    JSONObject node = new JSONObject();
+		    node = (JSONObject) pathArray_px.get(0);
+			String path = "M"+ node.getInt("x")+" "+node.getInt("y")+"L" ;
+			
+			int i = 1;
 			// for kdtree
 			sites_px = new double[pathArray_px.length()][2];
 			Log.v("test", "in response!");
-			for(; i<pathArray_px.length(); i++)
+			
+			for(; i<(pathArray_px.length()-1); i++)
 			{
 				node = (JSONObject) pathArray_px.get(i);
 				path = path + node.getInt("x")+" "+node.getInt("y")+"L";
@@ -204,7 +210,8 @@ public class MapUtils {
 				Log.v("test", "site[1]: " + sites_px[i][1]);
 			}
 			//最后一个节点（目的地坐标）
-			path = path + pathDestLocation_px[0]+" "+pathDestLocation_px[1];
+			JSONObject lastNode = (JSONObject) pathArray_px.get(i);
+			path = path + lastNode.getInt("x")+" "+lastNode.getInt("y");
 			--i;
 			node = (JSONObject) pathArray_px.get(i);
 			//init last site
@@ -225,73 +232,12 @@ public class MapUtils {
 			//调用javascript中的方法画出路线
 			isGuided = true;     //guided!
 	        webView.loadUrl("javascript:drawPath('"+path+"')");
-	        webView.loadUrl("javascript:setAim('"+pathDestLocation_px[0]+"','"+pathDestLocation_px[1]+"')");
-	        
-		   
+	        webView.loadUrl("javascript:setPathAim('"+lastNode.getInt("x")+"','"+lastNode.getInt("y")+"')");
+	        	
 	   }
 	
 
-	 /**显示导引路线*/
-	public void showRouteMultiLayer1(JSONObject obj ,float[] srcLocation_px,float[] pathDestLocation_px) throws JSONException{
-		   
-			double [][] sites_px;
-		    JSONArray pathArray_px;
-		    JSONObject currentLayerPath;
-		    int hasMultilayer =  obj.getInt("multilayer");
-//		    if(hasMultilayer == 0)
-//		    {
-//		    	currentLayerPath = obj.getJSONObject("path1");
-//		    	
-//		    }else{
-//		    	currentLayerPath = obj.getJSONObject("path1");
-//		    	int layer = currentLayerPath.getInt("z");
-//		    	if(layer != ((MapActivity)context).getCurrentLayer())
-//		    	{
-//		    		currentLayerPath= obj.getJSONObject("path2");
-//		    	}
-//		    }
-		    currentLayerPath = obj.getJSONObject("path1");
-		    pathArray_px = currentLayerPath.getJSONArray("path");//unit:px
-			String path = "M"+ srcLocation_px[0] +" "+srcLocation_px[1]+"L" ;
-			JSONObject node = new JSONObject();
-			int i = 0;
-			// for kdtree
-			sites_px = new double[pathArray_px.length()][2];
-			Log.v("test", "in response!");
-			for(; i<pathArray_px.length(); i++)
-			{
-				node = (JSONObject) pathArray_px.get(i);
-				path = path + node.getInt("x")+" "+node.getInt("y")+"L";
-				//init sites
-				sites_px[i][0] = node.getInt("x");
-				sites_px[i][1] = node.getInt("y");
-				Log.v("test", "site[0]: " + sites_px[i][0]);
-				Log.v("test", "site[1]: " + sites_px[i][1]);
-			}
-			//最后一个节点（目的地坐标）
-			path = path + pathDestLocation_px[0]+" "+pathDestLocation_px[1];
-			--i;
-			node = (JSONObject) pathArray_px.get(i);
-			//init last site
-			sites_px[i][0] = node.getInt("x");
-			sites_px[i][1] = node.getInt("y");
-			Log.v("test", "site[0]: " + sites_px[i][0]);
-			Log.v("test", "site[1]: " + sites_px[i][1]);
-			// build the kdtree
-			kdtree = new KDTree<Integer>(2);
-			for (int j = 0; j < sites_px.length; ++j)
-				try {
-					kdtree.insert(sites_px[j], j);
-				} catch (KeySizeException e) {
-					e.printStackTrace();
-				} catch (KeyDuplicateException e) {
-					e.printStackTrace();
-				}
-			//调用javascript中的方法画出路线
-			isGuided = true;     //guided!
-	        webView.loadUrl("javascript:drawPath('"+path+"')");
-		   
-	   }
+	
    
    /**显示导引路线*/
     public void showRoute1(JSONObject obj,float[] srcLocation_px,float[] pathDestLocation_px) throws JSONException{
@@ -423,14 +369,26 @@ public class MapUtils {
 	   {
 		   return;
 	   }
+	    int layer = obj.getInt("z");
+	    lastLayer = layer;
+		CmToPxCalculator calculator = new CmToPxCalculator();
+		//选择计算策略
+		if(layer == Constant.LAYER_NEGATIVE1)
+		{
+			calculator.setStrategy(new LayerNegative1CmToPxSrategy());
+			
+		}else{
+			calculator.setStrategy(new Layer1CmToPxSrategy());
+			
+		}
 	    locationNow_cm[0] = obj.getInt("x"); //unit:CM
 		locationNow_cm[1] = obj.getInt("y"); 
-		locationNow_cm[2] = obj.getInt("z");
+		locationNow_cm[2] = layer;
 		
 		if(firstData)
 		{
-			int x = cmToPx_X(locationNow_cm[0]);
-			int y = cmToPx_Y(locationNow_cm[1]);
+			int x = calculator.calculatorX(locationNow_cm[1]);
+			int y = calculator.calculatorY(locationNow_cm[0]);
 			((MapActivity) context).setLayer(obj.getInt("z"));
 			//放入 角度，位置x,y
 			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+x+"','"+y+"')");
@@ -444,8 +402,11 @@ public class MapUtils {
 	 
 		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(50,2) && isMove )//1m=20px
 		{
+			
+			int x = calculator.calculatorX(locationOld_cm[1]);
+			int y = calculator.calculatorY(locationOld_cm[0]); 
 			//放入 角度，位置x,y
-			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+cmToPx_X(locationOld_cm[0])+"','"+cmToPx_Y(locationOld_cm[1])+"')");
+			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+x+"','"+y+"')");
 		    locationOld_cm[0] = locationNow_cm[0];
 		    locationOld_cm[1] = locationNow_cm[1];
 		    locationOld_cm[2] = locationNow_cm[2];
@@ -483,7 +444,10 @@ public class MapUtils {
    public void updateOrientation(JSONObject obj,float location_cm[]) throws JSONException{
 	   double angle = 0;//行人方位，由传感器获取更新
 	   angle = obj.getDouble("angle");
-	   webView.loadUrl("javascript:setPointer('"+angle+"','"+cmToPx_X(location_cm[0])+"','"+cmToPx_Y(location_cm[1])+"')");
+	   int layer = (int)location_cm[2];
+	   CmToPxCalculator calculator =CmToPxCalculator.getCalculator(layer);
+		//选择计算策略
+	   webView.loadUrl("javascript:setPointer('"+angle+"','"+calculator.calculatorX(location_cm[1])+"','"+calculator.calculatorY(location_cm[0])+"')");
 	  // Log.i("角度",locationOld_cm[0]+" "+locationOld_cm[1]);
    }
 

@@ -187,6 +187,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 				case Constant.GUIDE_SUCCESS://导引路线更新，返回以地图为原点
 					path = obj;
 					mapUtil.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
+					webView.loadUrl("javascript:setVisibility('L7','hidden')");
 					break;
 				case Constant.GUIDE_ERROR:
 					Toast.makeText(MapActivity.this, "路线请求不成功，请换个地点重试！", Toast.LENGTH_SHORT).show();
@@ -311,8 +312,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 				calculator.setStrategy(new Layer1CmToPxSrategy());
 				
 			}
-			srcLocation_px[0] = calculator.calculatorX(locationNow_cm[0]);
-		    srcLocation_px[1] = calculator.calculatorY(locationNow_cm[1]);
+			srcLocation_px[0] = calculator.calculatorX(locationNow_cm[1]);
+		    srcLocation_px[1] = calculator.calculatorY(locationNow_cm[0]);
 		    srcLocation_px[2] = locationNow_cm[2];
 		    pathDestLocation_px[0] = destLocation_px[0];
 		    pathDestLocation_px[1] = destLocation_px[1];
@@ -798,5 +799,9 @@ private void configWebView(){
    void setLayer(int layer){
 	 currentLayer = layer;
 	
-}
+   }
+    int getLayer(){
+		 return currentLayer;
+		
+	}
 }

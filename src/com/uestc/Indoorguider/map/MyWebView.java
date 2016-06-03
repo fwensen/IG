@@ -29,13 +29,13 @@ public class MyWebView extends WebView {
 	// 
 	public static float webviewX0;
 	public static float webviewY0;
-	public static final float P = 8.47f;
+	public static final float P = 8.47f;//一层
 	public static int offsetX = 2796;
-	public static float offsetY = (float) 1926;
+	public static float offsetY = (float) 2100;
 	
 	public static final float P1 = 3.39f;//地铁层
 	public static int offsetX1 = 2796;
-	public static float offsetY1 = (float) 1926;
+	public static float offsetY1 = (float) 2055;
 	private boolean scaleFlag1  = false;
 	private boolean scaleFlag2  = false;
 	public float scale;
@@ -99,6 +99,7 @@ public class MyWebView extends WebView {
 				    	//sendBroadcast(intent);//传递过去
 				    	System.out.println(scale);
 				    	System.out.println(y0);
+				    	loadUrl("javascript:setVisibility('L7','visible')");
 				    	loadUrl("javascript:setAim('"+x0+"','"+y0+"')");
 			
 			        	//查询数据库，匹配该坐标是否有站点存在
