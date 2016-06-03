@@ -60,7 +60,9 @@ import com.uestc.Indoorguider.map.search_destination.*;
 //关于android2.3中javascript交互的问题
 //http://code.google.com/p/android/issues/detail?id=12987
 public class MapActivity extends APPActivity implements OnClickListener, SearchDestination.SearchViewListener{
-    private MapUtils mapUtil;
+    private MapUtils mapUtils;
+    private WebViewUtils webUtils;
+    
 	private static  MyWebView webView = null;
 	
 	JSONObject path; //记录导引路径，供楼层切换
@@ -101,7 +103,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	 * 单位：cm
 	 */
 	private float[] locationNow_cm = {20000,20000,1};
-	private int currentLayer = 1;//用户当前楼层
+	private static int currentLayer = 1;//用户当前楼层
 	
 	
 
@@ -165,16 +167,16 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 								 canBack = false;
 							 }
 							 else{
-								 webView.loadUrl("file:///android_res/raw/layer"+layer+".svg");	
+								 switchLayer(layer);
 								 canBack = true;
 							 }
 							 
 						 }
 						 if(path != null){
-							 mapUtil.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
+							 mapUtils.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
 						 }
 					 
-					 mapUtil.updateLocation(locationNow_cm, locationOld_cm, destLocation_px, obj);
+					 mapUtils.updateLocation(locationNow_cm, locationOld_cm, destLocation_px, obj);
 					 break;
 				case Constant.ACCELERATOR:
 					 isMove = obj.getBoolean("ismove");
@@ -182,11 +184,11 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 				case Constant.LOCATION_WIFI_ERROR:
 					break;
 				case Constant.ORIENTATION://行人朝向更新
-					mapUtil.updateOrientation(obj, locationNow_cm);
+					mapUtils.updateOrientation(obj, locationNow_cm);
 					break;
 				case Constant.GUIDE_SUCCESS://导引路线更新，返回以地图为原点
 					path = obj;
-					mapUtil.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
+					mapUtils.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
 					webView.loadUrl("javascript:setVisibility('L7','hidden')");
 					break;
 				case Constant.GUIDE_ERROR:
@@ -208,9 +210,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	@Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        initView();
-        initContent();
         initSensors();// 初始化传感器和位置服务
         initData();
         //lvResults = (ListView) findViewById(R.id.main_lv_search_results);
@@ -220,6 +219,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	    intent.setAction("com.uestc.Indoorguider.util.UtilService");	    
 	    startService(intent);
         getWindowSize();
+       
+        
        
       
    }
@@ -269,14 +270,20 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
             TextView siteText = (TextView) findViewById(R.id.siteText);
             String siteName = siteText.getText().toString();
             String visibility = "hidden";
-            webView.loadUrl("javascript:setVisibility('"+siteName+"','"+visibility+"')");	
+           // webView.loadUrl("javascript:setVisibility('"+siteName+"','"+visibility+"')");	
+            webUtils.setVisibility(siteName,visibility);
             MyWebView.getInstance().showBaseLayer();
             MyWebView.getInstance().showMapLayer();
 			break;
 		case R.id.myLocation:
 			//scan two-dimension code to get location
-			i = new Intent(MapActivity.this,CaptureActivity.class);
-            startActivityForResult(i, REQUEST_MYLOCATION);
+			Intent intent  = new Intent(this,ScanResultActivity.class);
+			
+		    intent.putExtra("layer", currentLayer);
+			startActivity(intent);
+//			i = new Intent(MapActivity.this,CaptureActivity.class);
+//			startActivity(i);
+           // startActivityForResult(i, REQUEST_MYLOCATION);
             return;
 		case R.id.near:
 			i = new Intent(MapActivity.this,SiteActivity.class);
@@ -318,7 +325,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 		    pathDestLocation_px[0] = destLocation_px[0];
 		    pathDestLocation_px[1] = destLocation_px[1];
 		    pathDestLocation_px[2] = currentLayer;
-		    mapUtil.requestPath(srcLocation_px,pathDestLocation_px);
+		    mapUtils.requestPath(srcLocation_px,pathDestLocation_px);
 			return;			
 		}
 		
@@ -337,6 +344,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
         		main_bar.setVisibility(View.VISIBLE);
     			facility_infor.setVisibility(View.GONE);
     			webView.loadUrl("javascript:setAim('"+-50+"','"+-50+"')");
+    			webUtils.setAim("-50", "-50");
     			 return true;
         	}
             
@@ -376,40 +384,24 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	                siteLayout.setVisibility(View.VISIBLE);
 	                //隐藏其他类型的站点
 	                MyWebView.getInstance().hiddenAll();
-            	    String visibility =" visible";
+            	    String visibility ="visible";
             	    //显示制定类型
             	    MyWebView.typeFlag = true; 
-            		webView.loadUrl("javascript:setVisibility('"+sitename+"','"+visibility+"')");
+            	    webUtils.setVisibility(sitename, visibility);
+            		//webView.loadUrl("javascript:setVisibility('"+sitename+"','"+visibility+"')");
             	  
 	            }  
 	        }
 	        else if(requestCode== REQUEST_MYLOCATION)
-	        {  //扫码定位信息
+	        {  //扫码定位信息,使用新activity打开
 	        	if(resultCode == RESULT_MYLOCATION)
 	        	{
+	        		Intent i  = new Intent(this,ScanResultActivity.class);
 	        		Bundle bundle = data.getBundleExtra("location");  
-	        		String[] addr = new String[5];
-	        		addr = bundle.getStringArray("addr");
-	                String x = addr[2];
-	                String y = addr[3];
-	                String z = addr[4];
-	                if(z.equals("1"))
-	                {
-	                	z = "2";
-	                	
-	                }else{
-	                	z ="1";
-	                }
-	                if(!z.equals(currentLayer+""))
-	                {
-	                	//切换地图楼层
-	                	webView.loadUrl("file:///android_res/raw/layer"+z+".svg");		
-	                }
-	  
-	                //画出当前位置
-	                webView.loadUrl("javascript:setScanResult('"+x+"','"+y+"')");	
-	                
-	                        		
+	        		i.putExtra("location", bundle);
+	        		 // webUtils.setScanResult("1000","1000");
+	        		startActivity(i);        	
+	        	               	     
 	        	}
 	        }
 
@@ -629,6 +621,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 @Override
 protected void initView() {
 	// TODO Auto-generated method stub
+	setContentView(R.layout.main);
 	webView = (MyWebView) findViewById(R.id.webview);
 	searchView = (SearchDestination) findViewById(R.id.main_search_layout);
     main_bar = (LinearLayout) findViewById(R.id.main_bar);
@@ -650,7 +643,8 @@ protected void initView() {
 
 @Override
 protected void initContent() {
-	  mapUtil = new MapUtils(this,webView);
+	  mapUtils = new MapUtils(this,webView);
+	  webUtils = new WebViewUtils(webView);
 	  searchView.setSearchViewListener(this);
       searchView.setTipsHintAdapter(hintAdapter);
       searchView.setAutoCompleteAdapter(autoCompleteAdapter);
@@ -792,16 +786,24 @@ private void configWebView(){
 			return false;
 		}
 	});		
-	webView.loadUrl("file:///android_res/raw/layer1.svg");		
+	
+	switchLayer(1);
+	//webView.loadUrl("file:///android_res/raw/layer1.svg");		
 	
    }
 
-   void setLayer(int layer){
+   static void setLayer(int layer){
 	 currentLayer = layer;
 	
    }
-    int getLayer(){
-		 return currentLayer;
+   static int getLayer(){
+     return currentLayer;
 		
 	}
+   private void switchLayer(int layer){
+	   webUtils.setLayer(layer);
+	   setLayer(layer);
+	   
+	   
+   }
 }

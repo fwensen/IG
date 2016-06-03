@@ -58,12 +58,12 @@ public class MapUtils {
  //实际坐标（cm）到地图坐标(px)单位转换，地铁层
    public int cmToPx_X1(float dimension_cm)
    {
-	   int map = (int) (MyWebView.offsetX1-dimension_cm/MyWebView.P1);
+	   int map = (int) (MyWebView.offsetXNegative1-dimension_cm/MyWebView.PNegative1);
 	   return map;
    }
    public int cmToPx_Y2(float dimension_cm)
    {
-	   int map = (int) (MyWebView.offsetY1-dimension_cm/MyWebView.P1);
+	   int map = (int) (MyWebView.offsetYNegative1-dimension_cm/MyWebView.PNegative1);
 	   return map;
    }
 	

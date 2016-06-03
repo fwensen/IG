@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 public abstract class APPActivity  extends Activity{
 	
+	
 	protected abstract void handleResult(JSONObject obj);
 	protected static int handlerNum = 6;
 	int sWidth;
@@ -53,6 +54,8 @@ public abstract class APPActivity  extends Activity{
 	    getWindowManager().getDefaultDisplay().getMetrics(metric);
 	     sWidth = metric.widthPixels;     // ÆÁÄ»¿í¶È£¨ÏñËØ£©
 	    int height = metric.heightPixels;   // ÆÁÄ»¸ß¶È£¨ÏñËØ£©
+	    initView();
+	    initContent();
 	}
 	
 	@Override

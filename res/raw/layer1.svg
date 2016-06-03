@@ -9855,7 +9855,7 @@ viewBox="0 0 2953 2362.4"
 <!-- 行人朝向指示，地图缩放时大小不变 -->
 
 <g id="L5" >
-   <use id="pnow" x="0" y="0" xlink:href = '#pointer2'/>
+   <use id="pnow" x="-100" y="-100" xlink:href = '#pointer2'/>
 
 </g>
 
@@ -9874,7 +9874,7 @@ viewBox="0 0 2953 2362.4"
 
 <!--扫码定位 -->
 <g id="L8" >
-    <use id = "scan" x= "-101.25" y = "-153.125" xlink:href= '#code2'/>
+    <use id = "scan" x= "-100" y = "-100" xlink:href= '#code2'/>
 </g>
 
 

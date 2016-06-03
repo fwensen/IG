@@ -35,6 +35,7 @@
 	            <category android:name="android.intent.category.LAUNCHER"></category>
 	        </intent-filter>
 	    </activity>
+	    <activity android:name="com.uestc.Indoorguider.map.ScanResultActivity"></activity>
 	    <activity android:name="com.uestc.Indoorguider.site_show.SiteActivity"></activity>  
         <activity android:name="com.uestc.Indoorguider.site_show.SiteItemActivity"></activity>    
 	    <activity android:name="com.uestc.Indoorguider.zxing_view.CaptureActivity"

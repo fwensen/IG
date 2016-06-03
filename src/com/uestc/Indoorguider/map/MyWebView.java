@@ -33,9 +33,9 @@ public class MyWebView extends WebView {
 	public static int offsetX = 2796;
 	public static float offsetY = (float) 2100;
 	
-	public static final float P1 = 3.39f;//µØÌú²ã
-	public static int offsetX1 = 2796;
-	public static float offsetY1 = (float) 2055;
+	public static final float PNegative1 = 3.39f;//µØÌú²ã
+	public static int offsetXNegative1 = 6722;
+	public static float offsetYNegative1 = (float) 2281;
 	private boolean scaleFlag1  = false;
 	private boolean scaleFlag2  = false;
 	public float scale;
