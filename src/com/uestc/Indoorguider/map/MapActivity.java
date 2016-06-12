@@ -31,6 +31,7 @@ import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -115,7 +116,9 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	long facility_go_time = 0;//设施点按键时间
 	boolean isMove =true;
 	
-    // 搜索结果列表view
+    /**
+     *  搜索结果列表view
+     */
     //private ListView lvResults;
     private SearchDestination searchView;
     //热搜框列表adapter
@@ -210,8 +213,12 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	@Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        initSensors();// 初始化传感器和位置服务
+
+        setContentView(R.layout.main);
         initData();
+        initView();
+        initContent();
+        initSensors();// 初始化传感器和位置服务
         //lvResults = (ListView) findViewById(R.id.main_lv_search_results);
        
         //开启服务
@@ -511,7 +518,10 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
    }
    
    
-   //自动补全，回调
+   /**
+    * 自动补全，回调(non-Javadoc)
+    * @see com.uestc.Indoorguider.map.search_destination.SearchDestination.SearchViewListener#onRefreshAutoComplete(java.lang.String)
+    */
    @Override
    public void onRefreshAutoComplete(String text) {
 	 //更新数据
@@ -519,13 +529,28 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	
    }	
 
-   //查询，回调, 完成搜索时的工作
+   /**
+    * 查询，回调, 完成搜索时的工作(non-Javadoc)
+    * @see com.uestc.Indoorguider.map.search_destination.SearchDestination.SearchViewListener#onSearch(java.lang.String)
+    */
    @Override
    public void onSearch(String text) {
 	   //更新result数据
-       getResultData(text);
-      
-      
+       //getResultData(text);
+      SearchSitesPositions instance = SearchSitesPositions.getInstance();
+       //mapUtil srcLocation_px pathDestLocation_px
+      Log.v("search", "text: " + text);
+      SiteInfo ret = instance.search(text);
+      if (ret == null) {
+    	  Toast.makeText(this, "目的地点不存在", Toast.LENGTH_LONG).show();
+    	  return;
+      }
+      pathDestLocation_px[0] = (float) ret.getX();
+      pathDestLocation_px[1] = (float) ret.getY();
+      pathDestLocation_px[2] = 1;
+      Log.v("search", "ret: " + "x: " + pathDestLocation_px[0] + " y: " + pathDestLocation_px[1]);
+      webView.loadUrl("javascript:setAim('"+pathDestLocation_px[0]+"','"+pathDestLocation_px[1]+"')");
+      mapUtils.requestPath(srcLocation_px, pathDestLocation_px);
    }
 
    /**
@@ -548,12 +573,13 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
    private void getDbData() {
        int size = 10;
        dbData = new ArrayList<DestinationSite>(size);
-       DerectionConstant dc = new DerectionConstant();
-       dc.fillDerection();
-       //just for test
-       for (int i = 0; i < size; i++) {
-           dbData.add(new DestinationSite(R.drawable.icon, dc.DERECTION_ALL.get(i), dc.DERECTION_ALL.get(i)));
+       SearchSitesPositions instance = SearchSitesPositions.getInstance();
+       List<String> sites = instance.getAllSitesNames();
+       
+       for (String name : sites) {
+           dbData.add(new DestinationSite(R.drawable.icon, name, name));
        }
+       
    }
 
    /**
@@ -562,12 +588,10 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
    private void getHintData() {
        hintData = new ArrayList<String>(hintSize);
        
-       int i = 1;
-       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_13);
-       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_AIRPORT);
-       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_918);
-       hintData.add("热搜词" + i++ + ": " + DerectionConstant.DERECTION_915);
-       
+       hintData.add("洗手间");
+       hintData.add("地铁入口");
+       hintData.add("长途汽车站");
+       hintData.add("公交 132 东直门枢纽站-望京北路东口");
        hintAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, hintData);
    }
 
@@ -649,7 +673,11 @@ protected void initContent() {
       searchView.setTipsHintAdapter(hintAdapter);
       searchView.setAutoCompleteAdapter(autoCompleteAdapter);
 	  configWebView();
+
   }
+
+
+
 
 private void configWebView(){
 

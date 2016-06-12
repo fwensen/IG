@@ -104,7 +104,9 @@ public class MapUtils {
 	
   
 
-   /**Æ«Àë¼ÆËã*/
+   /**
+    * Æ«Àë¼ÆËã
+    */
 	public double culculateNearestDistance(float[] location_cm) 
 			throws KeySizeException, KeyDuplicateException {
 		
@@ -413,6 +415,7 @@ public class MapUtils {
 		}
 		
 		
+
 		//get the nearest site, and culculate the distance
 //		if (isGuided) {
 //			double dis = 0;
@@ -437,6 +440,34 @@ public class MapUtils {
 //						destLocation_px);
 //			}
 //		}
+
+		/**
+		 * get the nearest site, and culculate the distance
+		 */
+		if (isGuided) {
+			double dis = 0;
+			Log.v("test", "test in calculate");
+			float [] location = {locationNow_cm[0], locationNow_cm[1]};
+			try {
+				dis = culculateNearestDistance(location);
+				Log.v("sites", "distance: " + dis);
+				Log.v("sites", "--------------------------------");
+				Log.v("test", "test in calculate");
+				Log.v("test", "dis: " + dis);
+			} catch (KeySizeException e) {
+				e.printStackTrace();
+			} catch (KeyDuplicateException e) {
+				e.printStackTrace();
+			}
+			Log.v("test", "in dis calculate!");
+			if (dis > MinDistance_px) {
+				Log.v("distance", "request");
+				requestPath(
+						new float[]{cmToPx_X(locationNow_cm[0]),  cmToPx_Y(locationNow_cm[1]), locationNow_cm[2]},  
+						destLocation_px);
+			}
+		}
+
    }
    
    
