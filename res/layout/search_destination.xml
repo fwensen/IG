@@ -3,6 +3,7 @@
               android:background="#eee"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:windowSoftInputMode="stateHidden"
               android:orientation="vertical">
 
     <LinearLayout  
@@ -27,6 +28,7 @@
                 android:background="@drawable/search_edittext_shape"  
                 android:textSize="16sp"  
                 android:imeOptions="actionSearch"  
+                android:windowSoftInputMode="stateHidden"
                 android:inputType="text"  
                 android:hint="请输入目的地点"/>  
   

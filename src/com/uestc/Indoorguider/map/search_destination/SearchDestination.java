@@ -43,11 +43,9 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 	
 	private void init() {
 		etInputText = (EditText) findViewById(R.id.search_et_input);
-		etInputText.setFocusable(false);
         ivDelete = (ImageView) findViewById(R.id.search_iv_delete);
         btnSearch = (Button) findViewById(R.id.search_btn_back);
         lvContent = (ListView) findViewById(R.id.search_lv_tips);
-        
         lvContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

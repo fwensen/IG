@@ -213,7 +213,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	@Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.main);
         initData();
         initView();
@@ -391,7 +390,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
             	    //显示制定类型
             	    MyWebView.typeFlag = true; 
             	    webUtils.setVisibility(sitename, visibility);
-            		//webView.loadUrl("javascript:setVisibility('"+sitename+"','"+visibility+"')");
             	  
 	            }  
 	        }
@@ -643,6 +641,7 @@ protected void initView() {
 	// TODO Auto-generated method stub
 	setContentView(R.layout.main);
 	webView = (MyWebView) findViewById(R.id.webview);
+	webView.requestFocus();
 	searchView = (SearchDestination) findViewById(R.id.main_search_layout);
     main_bar = (LinearLayout) findViewById(R.id.main_bar);
     facility_infor = (LinearLayout) findViewById(R.id.facility_infor);
