@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.uestc.Indoorguider.IndoorGuiderApplication;
+import com.uestc.Indoorguider.util.SiteInfo;
 
 import android.util.Log;
 import edu.wlu.cs.levy.CG.KDTree;

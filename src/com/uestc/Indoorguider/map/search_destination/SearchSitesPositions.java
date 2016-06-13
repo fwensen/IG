@@ -15,7 +15,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.uestc.Indoorguider.Constant;
 import com.uestc.Indoorguider.IndoorGuiderApplication;
-import com.uestc.Indoorguider.site_show.SiteInfo;
+import com.uestc.Indoorguider.util.SiteInfo;
 
 public class SearchSitesPositions {
 	
