@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -56,6 +57,7 @@ public abstract class APPActivity  extends Activity{
 	    int height = metric.heightPixels;   // ÆÁÄ»¸ß¶È£¨ÏñËØ£©
 	    initView();
 	    initContent();
+	    Log.i("APPActivity", "oncreate!");
 	}
 	
 	@Override

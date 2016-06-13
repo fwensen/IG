@@ -285,12 +285,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 		case R.id.myLocation:
 			//scan two-dimension code to get location
 			Intent intent  = new Intent(this,ScanResultActivity.class);
-			
-		    intent.putExtra("layer", currentLayer);
+			intent.putExtra("layer", 1);
 			startActivity(intent);
-//			i = new Intent(MapActivity.this,CaptureActivity.class);
-//			startActivity(i);
-           // startActivityForResult(i, REQUEST_MYLOCATION);
             return;
 		case R.id.near:
 			i = new Intent(MapActivity.this,SiteActivity.class);
