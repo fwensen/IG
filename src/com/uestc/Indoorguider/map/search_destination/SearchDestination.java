@@ -32,10 +32,10 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 	private ArrayAdapter<String> mHintAdapter;  //提示
     private ArrayAdapter<String> mAutoCompleteAdapter;  //自动补全
     private SearchViewListener mListener;   //回调接口，搜索功能
-	
+    
 	public SearchDestination(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		context = context;
+		this.context = context;
         LayoutInflater.from(context).inflate(R.layout.search_destination, this);
         init();
 	}
@@ -160,7 +160,12 @@ public class SearchDestination extends LinearLayout implements View.OnClickListe
 		 * 点击搜索框
 		 */
         case R.id.search_et_input:
-        	lvContent.setVisibility(VISIBLE);
+        	if (lvContent.isShown()) {
+        		lvContent.setVisibility(GONE);
+        	} else {
+        		lvContent.setVisibility(VISIBLE);
+        	}
+        	
             break;
         /**
          * 点击删除小图标

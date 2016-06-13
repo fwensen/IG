@@ -205,11 +205,13 @@ public class HistoryPathShow extends Activity implements
 		HistoryItem item = (HistoryItem)data.getSerializable("historyitem");
 		tvTitle.setText(item.getStartTime()+"-"+item.getEndTime());
 		pthInSites = item.getPath();
+		//mPath = null; // gc
 		mPath = getPathFromSites(pthInSites);
 		pathLen = pthInSites.size();
-		webView.loadUrl("file:///android_res/raw/spot1.svg");
+		webView.loadUrl("file:///android_res/raw/layer1.svg");
 		webView.loadUrl("javascript:drawPath('"+mPath+"')");    //»­²»³É¹¦
 		webView.loadUrl("javascript:drawcircle('"+pthInSites.get(0).getX()+"','"+pthInSites.get(0).getY()+"')");
+		
 	}
 	
 	//

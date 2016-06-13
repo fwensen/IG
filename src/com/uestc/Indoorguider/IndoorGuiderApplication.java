@@ -9,7 +9,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.uestc.Indoorguider.orientation.OrientationTool;
-import com.uestc.Indoorguider.site_show.SiteInfo;
+import com.uestc.Indoorguider.util.SiteInfo;
 
 import android.app.Application;
 import android.content.Context;

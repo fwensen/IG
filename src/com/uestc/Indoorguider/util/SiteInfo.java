@@ -1,7 +1,11 @@
-package com.uestc.Indoorguider.site_show;
+package com.uestc.Indoorguider.util;
 
 import com.uestc.Indoorguider.history.Site;
-
+/**
+ * 这里的buttom写错了，应该是bottom ^_^
+ * @author vincent
+ *
+ */
 public class SiteInfo {
 
 	private int siteId;

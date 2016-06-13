@@ -50,7 +50,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class HistoryActivity extends APPActivity implements OnScrollListener {
+public class HistoryActivity extends APPActivity2 implements OnScrollListener {
 
 	private static String TAG = "HISTORY";	
 	List<HistoryItem> items;
