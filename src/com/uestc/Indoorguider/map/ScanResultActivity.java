@@ -3,7 +3,11 @@ package com.uestc.Indoorguider.map;
 import org.json.JSONObject;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -24,47 +28,47 @@ public class ScanResultActivity extends APPActivity{
 	private WebViewUtils webUtils;
 	MyWebView webView;
 	int currentLayer;
+    public static final String SCAN_RESULT_ACTION = "com.uestc.Indoorguider.map.scan_result_action";
+    public static final String SCAN_RESULT_CATRGORY_CLOSE = "com.uestc.Indoorguider.map.scan_result_category_close";
+    public static final String SCAN_RESULT_CATRGORY_SHOW_LOCATION = "com.uestc.Indoorguider.map.scan_result_category_show_location";
 	
-	Handler handler = new Handler(){
+	class scanResultBroadCastreceiver extends  BroadcastReceiver{
+
 		@Override
-		public void handleMessage(Message msg){
-			webUtils.setScanResult(msg.arg1+"",msg.arg2+"");
-		
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(intent.getCategories().contains(SCAN_RESULT_CATRGORY_SHOW_LOCATION)){
+				Log.i("resultActivity", "onreceive!");
+				Bundle bd =intent.getBundleExtra("location");
+				String[] addr = bd.getStringArray("addr");
+				String layer = addr[4];
+				if(layer.equals("1"))
+				{
+					layer = "2";
+					
+				}else{
+					layer = "1";
+				}
+				
+				if(layer.equals(currentLayer+"")){
+					 String x = addr[2];
+				     String y = addr[3];
+				     webUtils.setScanResult(x, y);
+				}else{
+					ScanResultActivity.this.finish();
+				}
+			}else{
+				ScanResultActivity.this.finish();
+				
+				
+			}
+			
 			
 		}
 		
-	} ;
+	}
 	
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		
-			String[] addr = new String[5];
-			addr =intent.getBundleExtra("location").getStringArray("addr");
-	        String x = addr[2];
-	        String y = addr[3];
-	        String z = addr[4];
-	        
-	        if(z.equals("1"))
-	        {
-	        	z = "2";
-	        	
-	        }else{
-	        	z ="1";
-	        }
-	        if(z.equals("1"))
-	        {
-//	        	webUtils.setLayer(Integer.parseInt(z));
-//	        	Message msg = handler.obtainMessage();
-//	        	msg.arg1 = Integer.parseInt(x);
-//	        	msg.arg2 = Integer.parseInt(y);
-//	        	handler.sendMessage(msg);
-	        	webView.goBack();
-	        }
-	        webUtils.setScanResult(x, y);
-	       
-	        Log.i("resultActivity", "onnewIntent!");
-    }
+	
 
 	@Override
 	protected void handleResult(JSONObject obj) {
@@ -79,7 +83,10 @@ public class ScanResultActivity extends APPActivity{
 		setContentView(R.layout.activity_scan_result);
 	    webView = (MyWebView) findViewById(R.id.webview); 
 	    configWebView();
-	   // webView.loadUrl("file:///android_res/raw/layer"+1+".svg");
+	    Intent  i =  getIntent();
+	    currentLayer = i.getIntExtra("layer", 1);
+	    webView.loadUrl("file:///android_res/raw/layer"+ currentLayer +".svg");
+	    Log.i("resultActivity", "initView!");
 	    
 		
 	}
@@ -98,25 +105,26 @@ public class ScanResultActivity extends APPActivity{
 			
 		});
 		webUtils = new WebViewUtils(webView);
-		currentLayer = getIntent().getIntExtra("layer", 1);
-		
-		
+		scanResultBroadCastreceiver receiver = new scanResultBroadCastreceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(SCAN_RESULT_ACTION);
+		filter.addCategory(SCAN_RESULT_CATRGORY_SHOW_LOCATION);
+		filter.addCategory(SCAN_RESULT_CATRGORY_CLOSE);
+		filter.addCategory(Intent.CATEGORY_DEFAULT);
+		this.registerReceiver(receiver,filter);
 		if(currentLayer == 1)
 		{
-			webUtils.setLayer(1);
-			Intent i = new Intent(this,ScanResultActivity.class);
-			i.putExtra("layer", 2);
-			startActivity(i);
+			Intent intent2  = new Intent(this,ScanResultActivity.class);
+			intent2.putExtra("layer", 2);
+			startActivity(intent2);
+			
 		}else{
-			webUtils.setLayer(2);
 			Intent i = new Intent(this,CaptureActivity.class);
 			startActivity(i);
-		}
-	   
-        
-	   
-		
 			
+		}
+		
+
 	}
 	
 	protected void onDestroy(){

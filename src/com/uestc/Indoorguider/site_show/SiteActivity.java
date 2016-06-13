@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import android.widget.TextView;
 
@@ -176,7 +177,8 @@ public class SiteActivity extends Activity implements OnClickListener{
 				break;
 			case 23:
 				siteName = "停车场";
-				break;
+				Toast.makeText(this, "暂无该服务！", Toast.LENGTH_SHORT);
+				return;
 			case 31:
 				siteName = "出口";
 				break;
@@ -195,9 +197,5 @@ public class SiteActivity extends Activity implements OnClickListener{
 	}
 
 	
-	private void calculateViewParams()
-	{
-		
-	}
 
 }

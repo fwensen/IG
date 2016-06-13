@@ -29,9 +29,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +83,18 @@ public class CaptureActivity extends Activity implements Callback
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 		hasSurface = false;
 		inactivityTimer = new InactivityTimer(this);
+		ImageView back = (ImageView) findViewById(R.id.back_icon);
+		back.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CaptureActivity.this.finish();
+				
+			}
+			
+		});
+		
 	}
 	
 	@Override
@@ -131,6 +147,19 @@ public class CaptureActivity extends Activity implements Callback
 		inactivityTimer.shutdown();
 		super.onDestroy();
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode ,KeyEvent event){
+		if(keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			Intent i = new Intent();
+			i.setAction(ScanResultActivity.SCAN_RESULT_ACTION);
+			i.addCategory(ScanResultActivity.SCAN_RESULT_CATRGORY_CLOSE);
+			sendBroadcast(i);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 
 	private void initCamera(SurfaceHolder surfaceHolder)
 	{
@@ -226,11 +255,12 @@ public class CaptureActivity extends Activity implements Callback
 			e.printStackTrace();
 			return;
 		}
-		Intent i = new Intent(CaptureActivity.this,ScanResultActivity.class);
+		Intent i = new Intent(ScanResultActivity.SCAN_RESULT_ACTION);
+		i.addCategory(ScanResultActivity.SCAN_RESULT_CATRGORY_SHOW_LOCATION);
 		Bundle bd = new Bundle();
 		bd.putStringArray("addr", location);
 		i.putExtra("location", bd);
-		startActivity(i);
+		sendBroadcast(i);
 		//CaptureActivity.this.setResult(MapActivity.RESULT_MYLOCATION,i);
 		this.finish();
 		//--------------Thread  locationThread = new SocketClient(jObj);

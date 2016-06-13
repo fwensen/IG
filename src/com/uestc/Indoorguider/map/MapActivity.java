@@ -213,7 +213,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 	@Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.main);
         initData();
         initView();
@@ -285,12 +284,8 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 		case R.id.myLocation:
 			//scan two-dimension code to get location
 			Intent intent  = new Intent(this,ScanResultActivity.class);
-			
-		    intent.putExtra("layer", currentLayer);
+			intent.putExtra("layer", 1);
 			startActivity(intent);
-//			i = new Intent(MapActivity.this,CaptureActivity.class);
-//			startActivity(i);
-           // startActivityForResult(i, REQUEST_MYLOCATION);
             return;
 		case R.id.near:
 			i = new Intent(MapActivity.this,SiteActivity.class);
@@ -395,7 +390,6 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
             	    //显示制定类型
             	    MyWebView.typeFlag = true; 
             	    webUtils.setVisibility(sitename, visibility);
-            		//webView.loadUrl("javascript:setVisibility('"+sitename+"','"+visibility+"')");
             	  
 	            }  
 	        }
@@ -647,6 +641,7 @@ protected void initView() {
 	// TODO Auto-generated method stub
 	setContentView(R.layout.main);
 	webView = (MyWebView) findViewById(R.id.webview);
+	webView.requestFocus();
 	searchView = (SearchDestination) findViewById(R.id.main_search_layout);
     main_bar = (LinearLayout) findViewById(R.id.main_bar);
     facility_infor = (LinearLayout) findViewById(R.id.facility_infor);
