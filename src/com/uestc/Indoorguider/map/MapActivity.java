@@ -179,7 +179,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 							 mapUtils.showRouteMultiLayer(path, srcLocation_px, pathDestLocation_px);
 						 }
 					 
-					 mapUtils.updateLocation(locationNow_cm, locationOld_cm, destLocation_px, obj);
+					 mapUtils.updateLocationWithCorrect(locationNow_cm, locationOld_cm, destLocation_px, obj);
 					 break;
 				case Constant.ACCELERATOR:
 					 isMove = obj.getBoolean("ismove");
@@ -276,10 +276,9 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
             TextView siteText = (TextView) findViewById(R.id.siteText);
             String siteName = siteText.getText().toString();
             String visibility = "hidden";
-           // webView.loadUrl("javascript:setVisibility('"+siteName+"','"+visibility+"')");	
-            webUtils.setVisibility(siteName,visibility);
+            //webUtils.setVisibility(siteName,visibility);
             MyWebView.getInstance().showBaseLayer();
-            MyWebView.getInstance().showMapLayer();
+           // MyWebView.getInstance().showMapLayer();
 			break;
 		case R.id.myLocation:
 			//scan two-dimension code to get location

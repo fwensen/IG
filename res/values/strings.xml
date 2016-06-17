@@ -41,9 +41,9 @@
    <string name="image_text_butt12">候车处</string>
    <string name="image_text_butt13">卫生间</string>
    
-   <string name="image_text_butt21">出租车</string>
-   <string name="image_text_butt22">公交站</string>
-   <string name="image_text_butt23">停车场</string>
+   <string name="image_text_butt21">长途汽车</string>
+   <string name="image_text_butt22">公交车</string>
+   <string name="image_text_butt23">自助取款</string>
    
    <string name="image_text_butt31">出口</string>
    <string name="image_text_butt32">餐饮购物</string>

@@ -170,15 +170,14 @@ public class SiteActivity extends Activity implements OnClickListener{
 				siteName = "卫生间";
 				break;
 			case 21:
-				siteName = "出租车";
+				siteName = "长途汽车";
 				break;
 			case 22:
 				siteName = "公交车";
 				break;
 			case 23:
-				siteName = "停车场";
-				Toast.makeText(this, "暂无该服务！", Toast.LENGTH_SHORT);
-				return;
+				siteName = "自助取款";
+				break;
 			case 31:
 				siteName = "出口";
 				break;

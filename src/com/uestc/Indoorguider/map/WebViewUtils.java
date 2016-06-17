@@ -16,7 +16,10 @@ public class WebViewUtils {
 	}
 	public void setScanResult(String x, String y)
 	{
-	    webView.loadUrl("javascript:setScanResult('"+x+"','"+y+"')");
+		
+		int x1 = Integer.parseInt(x)+MapUtils.layer1_x_offerset;
+		int y1= Integer.parseInt(y)+MapUtils.layer1_y_offerset;
+	    webView.loadUrl("javascript:setScanResult('"+x1+"','"+y1+"')");
 		
 	}
 	
