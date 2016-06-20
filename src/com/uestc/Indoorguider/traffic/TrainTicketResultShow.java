@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uestc.Indoorguider.R;
+import com.uestc.Indoorguider.traffic.utils.Common;
+import com.uestc.Indoorguider.traffic.utils.TicketShowListAdapter;
 
 public class TrainTicketResultShow extends Activity{
 

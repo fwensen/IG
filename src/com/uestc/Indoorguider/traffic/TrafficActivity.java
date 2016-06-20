@@ -26,23 +26,27 @@ public class TrafficActivity extends TabActivity{
 	        
 	        tab_icon_train = (RadioButton) findViewById(R.id.tab_icon_train);
 	        tab_icon_plane = (RadioButton) findViewById(R.id.tab_icon_plane);
-	        tab_icon_steamer = (RadioButton) findViewById(R.id.tab_icon_steamer);
-	        tab_icon_car = (RadioButton) findViewById(R.id.tab_icon_car);
+	        tab_icon_steamer = (RadioButton) findViewById(R.id.tab_icon_subway);
+	        tab_icon_car = (RadioButton) findViewById(R.id.tab_icon_subway_air);
 	        
 	        //往TabWidget添加Tab
 	        tabhost = getTabHost();
 	        tabhost.addTab(tabhost.newTabSpec("tag1").setIndicator("0").setContent(new Intent(this,SearchTrainActivity.class)));
 	        tabhost.addTab(tabhost.newTabSpec("tag2").setIndicator("1").setContent(new Intent(this,SearchPlaneActivity.class)));
-	        tabhost.addTab(tabhost.newTabSpec("tag3").setIndicator("2").setContent(new Intent(this,SearchSteamerActivity.class)));
-	        tabhost.addTab(tabhost.newTabSpec("tag4").setIndicator("3").setContent(new Intent(this,SearchCarActivity.class)));
+	        tabhost.addTab(tabhost.newTabSpec("tag3").setIndicator("2").setContent(new Intent(this,SearchSubwayActivity.class)));
+	        tabhost.addTab(tabhost.newTabSpec("tag4").setIndicator("3").setContent(new Intent(this,SubwayAirLineShowActivity.class)));
 	         
 	        //设置监听事件
 	        checkListener checkradio = new checkListener();
 	        main_radiogroup.setOnCheckedChangeListener(checkradio);
 	 }
 
-	//监听类
-	    public class checkListener implements OnCheckedChangeListener{
+	/**
+	 * 监听类
+	 * @author vincent
+	 *
+	 */
+	 public class checkListener implements OnCheckedChangeListener{
 	    	@Override
 	    	public void onCheckedChanged(RadioGroup group, int checkedId) {
 	    		// TODO Auto-generated method stub
@@ -57,15 +61,14 @@ public class TrafficActivity extends TabActivity{
 	    		case R.id.tab_icon_plane:
 	    			tabhost.setCurrentTab(1);
 	    			break;
-	    		case R.id.tab_icon_steamer:
+	    		case R.id.tab_icon_subway:
 	    			tabhost.setCurrentTab(2);
 	    			break;
-	    		case R.id.tab_icon_car:
+	    		case R.id.tab_icon_subway_air:
 	    			tabhost.setCurrentTab(3);
 	    			break;
 	    		}
 
-	    		
 	    	}
 	    }
 }

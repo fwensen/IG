@@ -87,6 +87,19 @@
 		 <activity 
 	     	android:theme="@style/AppTheme"
 	     	android:name="com.uestc.Indoorguider.traffic.TrainTicketResultShow"/>
+	 
+	     <activity 
+	     	android:theme="@style/AppTheme"
+	     	android:name="com.uestc.Indoorguider.traffic.SearchSubwayActivity"/>
+	     	
+	    <activity 
+	     	android:theme="@style/AppTheme"
+	     	android:name="com.uestc.Indoorguider.traffic.ShowSubwayDetails"/>
+	     	
+	     <activity 
+	     	android:theme="@style/AppTheme"
+	     	android:name="com.uestc.Indoorguider.traffic.SubwayAirLineShowActivity"/>	
+	     	
 	    <service android:name=".util.UtilService">
 	        <intent-filter>
 	            <action android:name = "com.uestc.Indoorguider.util.UtilService"/>
