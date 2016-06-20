@@ -33,6 +33,9 @@ public class MapUtils {
 	double [][] sites_px;
 	private boolean firstData  = true;//第一次收到定位数据
 	private int lastLayer = 1;
+	public static int layer1_x_offerset = 14;//由于地图变动，路由按照旧版地图给出路径，在新地图上显示需加上偏移量
+    public static int layer1_y_offerset = -115;
+	
 	
 	
 	
@@ -194,7 +197,7 @@ public class MapUtils {
 		    {return;}
 		    JSONObject node = new JSONObject();
 		    node = (JSONObject) pathArray_px.get(0);
-			String path = "M"+ node.getInt("x")+" "+node.getInt("y")+"L" ;
+			String path = "M"+ (node.getInt("x")+layer1_x_offerset)+" "+(node.getInt("y")+layer1_y_offerset)+"L" ;
 			
 			int i = 1;
 			// for kdtree
@@ -413,10 +416,10 @@ public class MapUtils {
 		    locationOld_cm[1] = locationNow_cm[1];
 		    locationOld_cm[2] = locationNow_cm[2];
 		}
-		
-		
 
-		//get the nearest site, and culculate the distance
+//		/**
+//		 * get the nearest site, and culculate the distance
+//		 */
 //		if (isGuided) {
 //			double dis = 0;
 //			Log.v("test", "test in calculate");
@@ -441,33 +444,89 @@ public class MapUtils {
 //			}
 //		}
 
-		/**
-		 * get the nearest site, and culculate the distance
-		 */
-		if (isGuided) {
-			double dis = 0;
-			Log.v("test", "test in calculate");
-			float [] location = {locationNow_cm[0], locationNow_cm[1]};
-			try {
-				dis = culculateNearestDistance(location);
-				Log.v("sites", "distance: " + dis);
-				Log.v("sites", "--------------------------------");
-				Log.v("test", "test in calculate");
-				Log.v("test", "dis: " + dis);
-			} catch (KeySizeException e) {
-				e.printStackTrace();
-			} catch (KeyDuplicateException e) {
-				e.printStackTrace();
-			}
-			Log.v("test", "in dis calculate!");
-			if (dis > MinDistance_px) {
-				Log.v("distance", "request");
-				requestPath(
-						new float[]{cmToPx_X(locationNow_cm[0]),  cmToPx_Y(locationNow_cm[1]), locationNow_cm[2]},  
-						destLocation_px);
-			}
+   }
+   
+   public void updateLocationWithCorrect(float[] locationNow_cm  ,float[] locationOld_cm, float[] destLocation_px, JSONObject obj) throws JSONException{
+	   
+	   if(obj.getInt("x") ==0 &&obj.getInt("y") == 0)
+	   {
+		   return;
+	   }
+	    int layer = obj.getInt("z");
+	    lastLayer = layer;
+		CmToPxCalculator calculator = new CmToPxCalculator();
+		//选择计算策略
+		if(layer == Constant.LAYER_NEGATIVE1)
+		{
+			calculator.setStrategy(new LayerNegative1CmToPxSrategy());
+			
+		}else{
+			calculator.setStrategy(new Layer1CmToPxSrategy());
+			
 		}
-
+	    locationNow_cm[0] = obj.getInt("x")+layer1_x_offerset; //unit:CM  
+		locationNow_cm[1] = obj.getInt("y")+layer1_y_offerset; 
+		locationNow_cm[2] = layer;
+		int[] p  = new int[2];
+		p[0] = calculator.calculatorX(locationNow_cm[1]);//x
+		p[1] = calculator.calculatorY(locationNow_cm[0]);//y
+		if(layer == Constant.LAYER_1)
+		{
+			correctLayer1(p);
+			
+		}
+		if(firstData)
+		{
+			
+			((MapActivity) context).setLayer(obj.getInt("z"));
+			//放入 角度，位置x,y
+			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+p[0]+"','"+p[1]+"')");
+			locationOld_cm[0] = locationNow_cm[0];
+		    locationOld_cm[1] = locationNow_cm[1];
+		    locationOld_cm[2] = locationNow_cm[2];
+		    //滑动窗口
+		  //  webView.scrollTo(x, y);
+		    firstData = false;
+		}
+	 
+		if((Math.pow(locationOld_cm[0] - locationNow_cm[0],2) + Math.pow(locationOld_cm[1]-locationNow_cm[1],2)) > Math.pow(50,2) && isMove )//1m=20px
+		{
+			//放入 角度，位置x,y
+			webView.loadUrl("javascript:setPointer('"+OrientationTool.angle+"','"+p[0]+"','"+p[1]+"')");
+		    locationOld_cm[0] = locationNow_cm[0];
+		    locationOld_cm[1] = locationNow_cm[1];
+		    locationOld_cm[2] = locationNow_cm[2];
+		}
+	   
+	  
+   }
+   
+   public void correctLayer1(int[] p ){
+	   if( p[0] > 740  &&  p[0] < 1089)
+	   {
+		   if( p[1] > 1440 && p[1] < 1664)
+		   {
+			   if( p[0]-740 < 173)
+			   {
+				   p[0] = 740;
+				   
+			   }else{
+				   p[0] = 1089;
+				   
+			   }
+			   if(p[1]-1440<112)
+			   {
+				   p[1] = 1140;
+			   }else{
+				   p[1]= 1666;
+			   }
+			   
+			   
+		   }
+		   
+	   }
+	   
+	   
    }
    
    

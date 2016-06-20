@@ -122,55 +122,55 @@ public class MyWebView extends WebView {
     }   
  
    
-        public void showMapLayer(){
-        	if(!typeFlag){
-        		scale = getScale();
-            	//地图被放大到一定程度，显示细节
-               	if(scale>0.4 && scaleFlag1 == false)
-               	{
-               		String[] sites = {"候车处","餐饮购物","停车场"};
-               		String v1 = "visible";
-               		for(String site:sites)
-        				{
-        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-        				}
-               		scaleFlag1  = true;
-               	}
-               	if(scale>0.8 && scaleFlag2 == false)
-               	{
-               		String[] sites = {"旅客服务","公交站台","出租车"};
-               		String v1 = "visible";
-               		for(String site:sites)
-        				{
-        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-        				}
-               		scaleFlag2  = true;
-               	}
-               	else if(scale<0.8 && scaleFlag2 == true){
-               		String[] sites = {"旅客服务","公交站","出租车"};
-               		String v1 = "hidden";
-               		for(String site:sites)
-        				{
-        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-        				}
-               		scaleFlag2  = false;
-               	}
-               	else if(scale<0.4 && scaleFlag1 == true){
-               		String[] sites = {"候车处","餐饮购物","停车场"};
-               		String v1 = "hidden";
-               		for(String site:sites)
-        				{
-        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
-        				}
-               		scaleFlag1  = false;
-               	}
-        		
-        	}
-            
-        }
+//        public void showMapLayer(){
+//        	if(!typeFlag){
+//        		scale = getScale();
+//            	//地图被放大到一定程度，显示细节
+//               	if(scale>0.4 && scaleFlag1 == false)
+//               	{
+//               		String[] sites = {"候车处","餐饮购物","停车场"};
+//               		String v1 = "visible";
+//               		for(String site:sites)
+//        				{
+//        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+//        				}
+//               		scaleFlag1  = true;
+//               	}
+//               	if(scale>0.8 && scaleFlag2 == false)
+//               	{
+//               		String[] sites = {"旅客服务","公交站台","出租车"};
+//               		String v1 = "visible";
+//               		for(String site:sites)
+//        				{
+//        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+//        				}
+//               		scaleFlag2  = true;
+//               	}
+//               	else if(scale<0.8 && scaleFlag2 == true){
+//               		String[] sites = {"旅客服务","公交站","出租车"};
+//               		String v1 = "hidden";
+//               		for(String site:sites)
+//        				{
+//        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+//        				}
+//               		scaleFlag2  = false;
+//               	}
+//               	else if(scale<0.4 && scaleFlag1 == true){
+//               		String[] sites = {"候车处","餐饮购物","停车场"};
+//               		String v1 = "hidden";
+//               		for(String site:sites)
+//        				{
+//        					loadUrl("javascript:setVisibility('"+site+"','"+v1+"')");
+//        				}
+//               		scaleFlag1  = false;
+//               	}
+//        		
+//        	}
+//            
+//        }
         
         public void showBaseLayer(){
-        	String[] sites = {"售票处","出口","卫生间"};
+        	String[] sites = {"售票处","候车处","卫生间","自助取款","公交车","餐饮购物","长途汽车","旅客服务","出口"};
        		String v1 = "visible";
        		for(String site:sites)
 				{
@@ -181,7 +181,7 @@ public class MyWebView extends WebView {
         
         public void hiddenAll()
         {
-        	String[] sites = {"售票处","候车处","卫生间","出租车","公交站","餐饮购物","停车场","旅客服务","出口"};
+        	String[] sites = {"售票处","候车处","卫生间","自助取款","公交车","餐饮购物","长途汽车","旅客服务","出口"};
        		String v1 = "hidden";
        		for(String site:sites)
 				{
