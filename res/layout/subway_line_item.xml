@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >  
+	 
+    <RelativeLayout
+    	android:id="@+id/rl_subway_item"
+   		android:layout_width="fill_parent"
+    	android:layout_height="80dp"
+    	android:orientation="horizontal"
+    	android:background="@drawable/subway_line_selector" >
+        <ImageView
+    	    android:id="@+id/iv_subway_logo"
+    	    android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"  
+	        android:layout_marginTop="20dp"
+	        android:layout_marginBottom="20dp"
+	        android:src="@drawable/subway_logo"
+	        android:contentDescription="@string/app_name"/>
+        
+        <LinearLayout
+        	android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+   			android:orientation="vertical">
+        
+    		<TextView
+    	    	android:id="@+id/tv_subway_line"
+    	    	android:layout_width="wrap_content"
+	        	android:layout_height="40dp"
+	        	android:layout_gravity="center"          
+	        	android:textSize="18sp"
+	        	android:textColor="#000"
+	        	android:layout_centerInParent="true"/>
+	        
+	        	
+	        	<TextView
+	        		android:id="@+id/tv_subway_extr1"
+	        		android:layout_width="wrap_content"
+	        		android:layout_height="wrap_content"
+	        		android:layout_gravity="center"    
+	        		android:textSize="14dp"
+	        		android:textColor="#010"/>
+	     
+	     		<TextView
+	        		android:id="@+id/tv_subway_extr2"
+	        		android:layout_width="wrap_content"
+	        		android:layout_height="wrap_content"
+	        		android:layout_gravity="center"
+	        		android:textSize="14dp"
+	        		android:textColor="#010"/>
+    	</LinearLayout>
+    	<ImageView
+    	    android:id="@+id/subway_into_img"
+    	    android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	       	android:layout_marginTop="30dp"
+	       	android:layout_marginBottom="30dp"
+	       	android:layout_marginRight="10dp"
+	        android:src="@drawable/subway_go"
+	        android:contentDescription="@string/app_name"/>
+
+        </RelativeLayout>
+      
+</LinearLayout>

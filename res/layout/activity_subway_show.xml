@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >  
+	<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="46dp"
+        android:background="@color/main_bg"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_weight="1"
+            android:gravity="center|center_horizontal"
+            android:text="地铁线首末时间表"
+            android:textColor="#000000"
+            android:textSize="25sp"
+            />
+    </LinearLayout>
+     <ListView 
+        android:id="@+id/subway_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff" >
+    </ListView> 
+      
+</LinearLayout>

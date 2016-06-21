@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
+        
     <FrameLayout 
         android:id="@android:id/tabcontent"
         android:layout_width="match_parent"
@@ -18,14 +19,18 @@
         ></FrameLayout>
     
     <!-- 隐藏TabWidget -->
-<TabWidget 
-    android:id="@android:id/tabs"
-    android:visibility="gone"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-  </TabWidget>  
-  
+	<TabWidget 
+    	android:id="@android:id/tabs"
+    	android:visibility="gone"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content">
+  	</TabWidget>  
+   <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#ff000000"
+        android:orientation="vertical" >
+    </View>
     <RadioGroup 
         android:id="@+id/main_radiogroup"
         android:layout_width="match_parent"
@@ -51,18 +56,17 @@
          
          
           <RadioButton 
-          android:id="@+id/tab_icon_steamer"   
-          android:drawableTop="@drawable/traffic_steamer_selector"    
-          android:text="轮船"
+          android:id="@+id/tab_icon_subway"   
+          android:drawableTop="@drawable/traffic_subway_selector"    
+          android:text="地铁"
           style="@style/tab_button_bg"
             />
           
           
            <RadioButton 
-          android:id="@+id/tab_icon_car"          
-      	
-          android:drawableTop="@drawable/traffic_car_selector"    
-          android:text="汽车"
+          android:id="@+id/tab_icon_subway_air"          
+          android:drawableTop="@drawable/traffic_subway_air_selector"    
+          android:text="机场线"
 		  style="@style/tab_button_bg"
             />
         
