@@ -29,9 +29,9 @@ public class MyWebView extends WebView {
 	// 
 	public static float webviewX0;
 	public static float webviewY0;
-	public static final float P = 8.47f;//Ò»²ã
-	public static int offsetX = 2796;
-	public static float offsetY = (float) 2100;
+	public static final float P = 8.47f;//Ò»²ã2777.19£¬1997.56
+	public static int offsetX = 2777;
+	public static float offsetY = 1997.56f;
 	
 	public static final float PNegative1 = 3.39f;//µØÌú²ã
 	public static int offsetXNegative1 = 6722;

@@ -26,7 +26,7 @@ public class ShowSubwayDetails extends Activity{
 		Intent intent = getIntent();
 		//获取该intent所携带的数据
 		Bundle data = intent.getExtras();
-		int id = (int)data.get("line_no");
+		int id = data.getInt("line_no");
 		Log.v("Subway", "id: " + id);
 		mWebView = (WebView) findViewById(R.id.wv_subway_detail);
 		mWebView.loadUrl("file:///android_res/raw/subway_line_"+ id +".html");
