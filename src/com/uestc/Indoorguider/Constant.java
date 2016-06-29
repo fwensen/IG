@@ -206,5 +206,8 @@ public class Constant {
 	//2796£¬,1926 px
 	public static final int  LAYER_NEGATIVE1 =2;
 	public static final int LAYER_1 = 1;
+	
+	
+
 
 }

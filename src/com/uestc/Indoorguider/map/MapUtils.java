@@ -34,7 +34,7 @@ public class MapUtils {
 	private boolean firstData  = true;//第一次收到定位数据
 	private int lastLayer = 1;
 	public static int layer1_x_offerset = 14;//由于地图变动，路由按照旧版地图给出路径，在新地图上显示需加上偏移量
-    public static int layer1_y_offerset = -115;
+    public static int layer1_y_offerset = -53;
 	
 	
 	
@@ -207,7 +207,7 @@ public class MapUtils {
 			for(; i<(pathArray_px.length()-1); i++)
 			{
 				node = (JSONObject) pathArray_px.get(i);
-				path = path + node.getInt("x")+" "+node.getInt("y")+"L";
+				path = path + (node.getInt("x")+layer1_x_offerset)+" "+(node.getInt("y")+layer1_y_offerset)+"L";
 				//init sites
 				sites_px[i][0] = node.getInt("x");
 				sites_px[i][1] = node.getInt("y");
@@ -464,8 +464,8 @@ public class MapUtils {
 			calculator.setStrategy(new Layer1CmToPxSrategy());
 			
 		}
-	    locationNow_cm[0] = obj.getInt("x")+layer1_x_offerset; //unit:CM  
-		locationNow_cm[1] = obj.getInt("y")+layer1_y_offerset; 
+	    locationNow_cm[0] = obj.getInt("x"); //unit:CM  
+		locationNow_cm[1] = obj.getInt("y"); 
 		locationNow_cm[2] = layer;
 		int[] p  = new int[2];
 		p[0] = calculator.calculatorX(locationNow_cm[1]);//x
