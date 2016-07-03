@@ -54,19 +54,19 @@
           style="@style/tab_button_bg"
             />
          
-         
+         <!--
           <RadioButton 
           android:id="@+id/tab_icon_subway"   
           android:drawableTop="@drawable/traffic_subway_selector"    
           android:text="地铁"
           style="@style/tab_button_bg"
             />
-          
+          -->
           
            <RadioButton 
           android:id="@+id/tab_icon_subway_air"          
           android:drawableTop="@drawable/traffic_subway_air_selector"    
-          android:text="机场线"
+          android:text="机场地铁线"
 		  style="@style/tab_button_bg"
             />
         

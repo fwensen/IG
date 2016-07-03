@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.uestc.Indoorguider.Constant;
@@ -22,6 +23,8 @@ public class SearchSitesPositions {
 	private Map<String, SiteInfo> allSites;
 	private List<SiteInfo> sites;
 	private List<String> allSitesNames;
+	
+	private Map<String, Integer> routeLines;
 	/**
 	 * singleton, 不需要互斥访问，无需考虑线程安全问题
 	 */
@@ -58,7 +61,25 @@ public class SearchSitesPositions {
 		for (SiteInfo site : sites) {
 			allSites.put(Constant.sitesAndChineseMap().get(site.getSiteName()), site);
 		}
+		
+		routeLines = new HashMap<>();
+		routeLines.put("地铁到长途汽车站", 0);
+		routeLines.put("地铁到公交站", 1);
+		routeLines.put("公交到长途汽车站", 2);
 	}
+	
+	/**
+	 * 根据名字返回路线编号
+	 * @param str
+	 * @return
+	 */
+	public int getRouteLine(String str) {
+		int no = 0;
+		Integer ret =  routeLines.get(str);
+		if (ret != null)
+			no = ret;
+		return no;
+	}   
 	
 	/**
 	 * 查找，根据地名查找到相应坐标位置

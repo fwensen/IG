@@ -1,5 +1,7 @@
 package com.uestc.Indoorguider.map.search_destination;
 
+import org.json.JSONException;
+
 import com.uestc.Indoorguider.R;
 
 import android.app.Activity;
