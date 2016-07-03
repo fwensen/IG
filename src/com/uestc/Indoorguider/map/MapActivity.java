@@ -3,6 +3,8 @@ package com.uestc.Indoorguider.map;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -136,7 +138,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 
      //搜索结果的数据
     private List<DestinationSite> resultData;
-    private static int DEFAULT_HINT_SIZE = 4;
+    private static int DEFAULT_HINT_SIZE = 3;
 
     /**
      * 提示框显示项的个数
@@ -524,12 +526,55 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
 
    /**
     * 查询，回调, 完成搜索时的工作(non-Javadoc)
-    * @see com.uestc.Indoorguider.map.search_destination.SearchDestination.SearchViewListener#onSearch(java.lang.String)
+ * @throws JSONException 
+ * @see com.uestc.Indoorguider.map.search_destination.SearchDestination.SearchViewListener#onSearch(java.lang.String)
     */
    @Override
    public void onSearch(String text) {
 	   //更新result数据
        //getResultData(text);
+	   SpecifiedRoute sr = new SpecifiedRoute();
+	   SearchSitesPositions instance = SearchSitesPositions.getInstance();
+	   String path = "M";
+	   int no = instance.getRouteLine(text);
+	   
+	   JSONObject obj  = sr.getRoute(no);
+	   JSONObject node = new  JSONObject();
+	   JSONArray pathArray_px = null;
+	   try {
+		   pathArray_px = obj.getJSONArray("path");
+	   } catch (JSONException e) {
+		e.printStackTrace();
+	   }
+	   
+	   int i = 0;
+	   for(; i<pathArray_px.length() - 1; i++){
+		   try {
+			node = (JSONObject) pathArray_px.get(i);
+			path = path + node.getInt("x")+" "+node.getInt("y")+"L";
+		   } catch (Exception e) {
+			   e.printStackTrace();
+		   }
+		   
+		}
+	   /* 最后一个点 */
+	   try {
+			node = (JSONObject) pathArray_px.get(i);
+			path = path + node.getInt("x")+" "+node.getInt("y")+"L";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	   
+	   webView.loadUrl("javascript:drawPath('"+path+"')");
+	   try {
+		webView.loadUrl("javascript:setAim('"+ node.getInt("x")+"','"+node.getInt("y")+"')");
+	} catch (JSONException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	   sr = null;
+	   /*
       SearchSitesPositions instance = SearchSitesPositions.getInstance();
        //mapUtil srcLocation_px pathDestLocation_px
       Log.v("search", "text: " + text);
@@ -544,6 +589,7 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
       Log.v("search", "ret: " + "x: " + pathDestLocation_px[0] + " y: " + pathDestLocation_px[1]);
       webView.loadUrl("javascript:setAim('"+pathDestLocation_px[0]+"','"+pathDestLocation_px[1]+"')");
       mapUtils.requestPath(srcLocation_px, pathDestLocation_px);
+   */
    }
 
    /**
@@ -581,10 +627,9 @@ public class MapActivity extends APPActivity implements OnClickListener, SearchD
    private void getHintData() {
        hintData = new ArrayList<String>(hintSize);
        
-       hintData.add("洗手间");
-       hintData.add("地铁入口");
-       hintData.add("长途汽车站");
-       hintData.add("公交 132 东直门枢纽站-望京北路东口");
+       hintData.add("地铁到长途汽车站");
+       hintData.add("地铁到公交站");
+       hintData.add("公交到长途汽车站");
        hintAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, hintData);
    }
 

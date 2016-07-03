@@ -51,7 +51,7 @@
             android:background="@drawable/btn_search_bg"  
             android:layout_width="@dimen/btn_width"  
             android:layout_height="@dimen/btn_height"  
-            android:text="出发"  
+            android:text=""  
             android:textColor="@color/color_white"/>  
     </LinearLayout>
 
