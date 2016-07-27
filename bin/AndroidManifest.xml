@@ -30,9 +30,15 @@
 	              android:theme="@android:style/Theme.NoTitleBar"
 	              android:configChanges="orientation|keyboardHidden|screenSize"
 	              android:launchMode="singleTask" >
-	        <intent-filter>
+	       	<intent-filter>
 	            <action android:name="android.intent.action.MAIN"> </action>
 	            <category android:name="android.intent.category.LAUNCHER"></category>
+	        </intent-filter>
+	        <intent-filter>
+	            <action android:name="android.intent.action.VIEW"/>  
+    			<category android:name="android.intent.category.DEFAULT" />  
+    			<category android:name="android.intent.category.BROWSABLE" />  
+	            <data android:scheme="indoorguider" android:host="com.uestc"/>
 	        </intent-filter>
 	    </activity>
 	    <activity android:name="com.uestc.Indoorguider.map.ScanResultActivity"
